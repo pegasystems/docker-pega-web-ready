@@ -1,0 +1,24 @@
+<Context docBase="/opt/pega/prweb" path="/prweb">
+	<Resource name="jdbc/PegaRULES"
+		auth="Container"
+		type="javax.sql.DataSource"
+		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+		driverClassName="${jdbcDriverClass}"
+		url="${jdbcUrl}"
+		username="${dbUsername}"
+		password="${dbPassword}"
+		minActive="${jdbcMinActive}"
+		maxActive="${jdbcMaxActive}"
+		minIdle="${jdbcMinIdle}"
+		maxIdle="${jdbcMaxIdle}"
+		maxWait="${jdbcMaxWait}"
+        initialSize="${jdbcInitialSize}"
+        testOnBorrow="true"
+        testOnReturn="true"
+        validationQuery="SELECT 1"
+        validationInterval="30000"
+        connectionProperties="socketTimeout=90"
+	/>
+
+	<Manager pathname="" />
+</Context>
