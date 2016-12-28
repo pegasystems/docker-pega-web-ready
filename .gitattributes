@@ -1,0 +1,5 @@
+# Set the default behavior
+* text=auto
+
+# Make sure shell scripts are linux on checkout so docker images work
+*.sh text eol=lf
