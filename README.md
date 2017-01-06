@@ -22,7 +22,7 @@ The simplest way to use this image is to create your own Dockerfile with content
  Replace the source paths with the actual paths to the Pega 7 software libraries
  and specify a valid JDBC driver for your target database.
 
-    FROM pegasystems:pega7-tomcat-ready
+    FROM pegasystems/pega7-tomcat-ready
     
     # Expand prweb to target directory
     COPY /path/to/prweb.war /opt/pega/prweb.war
