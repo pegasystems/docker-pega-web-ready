@@ -50,7 +50,7 @@ CMD ["run"]
 
 # Expose the HTTP, SMA and JMX ports
 EXPOSE 8080
-EXPOSE 8091
+EXPOSE 8090
 EXPOSE 9001
 
 # Expose the list of Hazelcast ports
