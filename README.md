@@ -7,7 +7,7 @@ This image is based on Tomcat 7 which is based on OpenJDK's Java 7 image.
 Supported features:
 
 * PR Web application container configuration (port 8080)
-* PR System Management application container configuration (port 8091)
+* PR System Management application container configuration (port 8090)
 * Remote JMX management support (port 9001)
 
 # Using this image
@@ -65,5 +65,5 @@ the `docker ps` command to print out the port bindings.  Look for the 8080 port 
 it from your web browser at `http://host:port/prweb`.
 
 To connect to the PR System Management application, use the 'docker ps' and look for
-the port mapped to 8091 and connect to it via a web browser at `http://host:port/prsysmgmt`. 
+the port mapped to 8090 and connect to it via a web browser at `http://host:port/prsysmgmt`. 
 The login credentials are defined in the [tomcat-users.xml](conf/tomcat-users.xml) file and should be overridden by your own file.
