@@ -47,7 +47,7 @@ image that is registered in your local registry named pega7-tomcat:latest
 ## Running the image
 
 The built image requires connectivity to a database that must be 
- available and seeded with the appropriate rulebase via the Pega 7 standard installation
+ available and seeded with the appropriate rule base via the Pega 7 standard installation
  utility.
 
     docker run -d -P --name pega7 -e DB_HOST=<host> ... pega7-tomcat
@@ -66,6 +66,6 @@ port.  To find this port (assuming you had them dynamically assigned as above), 
 the `docker ps` command to print out the port bindings.  Look for the 8080 port and connect to
 it from your web browser at `http://host:port/prweb`.
 
-To connect to the PR System Management application, use the 'docker ps' and look for
+To connect to the PR System Management application, use the 'docker ps' command and look for
 the port mapped to 8090 and connect to it via a web browser at `http://host:port/prsysmgmt`. 
 The login credentials are defined in the [tomcat-users.xml](conf/tomcat-users.xml) file and should be overridden by your own file.
