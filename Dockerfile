@@ -12,8 +12,8 @@ ENV DB_PORT 5432
 ENV DB_NAME pega
 
 # Provide variables for the JDBC connection string
-ENV JDBC_URL "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
 ENV JDBC_CLASS org.postgresql.Driver
+ENV JDBC_URL_SUFFIX ''
 ENV JDBC_MIN_ACTIVE 50
 ENV JDBC_MAX_ACTIVE 250
 ENV JDBC_MIN_IDLE 10

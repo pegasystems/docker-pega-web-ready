@@ -1,6 +1,10 @@
 #!/bin/bash
 set -x
 
+# Define the JDBC_URL variable based on inputs
+JDBC_URL="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}${JDBC_URL_SUFFIX}"
+export JDBC_URL
+
 # If not set, set node id manually to be passed in via setenv.sh
 if [ "${NODE_ID}" = "NONE" ]; then
   NODE_ID=${NODE_ID_PREFIX}${HOSTNAME}
