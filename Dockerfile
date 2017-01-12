@@ -13,6 +13,7 @@ ENV DB_NAME pega
 
 # Provide variables for the JDBC connection string
 ENV JDBC_CLASS org.postgresql.Driver
+ENV JDBC_DB_TYPE postgresql
 ENV JDBC_URL_SUFFIX ''
 ENV JDBC_MIN_ACTIVE 50
 ENV JDBC_MAX_ACTIVE 250
