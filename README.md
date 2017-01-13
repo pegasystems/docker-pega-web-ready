@@ -1,6 +1,6 @@
-# Pega7 Tomcat docker container
+# Pega 7 Tomcat Docker container
 
-This project produces a docker image that you can use as a base image to create a complete docker image for running Pega7.  
+This project produces a Docker image that you can use as a base image to create a complete Docker image for running Pega 7.  
 
 This image is based on Tomcat 7 which is based on OpenJDK's Java 7 image. 
 
@@ -19,9 +19,7 @@ The image itself is not runnable directly because it does not come with the Pega
 ## Constructing your image
 
 The simplest way to use this image is to create your own Dockerfile with contents similar to the example below and 
-extract the Pega distribution to the same directory.  Recommend that this is done on a linux system to retain proper
-file permissions.  Replace the source paths with the actual paths to the Pega 7 software libraries
- and specify a valid JDBC driver for your target database.
+extract the Pega distribution to the same directory as the Dockerfile.  It is recommended that this is done on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega 7 software libraries and specify a valid JDBC driver for your target database.
 
     FROM pegasystems/pega7-tomcat-ready
     
@@ -52,8 +50,8 @@ The built image requires connectivity to a database that must be
 
     docker run -d -P --name pega7 -e DB_HOST=<host> ... pega7-tomcat
 
-In the above command, the `-d`flag  tells docker to run this program as a daemon process in 
- the background.  The `-P` flag tells docker to expose all ports in the image to dynamically
+In the above command, the `-d`flag  tells Docker to run this program as a daemon process in 
+ the background.  The `-P` flag tells Docker to expose all ports in the image to dynamically
  selected ports on the host machine.  The `-e` flag is a declaration of an environment
  variable.  See the [Dockerfile](Dockerfile) for the list of exposed variables.
 
