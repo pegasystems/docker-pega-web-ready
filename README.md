@@ -10,6 +10,10 @@ Supported features:
 * PR System Management application container configuration (port 8090)
 * Remote JMX management support (port 9001)
 
+# Usability note
+
+Although this code supports running Pega7 in a tomcat based docker container, it does not mean that Pega7 can be used in a docker container clustering environment as is, such as Docker Swarm and Kubernetes.
+
 # Using this image
 
 The image itself is not runnable directly because it does not come with the Pega 7
