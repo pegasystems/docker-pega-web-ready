@@ -15,7 +15,7 @@
         initialSize="${jdbcInitialSize}"
         testOnBorrow="true"
         testOnReturn="true"
-        validationQuery="SELECT 1"
+        validationQuery="${jdbcValidationQuery}"
         validationInterval="30000"
         connectionProperties="socketTimeout=90"
 	/>
