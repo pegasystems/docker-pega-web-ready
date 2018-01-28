@@ -44,8 +44,7 @@ RUN curl -kSL ${TOMCAT_JMX_JAR_TGZ_URL} -o catalina-jmx-remote.jar && \
     for key in $GPG_KEYS; do  gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; done && \
     gpg --verify catalina-jmx-remote.jar.asc && \
     mv catalina-jmx-remote.jar /usr/local/tomcat/lib/catalina-jmx-remote.jar && \
-    rm catalina-jmx-remote.jar.asc && \
-    rm 
+    rm catalina-jmx-remote.jar.asc
 
 # Copy in tomcat configuration and application files
 COPY conf /usr/local/tomcat/conf/
