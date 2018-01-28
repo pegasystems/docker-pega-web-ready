@@ -39,7 +39,13 @@ ENV NODE_ID NONE
 ENV JMX_PORT 9001
 ENV JMX_SERVER_HOSTNAME 127.0.0.1
 ENV TOMCAT_JMX_JAR_TGZ_URL https://archive.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/extras/catalina-jmx-remote.jar
-RUN curl -kSL ${TOMCAT_JMX_JAR_TGZ_URL} -o catalina-jmx-remote.jar && curl -kSL ${TOMCAT_JMX_JAR_TGZ_URL}.asc -o catalina-jmx-remote.jar.asc && gpg --verify catalina-jmx-remote.jar.asc && mv catalina-jmx-remote.jar /usr/local/tomcat/lib/catalina-jmx-remote.jar && rm catalina-jmx-remote.jar.asc
+RUN curl -kSL ${TOMCAT_JMX_JAR_TGZ_URL} -o catalina-jmx-remote.jar && \
+    curl -kSL ${TOMCAT_JMX_JAR_TGZ_URL}.asc -o catalina-jmx-remote.jar.asc && \
+    for key in $GPG_KEYS; do  gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; done && \
+    gpg --verify catalina-jmx-remote.jar.asc && \
+    mv catalina-jmx-remote.jar /usr/local/tomcat/lib/catalina-jmx-remote.jar && \
+    rm catalina-jmx-remote.jar.asc && \
+    rm 
 
 # Copy in tomcat configuration and application files
 COPY conf /usr/local/tomcat/conf/
