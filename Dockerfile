@@ -1,4 +1,4 @@
-# Base image on tomcat 7 with OpenJDK JRE 8
+# Base image on tomcat 7 with OpenJDK JRE 7
 FROM tomcat:7-jre7
 
 # Create pega directory for storing applications
