@@ -2,7 +2,7 @@
 
 This project produces a Docker image that you can use as a base image to create a complete Docker image for running Pega 7.  
 
-This image is based on Tomcat 7 which is based on OpenJDK's Java 7 image. 
+This image is based on Tomcat 7 which is based on OpenJDK's Java 8 image. 
 
 Supported features:
 
