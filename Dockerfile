@@ -1,5 +1,5 @@
-# Base image on tomcat 7 with OpenJDK JRE 7
-FROM tomcat:7-jre7
+# Base image on tomcat 7 with OpenJDK JRE 8
+FROM tomcat:7-jre8
 
 # Create pega directory for storing applications
 RUN mkdir -p /opt/pega
@@ -33,7 +33,7 @@ ENV MAX_THREADS=300 \
     INDEX_DIRECTORY=NONE \
     HEAP_DUMP_PATH=/heapdumps \
     NODE_ID=NONE
-ENV JAVA_OPTS -Xms2048m -Xmx4096m -XX:PermSize=64m -XX:MaxPermSize=384m
+ENV JAVA_OPTS -Xms2048m -Xmx4096m
 
 # Configure Remote JMX support and bind to port 9001
 ENV JMX_PORT=9001 \
