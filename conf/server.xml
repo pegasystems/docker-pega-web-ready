@@ -11,8 +11,9 @@
       <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
 
       <!--Initialize Jasper prior to webapps are loaded. Documentation at /docs/jasper-howto.html -->
-      <Listener className="org.apache.catalina.core.JasperListener" />
-
+      <!-- Remove jasper in tomcat 8
+        <Listener className="org.apache.catalina.core.JasperListener" />
+      -->
       <!-- Prevent memory leaks due to use of particular java/javax APIs-->
       <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
       <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
@@ -63,8 +64,8 @@
     		<Connector port="8080" 
                    protocol="HTTP/1.1"
                    connectionTimeout="20000"
-				   secure="true"
-				   server=" "
+                   secure="true"
+                   server=" "
                    redirectPort="8443"
                    enableLookups="true"
                    maxThreads="${maxThreads}"      />
