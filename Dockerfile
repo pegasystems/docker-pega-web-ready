@@ -30,6 +30,7 @@ RUN apt-get update && \
     zip -ur catalina.jar \
         org/apache/catalina/util/ServerInfo.properties && \
     rm -rf ${CATALINA_HOME}/lib/org && \
+    cd - && \
 # Setting restrictive umask container-wide
     echo "session optional pam_umask.so" >> /etc/pam.d/common-session && \
     sed -i 's/UMASK.*022/UMASK           007/g' /etc/login.defs && \
