@@ -79,8 +79,8 @@ ENV JMX_PORT=9001 \
 
 RUN curl -kSL ${TOMCAT_JMX_JAR_TGZ_URL} -o catalina-jmx-remote.jar && \
     curl -kSL ${TOMCAT_JMX_JAR_TGZ_URL}.asc -o catalina-jmx-remote.jar.asc && \
-    for key in $GPG_KEYS; do  gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$key"; done && \
-    gpg --verify catalina-jmx-remote.jar.asc && \
+    for key in $GPG_KEYS; do  gpg --no-tty --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$key"; done && \
+    gpg --no-tty --verify catalina-jmx-remote.jar.asc && \
     mv catalina-jmx-remote.jar /usr/local/tomcat/lib/catalina-jmx-remote.jar && \
     rm catalina-jmx-remote.jar.asc
 
