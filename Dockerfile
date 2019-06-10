@@ -98,9 +98,6 @@ ENV CASSANDRA_CLUSTER=false \
 # Configure search nodes. Empty string falls back to search being done on the nodes themselves.
 ENV PEGA_SEARCH_URL=
 
-# Configure prweb.war URL. prweb.war is required to deploy the pega platform on tomcat.
-ENV PRWEB_URL=
-
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata  && \
 	 chgrp -R 0 /opt/pega/kafkadata && \

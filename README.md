@@ -80,12 +80,6 @@ Kafka data is saved to `/kafkadata` in the docker container. To persist the data
 | RULES_SCHEMA | | rules |
 | DATA_SCHEMA | | data |
 
-**prweb URL**
-
-|  Name                        | Purpose                          | Default        |
-| ---------------------------- | -------------------------------- | -------------- |
-| PRWEB_URL | Location where prweb.war is hosted | |
-
 
 **Customize the tomcat runtime**
 

@@ -29,10 +29,6 @@ mkdir -p $config_root
 secret_root="${pega_root}/secrets"
 mkdir -p $secret_root
 
-
-prconfig="${config_root}/prconfig.xml"
-prbootstrap="${config_root}/prbootstrap.properties"
-prlog4j2="${config_root}/prlog4j2.xml"
 context_xml="${config_root}/context.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
 prweb_war="${CATALINA_HOME}/webapps/prweb.war"
