@@ -1,32 +1,47 @@
 Pega Docker Image
 ===========
 
-This project is a slim version of pega-web docker image that runs pega application expecting prweb.war to be mounted while performing docker run.
+This project is a slim version of pega-web docker image that runs pega 8 platform.
 
 
-# Build
+# Usability note
 
-Docker (you may replace pega-tomcat with the name you wish to give the resulting image):
+Although this code supports running Pega8 in a tomcat based docker container, it does not mean that Pega8 can be used in a docker container clustering environment as is, such as Docker Swarm and Kubernetes.
 
-`docker build -t pega-tomcat .`
+# Using this image
 
+The image itself is not runnable directly because it does not come with the Pega 8
+web applications.  Therefore you must use this image as a base to construct an 
+executable Docker image.
 
-# Run
+## Constructing your image
 
-**Mounting Options of prweb**
+The simplest way to use this image is to create your own Dockerfile with contents similar to the example below and 
+extract the Pega distribution to the same directory as the Dockerfile.  It is recommended that this is done on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega 8 software libraries and specify a valid JDBC driver for your target database.
 
-Mount from host machine to `/usr/local/tomcat/webapps` in docker container using `-v argument` in `docker run` command
+    FROM pegasystems/docker-pega-web-ready
+    
+    # Expand prweb to target directory
+    COPY archives/prweb.war /opt/pega/prweb.war
+    RUN unzip -q -d /opt/pega/prweb /opt/pega/prweb.war
 
-```bash
-$ docker run -v /some/local/directory/prweb.war:/usr/local/tomcat/webapps/prweb.war:z <image name>
-```
+    # Make jdbc driver available to tomcat applications
+    COPY /path/to/jdbcdriver.jar /usr/local/tomcat/lib/
+
+Build the image using the following command:
+
+    docker build -t pega8-tomcat .
+
+Upon successful completion of the above command, you will have a Docker
+image that is registered in your local registry named pega8-tomcat:latest
+and that you can view using the `docker images` command
 
 # Customizations
 
 **JDK and Tomcat**
 
 Currently the DockerFile extends the base image `tomcat:9-jre11` . This has been tested internally and works fine.
-You can change this to use your preferred Tomcat base image. However this should be thoroughly tested at your end and verfied.
+You can change this to use your preferred Tomcat base image. However this should be thoroughly tested and verfied at your end.There may be some compatibility issue on changing the base image.
 
 **Using environment variables**
 

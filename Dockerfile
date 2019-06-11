@@ -1,14 +1,13 @@
-# Dockerfile
-# Copyright (c) 2017  Pegasystems Inc.
+# Dockerfile for Pega 8 Platform
 
 # Base image to extend from
 FROM tomcat:9-jre11
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
-      version="1.0.0"
+      version="2.0.0"
 
-ENV PEGA_DOCKER_VERSION=1.0
+ENV PEGA_DOCKER_VERSION=2.0
 
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
@@ -53,8 +52,6 @@ ENV JDBC_URL='' \
 
 # Load a default PostgreSQL driver on startup
 ENV JDBC_DRIVER_URI=''
-
-#ADD https://jdbc.postgresql.org/download/postgresql-42.1.1.jre7.jar ${CATALINA_HOME}/lib/
 
 # Provide variables for the JDBC connection string
 ENV JDBC_MIN_ACTIVE=50 \
@@ -130,5 +127,5 @@ CMD ["run"]
 
 # Expose required ports
 
-# HTTP is 8080, SMA is 8090, JMX is 9001, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
+# HTTP is 8080, JMX is 9001, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
 EXPOSE 8080 9001 5701-5710 47100 7003
