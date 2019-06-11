@@ -7,7 +7,7 @@ This project produces a base Docker image that can be used to create a complete 
 
 The image itself is not runnable directly because it does not come with the Pega web application (.war file).  Therefore you must use this image as a base to construct an executable Docker image.
 
-## Constructing Your Image
+## Constructing your image
 
 The simplest way to use this image is to create your own Dockerfile with contents similar to the example below and extract the Pega distribution to the same directory as the Dockerfile.  It is recommended that this is done on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega Infinity software libraries and specify a valid JDBC driver for your target database.
 
@@ -33,9 +33,9 @@ and that you can view using the `docker images` command.
 
 When running Pega using containers, an orchestration tool is required.  Pega provides support for deployments on Kubernetes using either Helm charts or direct yaml files.  Source code for the deployment scripts may be found in the [pega-helm-charts](https://github.com/pegasystems/pega-helm-charts) repository and more information about Pega on client managed cloud may be found on the [Cloud Choice](https://community.pega.com/knowledgebase/articles/cloud-choice) community site.
 
-## Image Customizations
+## Image customizations
 
-**Base Image**
+**Base image**
 
 This Docker image extends the base image `tomcat:9-jre11`. This has been extensively validated. You may choose change this to use your preferred Tomcat base image, however any change should be thoroughly tested and verfied.
 
@@ -48,9 +48,9 @@ $ docker run -e "DB_HOST=55.55.55.1" -e "DB_PORT=1234" <image name>[:tags]
 
 Kafka data is saved to `/kafkadata` in the docker container. To persist the data, create a volume and mount it
 
-### Environment Variables
+### Environment variables
 
-**Database Connection**
+**Database connection**
 
 |  Name                        | Purpose                          | Default        |
 | ---------------------------- | -------------------------------- | -------------- |
@@ -63,7 +63,7 @@ Kafka data is saved to `/kafkadata` in the docker container. To persist the data
 | DATA_SCHEMA                  |                                  | data           |
 | CUSTOMERDATA_SCHEMA          |                                  |                |
 
-**Advanced JDBC Configuration**
+**Advanced JDBC configuration**
 
 |  Name                        | Purpose                          | Default        |
 | ---------------------------- | -------------------------------- | -------------- |
@@ -90,7 +90,7 @@ Kafka data is saved to `/kafkadata` in the docker container. To persist the data
 | PEGA_DIAGNOSTIC_USER         |                                  | |
 | PEGA_DIAGNOSTIC_PASSWORD     |                                  | |
 
-**Cassandra Settings**
+**Cassandra settings**
 
 |  Name                        | Purpose                          | Default        |
 | ---------------------------- | -------------------------------- | -------------- |
