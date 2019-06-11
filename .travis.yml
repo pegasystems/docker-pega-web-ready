@@ -1,0 +1,6 @@
+services:
+- docker
+
+before_script:
+  - docker build -t pegasystems/pega-ready .
+  - docker images
