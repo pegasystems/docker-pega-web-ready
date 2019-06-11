@@ -1,19 +1,16 @@
 services:
 - docker
 
-stages:
-  - build
-  - test
-  - name: deploy
-    if: branch = master
-
-build:
+install:
   - docker build -t pegasystems/pega-ready .
   - docker images
   
-test:
+script:
   - docker run -d -p 80:80 --name pega-ready pegasystems/pega-ready
   - docker ps
 
 deploy:
-  - ls
+  - ls -alh
+  on:
+    repo: pegasystems/docker-pega-web-ready
+    branch: master
