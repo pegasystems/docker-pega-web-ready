@@ -10,7 +10,8 @@ script:
   - docker ps
 
 deploy:
-  - ls -alh
+  provider: script
+  script: bash docker_push
   on:
     repo: pegasystems/docker-pega-web-ready
     branch: master
