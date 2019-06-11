@@ -21,6 +21,13 @@ Mount from host machine to `/usr/local/tomcat/webapps` in docker container using
 $ docker run -v /some/local/directory/prweb.war:/usr/local/tomcat/webapps/prweb.war:z <image name>
 ```
 
+# Customizations
+
+**JDK and Tomcat**
+
+Currently the DockerFile extends the base image `tomcat:9-jre11` . This has been tested internally and works fine.
+You can change this to use your preferred Tomcat base image. However this should be thoroughly tested at your end and verfied.
+
 **Using environment variables**
 
 You can make adjustments by overriding environmental variables
@@ -100,7 +107,6 @@ Kafka data is saved to `/kafkadata` in the docker container. To persist the data
 | ---------------------------- | -------------------------------- | -------------- |
 | JMX_PORT | | 9001 |
 | JMX_SERVER_HOSTNAME | | 127.0.0.1 |
-| TOMCAT_JMX_JAR_TGZ_URL | | https://archive.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/extras/catalina-jmx-remote.jar |
 
 **DDS/Cassandra settings**
 
