@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+
+  {{ if .Env.PEGA_SEARCH_URL }}
+  <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="{{ .Env.PEGA_SEARCH_URL }}" type="java.lang.String"/>
+  {{ end }}
+
+  {{ if isTrue .Env.CASSANDRA_CLUSTER }}
+  <Environment name="prconfig/dnode/external_cassandra_cluster" value="{{ .Env.CASSANDRA_CLUSTER }}" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/external_cassandra_nodes" value="{{ default .Env.CASSANDRA_NODES "" }}" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/external_cassandra_port" value="{{ default .Env.CASSANDRA_PORT "9042" }}" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_username" value="{{ default .Env.SECRET_CASSANDRA_USERNAME "dnode_ext" }}" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_password" value="{{ default .Env.SECRET_CASSANDRA_PASSWORD "dnode_ext" }}" type="java.lang.String"/>
+  {{ end }}
+
+  <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata" type="java.lang.String" />
+
+  {{ if .Env.IS_STREAM_NODE }}
+  <!-- additional DSM configs we add if THIS is a "Stream" node -->
+  <Environment name="prconfig/dsm/services" value="StreamServer" type="java.lang.String" />
+  <Environment name="prconfig/dsm/services/stream/pyUnpackBasePath" value="/tmp/kafka" type="java.lang.String" />
+  <Environment name="prconfig/dsm/services/stream/server_properties/unclean.leader.election.enable" value="false" type="java.lang.String" />
+  {{ end }}
+
+</Context>

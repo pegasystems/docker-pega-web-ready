@@ -1,73 +1,129 @@
-# Pega 7 Tomcat Docker container
+Pega Docker Image
+===========
 
-This project produces a Docker image that you can use as a base image to create a complete Docker image for running Pega 7.  
+This project is a slim version of pega-web docker image that runs pega 8 platform.
 
-This image is based on Tomcat 7 which is based on OpenJDK's Java 8 image. 
-
-Supported features:
-
-* PR Web application container configuration (port 8080)
-* PR System Management application container configuration (port 8090)
-* Remote JMX management support (port 9001)
 
 # Usability note
 
-Although this code supports running Pega7 in a tomcat based docker container, it does not mean that Pega7 can be used in a docker container clustering environment as is, such as Docker Swarm and Kubernetes.
+Although this code supports running Pega8 in a tomcat based docker container, it does not mean that Pega8 can be used in a docker container clustering environment as is, such as Docker Swarm and Kubernetes.
 
 # Using this image
 
-The image itself is not runnable directly because it does not come with the Pega 7
- web applications.  Therefore you must use this image as a base to construct an 
- executable Docker image.
+The image itself is not runnable directly because it does not come with the Pega 8
+web applications.  Therefore you must use this image as a base to construct an 
+executable Docker image.
 
 ## Constructing your image
 
 The simplest way to use this image is to create your own Dockerfile with contents similar to the example below and 
-extract the Pega distribution to the same directory as the Dockerfile.  It is recommended that this is done on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega 7 software libraries and specify a valid JDBC driver for your target database.
+extract the Pega distribution to the same directory as the Dockerfile.  It is recommended that this is done on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega 8 software libraries and specify a valid JDBC driver for your target database.
 
-    FROM pegasystems/pega7-tomcat-ready
+    FROM pegasystems/docker-pega-web-ready
     
     # Expand prweb to target directory
     COPY archives/prweb.war /opt/pega/prweb.war
     RUN unzip -q -d /opt/pega/prweb /opt/pega/prweb.war
-    
-    # Expand pr sys managment to target directory
-    COPY archives/prsysmgmt.war /opt/pega/prsysmgmt.war
-    RUN unzip -q -d /opt/pega/prsysmgmt /opt/pega/prsysmgmt.war
-     
+
     # Make jdbc driver available to tomcat applications
     COPY /path/to/jdbcdriver.jar /usr/local/tomcat/lib/
 
 Build the image using the following command:
 
-    docker build -t pega7-tomcat .
+    docker build -t pega8-tomcat .
 
 Upon successful completion of the above command, you will have a Docker
-image that is registered in your local registry named pega7-tomcat:latest
- and that you can view using the `docker images` command.
+image that is registered in your local registry named pega8-tomcat:latest
+and that you can view using the `docker images` command
 
-## Running the image
+# Customizations
 
-The built image requires connectivity to a database that must be 
- available and seeded with the appropriate rule base via the Pega 7 standard installation
- utility.
+**JDK and Tomcat**
 
-    docker run -d -P --name pega7 -e DB_HOST=<host> ... pega7-tomcat
+Currently the DockerFile extends the base image `tomcat:9-jre11` . This has been tested internally and works fine.
+You can change this to use your preferred Tomcat base image. However this should be thoroughly tested and verfied at your end.There may be some compatibility issue on changing the base image.
 
-In the above command, the `-d`flag  tells Docker to run this program as a daemon process in 
- the background.  The `-P` flag tells Docker to expose all ports in the image to dynamically
- selected ports on the host machine.  The `-e` flag is a declaration of an environment
- variable.  See the [Dockerfile](Dockerfile) for the list of exposed variables.
+**Using environment variables**
 
-# Accessing Pega 7
+You can make adjustments by overriding environmental variables
+```bash
+$ docker run -e "DB_HOST=55.55.55.1" -e "DB_PORT=1234" <image name>[:tags]
+```
 
-Use these instructions if you want to run Pega 7.
+Kafka data is saved to `/kafkadata` in the docker container. To persist the data, create a volume and mount it
 
-Once the image is running, you can connect to the Pega 7 web application via the exposed bound
-port.  To find this port (assuming you had them dynamically assigned as above), you can run 
-the `docker ps` command to print out the port bindings.  Look for the 8080 port and connect to
-it from your web browser at `http://host:port/prweb`.
+## Environmental variables
 
-To connect to the PR System Management application, use the 'docker ps' command and look for
-the port mapped to 8090 and connect to it via a web browser at `http://host:port/prsysmgmt`. 
-The login credentials are defined in the [tomcat-users.xml](conf/tomcat-users.xml) file and should be overridden by your own file.
+**JDBC Driver**
+
+|  Name                        | Purpose                          | Default        |
+| ---------------------------- | -------------------------------- | -------------- |
+| JDBC_DRIVER_URI              |                                  | https://jdbc.postgresql.org/download/postgresql-42.1.1.jre7.jar |
+| JDBC_DRIVER_URI_USERNAME     |                                  |                |
+| JDBC_DRIVER_URI_PASSWORD     |                                  |                |
+
+
+**Global database variables**
+
+|  Name                        | Purpose                          | Default        |
+| ---------------------------- | -------------------------------- | -------------- |
+| DB_USERNAME                  |                                  | postgres       |
+| DB_PASSWORD | | postgres |
+| DB_HOST | | localhost |
+| DB_PORT | | 5432 |
+| DB_NAME | | postgres |
+
+**JDBC connection string**
+
+|  Name                        | Purpose                          | Default        |
+| ---------------------------- | -------------------------------- | -------------- |
+| JDBC_CLASS | | org.postgresql.Driver |
+| JDBC_DB_TYPE | | postgresql  |
+| JDBC_URL_PREFIX | | //  |
+| JDBC_URL_SUFFIX | |  |
+| JDBC_MIN_ACTIVE | | 50  |
+| JDBC_MAX_ACTIVE | | 250 |
+| JDBC_MIN_IDLE | | 10 |
+| JDBC_MAX_IDLE | | 50 |
+| JDBC_MAX_WAIT | | 30000 |
+| JDBC_INITIAL_SIZE | | 50 |
+| JDBC_VALIDATION_QUERY | | SELECT 1 |
+
+**Rule & data schema**
+
+|  Name                        | Purpose                          | Default        |
+| ---------------------------- | -------------------------------- | -------------- |
+| RULES_SCHEMA | | rules |
+| DATA_SCHEMA | | data |
+
+
+**Customize the tomcat runtime**
+
+|  Name                        | Purpose                          | Default        |
+| ---------------------------- | -------------------------------- | -------------- |
+| MAX_THREADS | | 300 |
+| JAVA_OPTS | | |
+| INITIAL_HEAP | | 2048m |
+| MAX_HEAP | | 4096m |
+| INDEX_DIRECTORY | | NONE |
+| HEAP_DUMP_PATH | | /heapdumps |
+| NODE_ID | | "NONE" |
+| CONFIG_DIRECTORY | | /config |
+
+**Remote JMX support**
+
+|  Name                        | Purpose                          | Default        |
+| ---------------------------- | -------------------------------- | -------------- |
+| JMX_PORT | | 9001 |
+| JMX_SERVER_HOSTNAME | | 127.0.0.1 |
+
+**DDS/Cassandra settings**
+
+|  Name                        | Purpose                          | Default        |
+| ---------------------------- | -------------------------------- | -------------- |
+| CASSANDRA_CLUSTER | whether to enable external cassandra | false |
+| CASSANDRA_NODES | comma separated list of nodes (e.g. `10.20.205.26,10.20.205.233`) | |
+| CASSANDRA_PORT | cql port | 9042 |
+| CASSANDRA_USERNAME | username | dnode_ext |
+| CASSANDRA_PASSWORD | password | dnode_ext |
+

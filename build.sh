@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t pegasystems/pega7-tomcat-ready .
+docker build -t pegasystems/docker-pega-web-ready .
