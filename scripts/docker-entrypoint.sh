@@ -90,7 +90,7 @@ shopt -s nocasematch
 if [ "${NODE_TYPE}" = "Foreground" ]; then
   export NODE_TYPE="WebUser"
 elif [ "${NODE_TYPE}" = "Background" ]; then
-  export NODE_TYPE="BackgroundProcessing,Search,ADM,Batch,RealTime,RTDG,Custom1,Custom2,Custom3,Custom4,Custom5,BIX"
+  export NODE_TYPE="BackgroundProcessing,Search,Batch,RealTime,Custom1,Custom2,Custom3,Custom4,Custom5,BIX"
 elif [ "${NODE_TYPE}" = "Stream" ]; then
   export NODE_TYPE="Stream"
 fi
