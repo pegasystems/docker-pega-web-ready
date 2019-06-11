@@ -50,12 +50,6 @@ You can make adjustments by overriding environmental variables
 $ docker run -e "DB_HOST=55.55.55.1" -e "DB_PORT=1234" <image name>[:tags]
 ```
 
-You can provide a directory containing a `prconfig.xml` and `prlog4j2.xml` file like so:
-
-```bash
-$ docker run -v /some/local/directory:/config <image name>:<build#>
-```
-
 Kafka data is saved to `/kafkadata` in the docker container. To persist the data, create a volume and mount it
 
 ## Environmental variables
