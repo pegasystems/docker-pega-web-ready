@@ -31,21 +31,7 @@ and that you can view using the `docker images` command.
 
 ## Running the image
 
-The built image requires connectivity to a database that must be available and seeded with the appropriate rule base via the Pega standard installation utility.
-
-    docker run -d -P --name pega -e DB_HOST=<host> ... pega-tomcat
-
-In the above command, the `-d`flag  tells Docker to run this program as a daemon process in 
- the background.  The `-P` flag tells Docker to expose all ports in the image to dynamically
- selected ports on the host machine.  The `-e` flag is a declaration of an environment
- variable.  See the [Dockerfile](Dockerfile) for the list of exposed variables.
-
-## Accessing Pega
-
-Once the image is running, you can connect to the Pega 7 web application via the exposed bound
-port.  To find this port (assuming you had them dynamically assigned as above), you can run 
-the `docker ps` command to print out the port bindings.  Look for the 8080 port and connect to
-it from your web browser at `http://host:port/prweb`.
+When running Pega using containers, an orchestration tool is required.  Pega provides support for deployments on Kubernetes using either Helm charts or direct yaml files.  Source code for the deployment scripts may be found in the [pega-helm-charts](https://github.com/pegasystems/pega-helm-charts) repository and more information about Pega on client managed cloud may be found on the [Cloud Choice](https://community.pega.com/knowledgebase/articles/cloud-choice) community site.
 
 ## Image Customizations
 
