@@ -3,6 +3,9 @@ Pega Docker Image
 
 This project produces a base Docker image that can be used to create a complete Docker image for running Pega applications using containers.  The Pega .war file is not included in this build.
 
+[![Build Status](https://travis-ci.org/pegasystems/docker-pega-web-ready.svg?branch=master)](https://travis-ci.org/pegasystems/docker-pega-web-ready)
+
+
 # Using this image
 
 You cannot run the image directly because it does not come with the Pega web application (.war file).  Therefore you must use this image as a base to construct an executable Docker image.
