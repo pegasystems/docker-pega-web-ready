@@ -31,7 +31,6 @@ mkdir -p $secret_root
 
 context_xml="${config_root}/context.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
-prweb_war="${CATALINA_HOME}/webapps/prweb.war"
 
 db_username_file="${secret_root}/DB_USERNAME"
 db_password_file="${secret_root}/DB_PASSWORD"
@@ -58,7 +57,7 @@ if [ "$JDBC_DRIVER_URI" != "" ]; then
     do
      echo "Downloading database driver: ${url}";
      filename=$(basename $url)
-     if curl --output /dev/null --silent --head --fail $url
+     if curl -ksSL --output /dev/null --silent --head --fail $url
      then
        curl -ksSL -o ${lib_root}/$filename ${url}
      else
