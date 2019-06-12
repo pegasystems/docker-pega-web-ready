@@ -1,4 +1,4 @@
-Pega Docker Image
+Building a Pega Docker Image
 ===========
 
 This project produces a base Docker image that can be used to create a complete Docker image for running Pega applications using containers.  The Pega .war file is not included in this build.
