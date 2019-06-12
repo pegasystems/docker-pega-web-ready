@@ -13,6 +13,8 @@ install:
 script:
   - docker run -d -p 80:80 --name pega-ready pegasystems/pega-ready
   - docker ps
+  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+  - make push
 
 before_deploy:
   - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
