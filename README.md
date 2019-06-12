@@ -1,10 +1,12 @@
-# Pega 7 Tomcat Docker container
+# Pega 7 Tomcat Docker container - Deprecated
+
+The Pega 7 Tomcat Docker container project is deprecated and no longer supported.  Please see the [latest image](https://github.com/pegasystems/docker-pega-web-ready) for support of Pega 8.2+.
 
 This project produces a Docker image that you can use as a base image to create a complete Docker image for running Pega 7.  
 
 This image is based on Tomcat 7 which is based on OpenJDK's Java 8 image. 
 
-Supported features:
+Features:
 
 * PR Web application container configuration (port 8080)
 * PR System Management application container configuration (port 8090)
