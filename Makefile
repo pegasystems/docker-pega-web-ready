@@ -12,3 +12,4 @@ image:
 
 push: image
 	docker push $(PREFIX)/$(REPO_NAME) 
+echo: echo 'This is from Makefile'
