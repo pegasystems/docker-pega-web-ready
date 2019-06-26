@@ -12,4 +12,3 @@ image:
 
 push: image
 	docker push $(PREFIX)/$(REPO_NAME) 
-list: docker images
