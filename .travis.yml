@@ -11,7 +11,7 @@ install:
   - docker images
   
 script:
-  - docker run -d -p 8080:8080 --name pega-ready pegasystems/pega-ready
+  - docker images
   - docker ps
   - bash scripts/setup.sh
 
