@@ -3,14 +3,9 @@
 set -e
 
 
-git config --get remote.origin.url | tr ':.' '/'  | rev | cut -d '/' -f 3 | rev
 
-git config --get remote.origin.url
-
-git remote show origin
-
-echo 'First arg $1'
-echo 'Second arg $2'
+echo $1
+echo $2
 
 curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 
