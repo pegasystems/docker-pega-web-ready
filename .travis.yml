@@ -17,6 +17,4 @@ before_deploy:
 deploy:
   provider: script
   script: make push
-  on:
-    repo: scrumteamravens/pega-ready
-    branch: master
+
