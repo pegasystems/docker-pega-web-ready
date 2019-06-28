@@ -1,5 +1,5 @@
 TAG = "2.0.0"
-PREFIX = $(shell git config --get remote.origin.url | tr ':.' '/'  | rev | cut -d '/' -f 3 | rev)
+PREFIX = "scrumteamravens"
 REPO_NAME = "pega-ready"
 
 all: image
