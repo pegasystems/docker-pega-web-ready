@@ -15,7 +15,7 @@ install:
 script:
   - docker images
   - docker ps
-  - bash scripts/setup.sh env.PREFIX env.REPO_NAME
+  - bash scripts/setup.sh "scrumteamravens" "pega-ready"
 
 
 before_deploy:
@@ -25,5 +25,5 @@ deploy:
   provider: script
   script: make push
   on:
-    repo: pegasystems/docker-pega-web-ready
+    repo: scrumteamravens/pega-ready
     branch: master
