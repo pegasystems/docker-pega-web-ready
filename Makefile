@@ -1,5 +1,5 @@
 TAG = "2.0.0"
-PREFIX = "scrumteamravens"
+PREFIX = "scrumteamravens1"
 REPO_NAME = "pega-ready"
 
 all: image

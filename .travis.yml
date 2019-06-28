@@ -8,7 +8,7 @@ install:
 script:
   - docker images
   - docker ps
-  - bash scripts/setup.sh "scrumteamravens" "pega-ready"
+  - bash scripts/setup.sh "scrumteamravens1" "pega-ready"
 
 
 before_deploy:
