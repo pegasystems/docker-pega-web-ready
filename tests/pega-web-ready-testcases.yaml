@@ -1,0 +1,790 @@
+
+schemaVersion: "2.0.0"
+
+# Verify metadata of the docker file
+
+metadataTest:
+  env:
+   - key: CATALINA_HOME
+     value: /usr/local/tomcat
+   - key: PATH
+     value: /usr/local/tomcat/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+   - key: JDBC_MIN_ACTIVE
+     value: 50
+   - key: JDBC_MAX_ACTIVE
+     value: 250
+   - key: JDBC_MIN_IDLE
+     value: 10
+   - key: JDBC_MAX_IDLE
+     value: 50
+   - key: JDBC_MAX_WAIT
+     value: 30000
+   - key: JDBC_INITIAL_SIZE
+     value: 50
+   - key: JDBC_CONNECTION_PROPERTIES
+     value: "socketTimeout=90"               
+  exposedPorts: ["8080", "9001", "47100", "7003"]  
+  # Add 5701-5710 ports                      
+  entrypoint: [/scripts/docker-entrypoint.sh]
+  cmd: ["run"] 
+
+# Verify all directories/files/folders to be present
+
+fileExistenceTests:
+- name: 'Root'
+  path: '/'
+  shouldExist: true
+  isExecutableBy: 'group'
+
+- name: 'tomcat path'
+  path: '/usr/local/tomcat/'
+  shouldExist: true
+  permissions: 'drwxr-xr-x'
+
+- name: 'Incorrect path'
+  path: '/usr/local/tomcat/test'
+  shouldExist: false
+  permissions: 'dgrwxr-xr-x'
+
+- name: 'catalina file path'
+  path: '/usr/local/tomcat/bin/catalina.sh'
+  shouldExist: true
+  permissions: '-rwxr-xr-x'
+
+- name: 'Heap Dumps File Path'
+  path: '/heapdumps'
+  shouldExist: true
+  permissions: 'drwxrwx---'
+
+- name: 'opt/pega File Path'
+  path: '/opt/pega'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+
+- name: 'Filerepo File Path'
+  path: '/opt/pega/filerepo'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+
+- name: 'Config File Path'
+  path: '/opt/pega/config'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+
+- name: 'LIB File Path'
+  path: '/opt/pega/lib'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+
+- name: 'Secrets File Path'
+  path: '/opt/pega/secrets'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+
+- name: 'StreamVolume File Path'
+  path: '/opt/pega/secrets'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+
+- name: 'Kafka File Path'
+  path: '/opt/pega/kafkadata'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+
+- name: 'prweb file path check'
+  path: '/usr/local/tomcat/webapps/prweb/WEB-INF/classes'
+  shouldExist: true
+  permissions: 'drwxr-xr-x'  
+
+ # Simulate the functional use case for testing
+
+commandTests:
+# Check with the default tomcat catalina  
+  - name: "catalina check"
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&& 
+        sleep 15s &&
+        curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080"
+    exitCode: 0
+    expectedOutput: ["200"]
+# Verify Java install    
+  - name: "Java version check"
+    command: "which"
+    args: ["java"]
+    expectedOutput: ["/opt/java/openjdk/bin/java"]
+#Verify JAVA_HOME environment variable    
+  - name: "JAVA_HOME check"
+    command: "echo"
+    args: ["$JAVA_HOME"]
+    expectedOutput: ["/opt/java/openjdk"]
+# Verify Java Version    
+  - name: "JAVA VERSION check"
+    command: "bash"
+    args:
+    - -c
+    - |
+        java -version  2>&1 | grep "OpenJDK 64-Bit Server VM AdoptOpenJDK"
+    expectedOutput: [".*OpenJDK 64-Bit Server VM AdoptOpenJDK.*"] 
+# Verify Cataline_home variable       
+  - name: "Catalina Home check"
+    command: "echo"
+    args: ["$CATALINA_HOME"]
+    expectedOutput: ["/usr/local/tomcat"]
+# Verify Nodetype initialization    
+  - name: "NodeType initialization check"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["WebUser,BackgroundProcessing,Search,Stream"]
+# Verify NodeType as Foreground    
+  - name: "Foreground NodeType check"
+    envVars:
+    - key: "NODE_TYPE"
+      value: "Foreground"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'      
+    expectedOutput: ["WebUser"]
+# Verify NodeType as Background     
+  - name: "Background NodeType check"
+    envVars:
+    - key: "NODE_TYPE"
+      value: "Background"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"       
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'      
+    expectedOutput: ["BackgroundProcessing,Search,Batch,RealTime,Custom1,Custom2,Custom3,Custom4,Custom5,BIX"]
+# Verify NodeType as Stream      
+  - name: "Stream NodeType check"
+    envVars:
+    - key: "NODE_TYPE"
+      value: "Stream"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'       
+    expectedOutput: ["Stream"] 
+# Verify empty JDBC_URL         
+  - name: "JDBC_URL check"     
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 1       
+    expectedOutput: ["JDBC_URL must be specified"]
+# Verify empty JDBC_CLASS     
+  - name: "JDBC_CLASS check"     
+    envVars:      
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 1       
+    expectedOutput: ["JDBC_CLASS must be specified"]
+# Verify JDBC_DRIVER_URI download   
+  - name: "JDBC_DRIVER_URI Download check"
+    envVars:
+    - key: "JDBC_DRIVER_URI"
+      value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"          
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh'       
+    expectedOutput: ["Downloading database driver:"]
+# Verify JDBC_DRIVER_URI download for failure case   
+  - name: "JDBC_DRIVER_URI Download Failure check"
+    envVars:
+    - key: "JDBC_DRIVER_URI"
+      value: "https://jdbc.postgresql.org/downloadd/postgressql-42.2.0.jar"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"          
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 1    
+    expectedOutput: ["Could not download jar from "]
+    expectedError: ["The requested URL returned error"]
+# Verify Downloaded jar in opt/pega/lib   
+  - name: "JDBC_DRIVER jar check in opt/pega/lib"
+    envVars:
+    - key: "JDBC_DRIVER_URI"
+      value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"          
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh' &&
+        [ -f /opt/pega/lib/postgresql-42.2.0.jar ]    
+    exitCode: 0    
+# Verify Downloaded jar in tomcat lib   
+  - name: "JDBC_DRIVER jar check in Tomcat lib"
+    envVars:
+    - key: "JDBC_DRIVER_URI"
+      value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"          
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh' &&
+        [ -f /usr/local/tomcat/lib/postgresql-42.2.0.jar ]    
+    exitCode: 0 
+
+# Verify Empty Value for Index_Directory   
+  - name: "INDEX_DIRECTORY empty check"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "INDEX_DIRECTORY"
+      value: "NONE"
+
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    expectedOutput: ["Index Directory Value - "]
+
+# Unsupported Node Type check   
+  - name: "INDEX_DIRECTORY empty check"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "NODE_TYPE"
+      value: "DDS, Universal"
+
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 1
+    expectedOutput: ["IS NOT SUPPORTED BY THIS IMAGE."]
+
+# Stream Node Check   
+  - name: "Stream Node Check"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "NODE_TYPE"
+      value: "Stream"
+
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        bash -c './scripts/docker-entrypoint.sh run'
+    expectedOutput: ["IsStreamNode - true"]    
+
+# Search Index Directory Check   
+  - name: "Search Index Directory Check"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "NODE_TYPE"
+      value: "Search"
+
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        bash -c './scripts/docker-entrypoint.sh run'
+    expectedOutput: ["Index Directory for Search - /search_index"]
+
+# Cassandra Username as file input   
+  - name: "Cassandra Username as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/CASSANDRA_USERNAME /opt/pega/secrets/CASSANDRA_USERNAME &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Cassandra Username is - cassandra_user"]
+
+# Cassandra Password as file input   
+  - name: "Cassandra Password as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        mv tests/test-artifacts/CASSANDRA_PASSWORD /opt/pega/secrets/CASSANDRA_PASSWORD &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Cassandra Password is - cassandra_pass"] 
+
+# Database Username as file input   
+  - name: "Database Username as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        mv tests/test-artifacts/DB_USERNAME /opt/pega/secrets/DB_USERNAME &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Database Username is - postgres"]
+
+# Database Password as file input   
+  - name: "Database Password as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        mv tests/test-artifacts/DB_PASSWORD /opt/pega/secrets/DB_PASSWORD &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Database Password is - postgres"]
+
+# Cassandra Username as Environment Variable   
+  - name: "Cassandra Username as Environment Variable"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"      
+    - key: "CASSANDRA_USERNAME"
+      value: "cassandra_username"
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Cassandra Username is - cassandra_username"]
+
+# Cassandra Password as Environment Variable   
+  - name: "Cassandra Password as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"      
+    - key: "CASSANDRA_PASSWORD"
+      value: "cassandra_password"
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Cassandra Password is - cassandra_password"] 
+
+# Database Username as Environment variable   
+  - name: "Database Username as Environment variable"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Database Username is - postgres_user"]
+
+# Database Password as Environment variable   
+  - name: "Database Password as Environment variable"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"      
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Database Password is - postgres_pass"]
+   
+# Pega Diagnostic User as Environment variable   
+  - name: "Pega Diagnostic User as Environment variable"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"                 
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Pega Diagnostic User is - tomcat_user"]
+
+# Pega Diagnostic Password as Environment variable   
+  - name: "Pega Diagnostic Password as Environment variable"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver" 
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"                
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Pega Diagnostic Password is - tomcat_pass"] 
+
+# Pega Diagnostic User as File   
+  - name: "Pega Diagnostic Username as File"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"     
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/PEGA_DIAGNOSTIC_USER /opt/pega/secrets/PEGA_DIAGNOSTIC_USER &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Pega Diagnostic User is - tomcat_user_file"]
+
+# Pega Diagnostic Password as File   
+  - name: "Pega Diagnostic Password as File "
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver" 
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"                
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/PEGA_DIAGNOSTIC_PASSWORD /opt/pega/secrets/PEGA_DIAGNOSTIC_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Pega Diagnostic Password is - tomcat_pass_file"]      
+# Dockerize context xml   
+  - name: "Dockerize context.xml tmpl file"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "RULES_SCHEMA"
+      value: "rules"
+    - key: "DATA_SCHEMA"
+      value: "data"          
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/templates/context.xml.tmpl /opt/pega/config/context.xml.tmpl &&
+        bash -c './scripts/docker-entrypoint.sh' &&
+        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml > /tests/test-artifacts/templates/diffCheck.txt && 
+        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt] && echo "context.xml is not properly dockerized" || echo "context.xml is properly dockerized"
+
+    exitCode: 0
+    expectedOutput: ["context.xml is properly dockerized"]
+# Dockerize tomcat users xml   
+  - name: "Dockerize tomcat users tmpl file"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "RULES_SCHEMA"
+      value: "rules"
+    - key: "DATA_SCHEMA"
+      value: "data"          
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/templates/tomcat-users.xml.tmpl /opt/pega/config/tomcat-users.xml.tmpl &&
+        bash -c './scripts/docker-entrypoint.sh' &&
+        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml > /tests/test-artifacts/templates/diffCheck.txt && 
+        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt] && echo "tomcat-users.xml is not properly dockerized" || echo "tomcat-users.xml is properly dockerized"
+
+    exitCode: 0
+    expectedOutput: ["tomcat-users.xml is properly dockerized",""]
+# Dockerize prweb.xml check
+  - name: "Dockerize PRWEB Check"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "PEGA_SEARCH_URL"
+      value: "http://pega-search"               
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh' &&        
+        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml > /tests/test-artifacts/diffCheck.txt && 
+        cat /tests/test-artifacts/diffCheck.txt && [ -s /tests/test-artifacts/diffCheck.txt] && echo "prweb.xml is not dockerized properly" || echo "prweb.xml is dockerized properly"  
+    exitCode: 0
+    expectedOutput: ["prweb.xml is dockerized properly"]
+# Verify the run argument for catalina.sh   
+  - name: "Verify run argument for catalina.sh"
+    envVars:
+    - key: "JDBC_DRIVER_URI"
+      value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"               
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run' 
+    exitCode: 0
+    expectedOutput: ["Starting -- Catalina.sh"]
+# Verify test case for mounted context.xml    
+  - name: "Mounted context.xml"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "RULES_SCHEMA"
+      value: "rules"
+    - key: "DATA_SCHEMA"
+      value: "data"          
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/context.xml /opt/pega/config/context.xml &&
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 0
+    expectedOutput: ["Loading context.xml from /opt/pega/config/context.xml"]
+# Verify test case for mounted tomcat-users.xml 
+  - name: "Mounted tomcat-users.xml"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "RULES_SCHEMA"
+      value: "rules"
+    - key: "DATA_SCHEMA"
+      value: "data"          
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/tomcat-users.xml /opt/pega/config/tomcat-users.xml &&
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 0
+    expectedOutput: ["Loading tomcat-users.xml from /opt/pega/config/tomcat-users.xml"]     
