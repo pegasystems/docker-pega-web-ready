@@ -8,7 +8,7 @@ install:
 script:
   - docker images
   - docker ps
-  - bash tests/pega-web-ready-testcases.yaml "$DOCKER_USER" "$REPO_NAME"
+  - bash tests/setup.sh "$DOCKER_USER" "$REPO_NAME"
 
 
 before_deploy:
