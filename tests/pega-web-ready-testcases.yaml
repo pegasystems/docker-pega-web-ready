@@ -89,12 +89,7 @@ fileExistenceTests:
 - name: 'Kafka File Path'
   path: '/opt/pega/kafkadata'
   shouldExist: true
-  permissions: 'drwxrwxr-x'
-
-- name: 'prweb file path check'
-  path: '/usr/local/tomcat/webapps/prweb/WEB-INF/classes'
-  shouldExist: true
-  permissions: 'drwxr-xr-x'  
+  permissions: 'drwxrwxr-x' 
 
  # Simulate the functional use case for testing
 

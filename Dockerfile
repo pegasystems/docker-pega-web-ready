@@ -1,7 +1,7 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-FROM arvasrikanth/tomcatprivate as release
+FROM arvasrikanth/tomcatprivate:latest as release
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
@@ -136,9 +136,5 @@ FROM release as testimage
 RUN mkdir /tests
 RUN chmod 777 /tests
 COPY /tests /tests
-COPY /tests/test-artifacts/prweb.war /usr/local/tomcat/webapps/prweb.war
-RUN apt-get update
-RUN apt-get install -y unzip
-RUN unzip -q -o -d /usr/local/tomcat/webapps/prweb /usr/local/tomcat/webapps/prweb.war
 
 FROM release
