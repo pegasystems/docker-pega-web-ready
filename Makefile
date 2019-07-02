@@ -1,4 +1,4 @@
-TAG = "2.0.0"
+TAG = "latest"
 PREFIX = "arvasrikanth"
 REPO_NAME = "docker-pega-web-ready"
 
