@@ -1,6 +1,6 @@
 TAG = "2.0.0"
-PREFIX = "scrumteamravens"
-REPO_NAME = "pega-ready"
+PREFIX = "arvasrikanth"
+REPO_NAME = "docker-pega-web-ready"
 
 all: image
 
