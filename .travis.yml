@@ -21,7 +21,7 @@ script:
   - container-structure-test test --image $DOCKER_USER/$REPO_NAME:testimage --config tests/pega-web-ready-testcases.yaml
   - docker run -d --name db arminc/clair-db
   - docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.3
-  - clair-scanner -w cve-scan-whitelist.yaml -c "http://127.0.0.1:6060" --ip "$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" $DOCKER_USER/$REPO_NAME:latest
+  - clair-scanner -c "http://127.0.0.1:6060" --ip "$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" $DOCKER_USER/$REPO_NAME:latest
 
 
 
