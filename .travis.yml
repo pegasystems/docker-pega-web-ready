@@ -4,11 +4,25 @@ services:
 install:
   - make image
   - docker images
-  
+  - curl -L https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64 > clair-scanner
+  - chmod +x clair-scanner
+  - sudo mv clair-scanner /usr/local/bin
+
+before_script:
+  # Disable services enabled by default
+  # http://docs.travis-ci.com/user/database-setup/#MySQL
+  - sudo /etc/init.d/mysql stop
+  - sudo /etc/init.d/postgresql stop
+ 
 script:
   - docker images
   - docker ps
-  - bash tests/setup.sh "$DOCKER_USER" "$REPO_NAME"
+  - curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+  - container-structure-test test --image $DOCKER_USER/$REPO_NAME:testimage --config tests/pega-web-ready-testcases.yaml
+  - docker run -d --name db arminc/clair-db
+  - docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.3
+  - clair-scanner -w cve-scan-whitelist.yaml -c "http://127.0.0.1:6060" --ip "$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" $DOCKER_USER/$REPO_NAME:latest
+
 
 
 before_deploy:
