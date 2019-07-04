@@ -132,7 +132,7 @@ EXPOSE 8080 9001 5701-5710 47100 7003
 
 # *****Target for test environment*****
 
-FROM release as testimage
+FROM release as qualitytest
 RUN mkdir /tests
 RUN chmod 777 /tests
 COPY /tests /tests
