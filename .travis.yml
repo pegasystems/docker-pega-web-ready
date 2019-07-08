@@ -12,8 +12,8 @@ script:
   - docker images
   - docker ps
   - curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
-  - container-structure-test test --image $PREFIX/$REPO_NAME:qualitytest --config tests/pega-web-ready-testcases.yaml
-  - container-structure-test test --image $PREFIX/$REPO_NAME --config tests/pega-web-ready-release-testcases.yaml
+  - container-structure-test test --image $DOCKER_USER/$REPO_NAME:qualitytest --config tests/pega-web-ready-testcases.yaml
+  - container-structure-test test --image $DOCKER_USER/$REPO_NAME --config tests/pega-web-ready-release-testcases.yaml
   - docker run -d --name db arminc/clair-db
   - docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:latest
   - clair-scanner -w tests/approved-cve-list.yaml -c "http://127.0.0.1:6060" --ip "$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" $DOCKER_USER/$REPO_NAME:latest
