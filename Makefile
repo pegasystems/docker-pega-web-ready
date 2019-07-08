@@ -1,6 +1,6 @@
 TAG = "qualitytest"
-PREFIX = "arvasrikanth"
-REPO_NAME = "docker-pega-web-ready"
+PREFIX = "pegasystems"
+REPO_NAME = "pega-ready"
 
 all: image
 

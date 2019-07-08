@@ -1,7 +1,7 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-FROM arvasrikanth/tomcatprivate:latest as release
+FROM pegasystems/tomcat as release
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
