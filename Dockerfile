@@ -1,7 +1,7 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-FROM pegasystems/tomcat as release
+FROM pegasystems/tomcat:9-jdk11 as release
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
