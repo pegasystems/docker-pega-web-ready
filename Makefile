@@ -12,4 +12,4 @@ image:
 	docker build -t $(PREFIX)/$(REPO_NAME) . # Build image and automatically tag it as latest
 
 push: image
-	docker push $(PREFIX)/$(REPO_NAME):latest 
+	docker push $(PREFIX)/$(REPO_NAME) 
