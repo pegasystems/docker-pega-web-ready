@@ -1,5 +1,5 @@
 TAG = "qualitytest"
-PREFIX = "pegasystems"
+PREFIX = $(shell git config --get remote.origin.url | tr ':.' '/'  | rev | cut -d '/' -f 3 | rev)
 REPO_NAME = "pega-ready"
 
 all: image
