@@ -29,4 +29,6 @@ before_deploy:
 deploy:
   provider: script
   script: make push
-
+  on:
+    repo: pegasystems/docker-pega-web-ready
+    branch: master
