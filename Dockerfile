@@ -1,7 +1,7 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-FROM tomcat:9-jre11
+FROM pegasystems/tomcat as release
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
@@ -129,3 +129,12 @@ CMD ["run"]
 
 # HTTP is 8080, JMX is 9001, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
 EXPOSE 8080 9001 5701-5710 47100 7003
+
+# *****Target for test environment*****
+
+FROM release as qualitytest
+RUN mkdir /tests
+RUN chmod 777 /tests
+COPY /tests /tests
+
+FROM release
