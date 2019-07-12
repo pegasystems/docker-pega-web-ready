@@ -10,7 +10,7 @@
 		type="javax.sql.DataSource"
 		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
 		driverClassName="org.postgresql.Driver"
-		url="jdbc:postgresql://10.224.212.95:5433/83"
+		url="jdbc:postgresql://localhost:5432/pegadb"
 		username="postgres"
 		password="postgres"
 		minActive="50"
@@ -25,7 +25,9 @@
   <Environment name="url/initialization/explicittempdir" value="path" type="java.lang.String"/>
   <Environment name="prconfig/database/databases/PegaRULES/defaultSchema" value="rules" type="java.lang.String" />
   <Environment name="prconfig/database/databases/PegaDATA/defaultSchema"  value="data"  type="java.lang.String" />
+  
   <Environment name="prconfig/database/databases/CustomerData/defaultSchema" value="data" type="java.lang.String" />
+  
   <Environment name="prconfig/database/drivers" value="com.microsoft.sqlserver.jdbc.SQLServerDriver;oracle.jdbc.OracleDriver;org.postgresql.Driver;com.ibm.db2.jcc.DB2Driver" type="java.lang.String" />
 </Context>   
 

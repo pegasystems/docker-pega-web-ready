@@ -100,7 +100,8 @@ commandTests:
     args:
     - -c
     - |
-        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&& 
+        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
         sleep 15s &&
         curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080"
     exitCode: 0
@@ -416,7 +417,7 @@ commandTests:
         mv tests/test-artifacts/CASSANDRA_USERNAME /opt/pega/secrets/CASSANDRA_USERNAME &&
         bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
-    expectedOutput: ["Cassandra Username is - cassandra_user"]
+    expectedOutput: ["Cassandra Username is - cassandra_username_from_file"]
 
 # Cassandra Password as file input   
   - name: "Cassandra Password as file input"
@@ -437,7 +438,7 @@ commandTests:
         mv tests/test-artifacts/CASSANDRA_PASSWORD /opt/pega/secrets/CASSANDRA_PASSWORD &&
         bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
-    expectedOutput: ["Cassandra Password is - cassandra_pass"] 
+    expectedOutput: ["Cassandra Password is - cassandra_password_from_file"] 
 
 # Database Username as file input   
   - name: "Database Username as file input"
@@ -456,7 +457,7 @@ commandTests:
         mv tests/test-artifacts/DB_USERNAME /opt/pega/secrets/DB_USERNAME &&
         bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
-    expectedOutput: ["Database Username is - postgres"]
+    expectedOutput: ["Database Username is - db_username_from_file"]
 
 # Database Password as file input   
   - name: "Database Password as file input"
@@ -475,7 +476,7 @@ commandTests:
         mv tests/test-artifacts/DB_PASSWORD /opt/pega/secrets/DB_PASSWORD &&
         bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
-    expectedOutput: ["Database Password is - postgres"]
+    expectedOutput: ["Database Password is - db_password_from_file"]
 
 # Cassandra Username as Environment Variable   
   - name: "Cassandra Username as Environment Variable"
@@ -664,7 +665,7 @@ commandTests:
         mv /tests/test-artifacts/templates/context.xml.tmpl /opt/pega/config/context.xml.tmpl &&
         bash -c './scripts/docker-entrypoint.sh' &&
         diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml > /tests/test-artifacts/templates/diffCheck.txt && 
-        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt] && echo "context.xml is not properly dockerized" || echo "context.xml is properly dockerized"
+        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt ] && echo "context.xml is not properly dockerized" || echo "context.xml is properly dockerized"
 
     exitCode: 0
     expectedOutput: ["context.xml is properly dockerized"]
@@ -690,7 +691,7 @@ commandTests:
         mv /tests/test-artifacts/templates/tomcat-users.xml.tmpl /opt/pega/config/tomcat-users.xml.tmpl &&
         bash -c './scripts/docker-entrypoint.sh' &&
         diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml > /tests/test-artifacts/templates/diffCheck.txt && 
-        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt] && echo "tomcat-users.xml is not properly dockerized" || echo "tomcat-users.xml is properly dockerized"
+        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt ] && echo "tomcat-users.xml is not properly dockerized" || echo "tomcat-users.xml is properly dockerized"
 
     exitCode: 0
     expectedOutput: ["tomcat-users.xml is properly dockerized",""]
@@ -713,7 +714,7 @@ commandTests:
     - |
         bash -c './scripts/docker-entrypoint.sh' &&        
         diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml > /tests/test-artifacts/diffCheck.txt && 
-        cat /tests/test-artifacts/diffCheck.txt && [ -s /tests/test-artifacts/diffCheck.txt] && echo "prweb.xml is not dockerized properly" || echo "prweb.xml is dockerized properly"  
+        cat /tests/test-artifacts/diffCheck.txt && [ -s /tests/test-artifacts/diffCheck.txt ] && echo "prweb.xml is not dockerized properly" || echo "prweb.xml is dockerized properly"  
     exitCode: 0
     expectedOutput: ["prweb.xml is dockerized properly"]
 # Verify the run argument for catalina.sh   
