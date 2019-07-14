@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+  <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="http://pega-search" type="java.lang.String"/>
+  <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata" type="java.lang.String" />
+</Context>
