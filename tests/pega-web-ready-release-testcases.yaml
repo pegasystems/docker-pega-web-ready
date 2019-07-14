@@ -1,0 +1,9 @@
+schemaVersion: "2.0.0"
+
+# Verify metadata of the docker file
+fileExistenceTests:
+# Check for test folder in release image
+- name: 'test artifacts folder check'
+  path: '/tests'
+  shouldExist: false
+  permissions: 'drwxr-xr-x'

@@ -9,10 +9,17 @@ env:
 install:
   - make image
   - docker images
+  - curl -L https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64 > clair-scanner
+  - chmod +x clair-scanner
+  - sudo mv clair-scanner /usr/local/bin
   
 script:
-  - docker run -d -p 8080:8080 --name pega-ready pegasystems/pega-ready
-  - docker ps
+  - curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+  - container-structure-test test --image pegasystems/pega-ready:qualitytest --config tests/pega-web-ready-testcases.yaml
+  - container-structure-test test --image pegasystems/pega-ready --config tests/pega-web-ready-release-testcases.yaml
+  - docker run -d --name db arminc/clair-db
+  - docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:latest
+  - clair-scanner -w tests/cve-scan-whitelist.yaml -c "http://127.0.0.1:6060" --threshold="Medium" --ip "$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" pegasystems/pega-ready:latest
 
 before_deploy:
   - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
