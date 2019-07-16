@@ -15,4 +15,4 @@ test: image
 	container-structure-test test --image $(IMAGE_NAME) --config tests/pega-web-ready-release-testcases.yaml
 
 push: image
-	docker push $(IMAGE_NAME):latest
+	docker push $(IMAGE_NAME)
