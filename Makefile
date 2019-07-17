@@ -11,4 +11,4 @@ image:
 	docker tag $(PREFIX)/$(REPO_NAME) $(PREFIX)/$(REPO_NAME):$(TAG)  # Add the version tag to the latest image
 
 push: image
-	docker push $(PREFIX)/$(REPO_NAME) 
+	docker push $(PREFIX)/$(REPO_NAME):$(TAG)
