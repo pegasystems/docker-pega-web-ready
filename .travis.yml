@@ -30,3 +30,5 @@ deploy:
   script: make push
   on:
     repo: pegasystems/docker-pega-web-ready
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^(v.+|master)$
