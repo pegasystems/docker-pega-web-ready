@@ -30,4 +30,3 @@ deploy:
   script: make push
   on:
     repo: pegasystems/docker-pega-web-ready
-    branch: master
