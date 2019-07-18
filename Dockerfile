@@ -3,11 +3,13 @@
 # Base image to extend from
 FROM pegasystems/tomcat:9-jdk11 as release
 
+ARG VERSION
+
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
-      version="2.1.0"
+      version=${VERSION:-CUSTOM_BUILD}
 
-ENV PEGA_DOCKER_VERSION="2.1.0"
+ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
