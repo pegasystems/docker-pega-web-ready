@@ -14,13 +14,19 @@ You cannot run the image directly because it does not come with the Pega web app
 
 The simplest way to use this image is to create your own Dockerfile with contents similar to the example below and extract the Pega distribution to the same directory as the Dockerfile.  It's a best practice to build this image on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega Infinity software libraries and specify a valid JDBC driver for your target database.
 
-    FROM pegasystems/pega-ready
+    FROM pegasystems/pega-ready as release
+
+    FROM release as unzipprweb
+    RUN apt-get-update && \
+	apt-get install unzip
     
     # Expand prweb to target directory
     COPY archives/prweb.war ${CATALINA_HOME}/webapps/prweb.war
     RUN unzip -q -o -d ${CATALINA_HOME}/webapps/prweb ${CATALINA_HOME}/webapps/prweb.war && \
     rm -rf ${CATALINA_HOME}/webapps/prweb.war
 
+    FROM release
+    COPY --from=unzipprweb ${CATALINA_HOME}/webapps/prweb ${CATALINA_HOME}/webapps/prweb
     # Make jdbc driver available to tomcat applications
     COPY /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
 
@@ -28,6 +34,7 @@ Build the image using the following command:
 
     docker build -t pega-tomcat .
 
+Since this image uses a secure base image, it doesn't include all the packages in the environment. Therefore use multi-stage docker build to include only unzip package in the final image to reduce the risk of vulnerabilities. 
 Upon successful completion of the above command, you will have a Docker
 image that is registered in your local registry named pega-tomcat:latest
 and that you can view using the `docker images` command.
