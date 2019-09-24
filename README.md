@@ -53,15 +53,18 @@ This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has 
 
 ## Mount points
 
-Kafka data is saved to `/kafkadata` in the docker container. To persist the data, create a volume and mount it
+Mount points are used to link a directory within the Docker container to a durable location on a filesystem.  See Docker's [bind mounts](https://docs.docker.com/v17.09/engine/admin/volumes/bind-mounts/) documentation for more information.
+
+Mount point | Purpose
+--- | ---
+`/kafkadata` | Used to persist Kafka's data when running as a stream node.
+`/heapdumps` | Used as the default output directory when a heapdump is generated.
 
 ## Environment variables
 
-**Using environment variables**
-
 You can make adjustments by overriding environmental variables using the -e Docker flag.
 ```bash
-$ docker run -e "DB_HOST=55.55.55.1" -e "DB_PORT=1234" <image name>[:tags]
+$ docker run -e "var_1=foo" -e "var_2=bar" <image name>[:tags]
 ```
 
 **Database connection**
