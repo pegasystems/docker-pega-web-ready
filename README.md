@@ -71,13 +71,13 @@ $ docker run -e "var_1=foo" -e "var_2=bar" <image name>[:tags]
 
 |  Name                        | Purpose                          | Default        |
 | ---------------------------- | -------------------------------- | -------------- |
-| JDBC_DRIVER_URI              | Download (curl) the specified database driver.  If you do not specify a driver to download, you must embed the driver into your Docker image.  See *Constructing Your Image* for more information on baking a driver in. | *empty* |
+| JDBC_DRIVER_URI              | Download (curl) the specified database driver.  If you do not specify a driver to download, you must embed the driver into your Docker image.  See *Constructing Your Image* for more information on baking a driver in. | |
 | JDBC_URL | Specify the JDBC url to connect to your database. | |
-| JDBC_CLASS | Specify the JDBC driver class to use for your database. | org.postgresql.Driver |
+| JDBC_CLASS | Specify the JDBC driver class to use for your database. | `org.postgresql.Driver` |
 | DB_USERNAME | Specify the username to connect to your database. | |
 | DB_PASSWORD | Specify the password to connect to your database. | |
-| RULES_SCHEMA | Specify the rules schema for your database. | rules |
-| DATA_SCHEMA | Specify the data schema for your database. | data |
+| RULES_SCHEMA | Specify the rules schema for your database. | `rules` |
+| DATA_SCHEMA | Specify the data schema for your database. | `data` |
 | CUSTOMERDATA_SCHEMA | If configured, set the customerdata schema for your database. Defaults to value of dataSchema if not provided. | |
 
 **Advanced JDBC configuration**
@@ -96,12 +96,12 @@ $ docker run -e "var_1=foo" -e "var_2=bar" <image name>[:tags]
 
 |  Name                        | Purpose                          | Default        |
 | ---------------------------- | -------------------------------- | -------------- |
-| MAX_THREADS | The max number of active threads in this pool using Tomcat's `maxThreads` setting. | 300 |
+| MAX_THREADS | The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300` |
 | JAVA_OPTS | Specify any additional parameters that should be appended to the `java` command. | |
-| INITIAL_HEAP | Speficy the initial size (`Xms`) of the java heap. | 2048m |
-| MAX_HEAP | Speficy the maximum size (`Xmx`) of the java heap. | 4096m |
-| INDEX_DIRECTORY |                                  | NONE |
-| HEAP_DUMP_PATH | Specify a location for a heap dump using `XX:HeapDumpPath` | /heapdumps |
+| INITIAL_HEAP | Speficy the initial size (`Xms`) of the java heap. | `2048m` |
+| MAX_HEAP | Speficy the maximum size (`Xmx`) of the java heap. | `4096m` |
+| INDEX_DIRECTORY |                                  | `NONE` |
+| HEAP_DUMP_PATH | Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps` |
 | NODE_TYPE | Specify a node type or classification to specialize the processing within this container.  See [Node classification] on the Pega Community for more information. | |
 | NODE_SETTINGS                |                                  | |
 | PEGA_DIAGNOSTIC_USER | Set a Pega diagnostic username to download log files. | |
@@ -111,9 +111,9 @@ $ docker run -e "var_1=foo" -e "var_2=bar" <image name>[:tags]
 
 |  Name                        | Purpose                          | Default        |
 | ---------------------------- | -------------------------------- | -------------- |
-| CASSANDRA_CLUSTER            | Enable connection to an external Cassandra cluster | false |
+| CASSANDRA_CLUSTER            | Enable connection to an external Cassandra cluster | `false` |
 | CASSANDRA_NODES              | A comma separated list of C* nodes (e.g. `10.20.205.26,10.20.205.233`) | |
-| CASSANDRA_PORT               | C* port                          | 9042 |
+| CASSANDRA_PORT               | C* port                          | `9042` |
 | CASSANDRA_USERNAME           | C* username                      |  |
 | CASSANDRA_PASSWORD           | C* password                      |  |
 
