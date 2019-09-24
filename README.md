@@ -55,10 +55,10 @@ This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has 
 
 Mount points are used to link a directory within the Docker container to a durable location on a filesystem.  See Docker's [bind mounts](https://docs.docker.com/v17.09/engine/admin/volumes/bind-mounts/) documentation for more information.
 
-Mount point | Purpose
---- | ---
-`/kafkadata` | Used to persist Kafka's data when running as a stream node.
-`/heapdumps` | Used as the default output directory when a heapdump is generated.
+Mount point 	| Purpose
+--- 			| ---
+`/kafkadata` 	| Used to persist Kafka's data when running as a stream node.
+`/heapdumps` 	| Used as the default output directory when a heapdump is generated.
 
 ## Environment variables
 
@@ -67,55 +67,77 @@ You can make adjustments by overriding environmental variables using the -e Dock
 $ docker run -e "var_1=foo" -e "var_2=bar" <image name>[:tags]
 ```
 
-**Database connection**
+### Database connection
 
-|  Name                        | Purpose                          | Default        |
-| ---------------------------- | -------------------------------- | -------------- |
-| JDBC_DRIVER_URI              | Download (curl) the specified database driver.  If you do not specify a driver to download, you must embed the driver into your Docker image.  See *Constructing Your Image* for more information on baking a driver in. | |
-| JDBC_URL | Specify the JDBC url to connect to your database. | |
-| JDBC_CLASS | Specify the JDBC driver class to use for your database. | `org.postgresql.Driver` |
-| DB_USERNAME | Specify the username to connect to your database. | |
-| DB_PASSWORD | Specify the password to connect to your database. | |
-| RULES_SCHEMA | Specify the rules schema for your database. | `rules` |
-| DATA_SCHEMA | Specify the data schema for your database. | `data` |
-| CUSTOMERDATA_SCHEMA | If configured, set the customerdata schema for your database. Defaults to value of dataSchema if not provided. | |
+Name 				| Purpose 	| Default
+--- 				| --- 		| ---
+JDBC_DRIVER_URI 	| Download (curl) the specified database driver.  If you do not specify a driver to download, you must embed the driver into your Docker image.  See *Constructing Your Image* for more information on baking a driver in. |
+JDBC_URL 			| Specify the JDBC url to connect to your database. |
+JDBC_CLASS 			| Specify the JDBC driver class to use for your database. | `org.postgresql.Driver`
+DB_USERNAME 		| Specify the username to connect to your database. |
+DB_PASSWORD 		| Specify the password to connect to your database. |
+RULES_SCHEMA 		| Specify the rules schema for your database. | `rules`
+DATA_SCHEMA 		| Specify the data schema for your database. | `data`
+CUSTOMERDATA_SCHEMA | If configured, set the customerdata schema for your database. Defaults to value of dataSchema if not provided. |
 
-**Advanced JDBC configuration**
+### JDBC connection examples
 
-|  Name                        | Purpose                          | Default        |
-| ---------------------------- | -------------------------------- | -------------- |
-| JDBC_MIN_ACTIVE |  | `50`  |
-| JDBC_MAX_ACTIVE | The maximum number of active connections that can be allocated from this pool at the same time. | `250` |
-| JDBC_MIN_IDLE | The minimum number of established connections that should be kept in the pool at all times. | `10` |
-| JDBC_MAX_IDLE | The maximum number of connections that should be kept in the pool at all times. | `50` |
-| JDBC_MAX_WAIT | The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `30000` |
-| JDBC_INITIAL_SIZE | The initial number of connections that are created when the pool is started. | `50` |
-| JDBC_CONNECTION_PROPERTIES | The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | `socketTimeout=90` |
+#### PostgreSQL
+```bash
+JDBC_URL=jdbc:postgresql://YOUR_DB_HOST:5432/YOUR_DB_NAME
+JDBC_CLASS=org.postgresql.Driver
+```
 
-**Customize the tomcat runtime**
+#### Oracle
+```bash
+JDBC_URL=jdbc:oracle:thin:@//YOUR_DB_HOST:1521/YOUR_DB_NAME
+JDBC_CLASS=oracle.jdbc.OracleDriver
+```
 
-|  Name                        | Purpose                          | Default        |
-| ---------------------------- | -------------------------------- | -------------- |
-| MAX_THREADS | The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300` |
-| JAVA_OPTS | Specify any additional parameters that should be appended to the `java` command. | |
-| INITIAL_HEAP | Speficy the initial size (`Xms`) of the java heap. | `2048m` |
-| MAX_HEAP | Speficy the maximum size (`Xmx`) of the java heap. | `4096m` |
-| INDEX_DIRECTORY |                                  | `NONE` |
-| HEAP_DUMP_PATH | Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps` |
-| NODE_TYPE | Specify a node type or classification to specialize the processing within this container.  See [Node classification] on the Pega Community for more information. | |
-| NODE_SETTINGS                |                                  | |
-| PEGA_DIAGNOSTIC_USER | Set a Pega diagnostic username to download log files. | |
-| PEGA_DIAGNOSTIC_PASSWORD | Set a secure Pega diagnostic username to download log files. | |
+#### Microsoft SQL Server
+```bash
+JDBC_URL=jdbc:sqlserver://YOUR_DB_HOST:1433;databaseName=YOUR_DB_NAME;selectMethod=cursor;sendStringParametersAsUnicode=false
+JDBC_CLASS=com.microsoft.sqlserver.jdbc.SQLServerDriver
+```
 
-**Cassandra settings**
+For a complete list of supported relational databases, see the [Pega Platform Support Guide](https://community.pega.com/knowledgebase/documents/platform-support-guide). 
 
-|  Name                        | Purpose                          | Default        |
-| ---------------------------- | -------------------------------- | -------------- |
-| CASSANDRA_CLUSTER            | Enable connection to an external Cassandra cluster | `false` |
-| CASSANDRA_NODES              | A comma separated list of C* nodes (e.g. `10.20.205.26,10.20.205.233`) | |
-| CASSANDRA_PORT               | C* port                          | `9042` |
-| CASSANDRA_USERNAME           | C* username                      |  |
-| CASSANDRA_PASSWORD           | C* password                      |  |
+### Advanced JDBC configuration
+
+Name 						| Purpose 	| Default
+--- 						| --- 		| ---
+JDBC_MIN_ACTIVE 			|  			| `50`
+JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be allocated from this pool at the same time. | `250`
+JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `10`
+JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `50`
+JDBC_MAX_WAIT 				| The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `30000`
+JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `50`
+JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | `socketTimeout=90`
+
+### Customize the Tomcat runtime
+
+Name 						| Purpose 	| Default
+--- 						| --- 		| ---
+MAX_THREADS 				| The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300`
+JAVA_OPTS 					| Specify any additional parameters that should be appended to the `java` command. |
+INITIAL_HEAP 				| Speficy the initial size (`Xms`) of the java heap. | `2048m`
+MAX_HEAP 					| Speficy the maximum size (`Xmx`) of the java heap. | `4096m`
+INDEX_DIRECTORY 			|			| `NONE`
+HEAP_DUMP_PATH 				| Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps`
+NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  See [Node classification] on the Pega Community for more information. |
+NODE_SETTINGS 				|  			|
+PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
+PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
+
+### Cassandra settings
+
+Name 				| Purpose 		| Default
+--- 				| --- 			| ---
+CASSANDRA_CLUSTER	| Enable connection to an external Cassandra cluster | `false`
+CASSANDRA_NODES		| A comma separated list of C* nodes (e.g. `10.20.205.26,10.20.205.233`) |
+CASSANDRA_PORT		| C* port		| `9042`
+CASSANDRA_USERNAME	| C* username	|
+CASSANDRA_PASSWORD	| C* password	|
 
 
 [pegasystems/pega]: https://hub.docker.com/r/pegasystems/pega
