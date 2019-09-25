@@ -59,6 +59,7 @@ Mount point 	| Purpose
 --- 			| ---
 `/kafkadata` 	| Used to persist Kafka's data when running as a stream node.
 `/heapdumps` 	| Used as the default output directory when a heapdump is generated.
+`/search_index`	| Used to persist a search index when operating as a search node.
 
 ## Environment variables
 
@@ -102,11 +103,19 @@ JDBC_CLASS=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 For a complete list of supported relational databases, see the [Pega Platform Support Guide](https://community.pega.com/knowledgebase/documents/platform-support-guide). 
 
+### Pega customization
+
+Name 						| Purpose 	| Default
+--- 						| --- 		| ---
+NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  See [Node classification] on the Pega Community for more information. |
+NODE_SETTINGS				| \*\*REMOVE** |
+PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
+PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
+
 ### Advanced JDBC configuration
 
 Name 						| Purpose 	| Default
 --- 						| --- 		| ---
-JDBC_MIN_ACTIVE 			|  			| `50`
 JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be allocated from this pool at the same time. | `250`
 JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `10`
 JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `50`
@@ -122,12 +131,8 @@ MAX_THREADS 				| The max number of active threads in this pool using Tomcat's `
 JAVA_OPTS 					| Specify any additional parameters that should be appended to the `java` command. |
 INITIAL_HEAP 				| Speficy the initial size (`Xms`) of the java heap. | `2048m`
 MAX_HEAP 					| Speficy the maximum size (`Xmx`) of the java heap. | `4096m`
-INDEX_DIRECTORY 			|			| `NONE`
 HEAP_DUMP_PATH 				| Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps`
-NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  See [Node classification] on the Pega Community for more information. |
-NODE_SETTINGS 				|  			|
-PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
-PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
+
 
 ### Cassandra settings
 
@@ -139,6 +144,9 @@ CASSANDRA_PORT		| C* port		| `9042`
 CASSANDRA_USERNAME	| C* username	|
 CASSANDRA_PASSWORD	| C* password	|
 
+# Contributing
+
+This is an open source project and contributions are welcome.  Please see the [contributing guidelines](./CONTRIBUTING.md) to get started.
 
 [pegasystems/pega]: https://hub.docker.com/r/pegasystems/pega
-[Node classification]: https://community.pega.com/knowledgebase/release-note/node-classification
+[Node classification]: https://community.pega.com/sites/default/files/help_v83/procomhelpmain.htm#engine/node-classification/eng-node-types-ref.htm
