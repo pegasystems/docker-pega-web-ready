@@ -104,7 +104,6 @@ For a complete list of supported relational databases, see the [Pega Platform Su
 Name 						| Purpose 	| Default
 --- 						| --- 		| ---
 NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  See [Node classification] on the Pega Community for more information. |
-NODE_SETTINGS				| \*\*REMOVE** |
 PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
 PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
 
@@ -121,13 +120,13 @@ JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our
 
 ### Customize the Tomcat runtime
 
-Name 						| Purpose 	| Default
---- 						| --- 		| ---
-MAX_THREADS 				| The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300`
-JAVA_OPTS 					| Specify any additional parameters that should be appended to the `java` command. |
-INITIAL_HEAP 				| Speficy the initial size (`Xms`) of the java heap. | `2048m`
-MAX_HEAP 					| Speficy the maximum size (`Xmx`) of the java heap. | `4096m`
-HEAP_DUMP_PATH 				| Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps`
+Name 			| Purpose 	| Default
+--- 			| --- 		| ---
+MAX_THREADS 	| The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300`
+JAVA_OPTS 		| Specify any additional parameters that should be appended to the `java` command. |
+INITIAL_HEAP 	| Speficy the initial size (`Xms`) of the java heap. | `2048m`
+MAX_HEAP 		| Speficy the maximum size (`Xmx`) of the java heap. | `4096m`
+HEAP_DUMP_PATH 	| Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps`
 
 
 ### Cassandra settings
