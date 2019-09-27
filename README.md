@@ -47,10 +47,6 @@ and that you can view using the `docker images` command.
 
 You must use an orchestration tool to run Pega applications using containers. Pega provides support for deployments on Kubernetes using either Helm charts or direct yaml files.  You can find the source code for the deployment scripts in the [pega-helm-charts](https://github.com/pegasystems/pega-helm-charts) repository. For information about deploying Pega Platform on a client-managed cloud, see the [Cloud Choice](https://community.pega.com/knowledgebase/articles/cloud-choice) community article.
 
-## Image customizations
-
-This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has been thoroughly validated. You may choose change this to use your preferred Tomcat base image, however any change should be thoroughly tested and verfied. Any problems that arise from changing the base of this image or customizing the contents of the ready image itself cannot be supported by Pegasystems.
-
 ## Mount points
 
 Mount points are used to link a directory within the Docker container to a durable location on a filesystem.  See Docker's [bind mounts](https://docs.docker.com/v17.09/engine/admin/volumes/bind-mounts/) documentation for more information.
@@ -143,6 +139,10 @@ CASSANDRA_NODES		| A comma separated list of C* nodes (e.g. `10.20.205.26,10.20.
 CASSANDRA_PORT		| C* port		| `9042`
 CASSANDRA_USERNAME	| C* username	|
 CASSANDRA_PASSWORD	| C* password	|
+
+## Image customizations
+
+This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has been thoroughly validated. You may choose change this to use your preferred Tomcat base image, however any change should be thoroughly tested and verfied. Any problems that arise from changing the base of this image or customizing the contents of the ready image itself cannot be supported by Pegasystems.
 
 # Contributing
 
