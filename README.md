@@ -1,7 +1,7 @@
 Pega Docker Image
 ===========
 
-Pega Platform is a distributed web application for customer engagement, customer service, and digital process automation. A Pega deployment consists of a number of containers connecting to a Database and any other required backing services.  The Pega database contains business rule logic that must be preloaded with an installer for the containers to sucessfully start.  For more information and instructions on how to get started with a container basedd deployment of Pega, see [Pega's Cloud Choice documentation](https://community.pega.com/knowledgebase/articles/cloud-choice).
+Pega Platform is a distributed web application for customer engagement, customer service, and digital process automation. A Pega deployment consists of a number of containers connecting to a Database and any other required backing services.  The Pega database contains business rule logic that must be preloaded with an installer for the containers to successfully start.  For more information and instructions on how to get started with a container based deployment of Pega, see [Pega's Cloud Choice documentation](https://community.pega.com/knowledgebase/articles/cloud-choice).
 
 [![Build Status](https://travis-ci.org/pegasystems/docker-pega-web-ready.svg?branch=master)](https://travis-ci.org/pegasystems/docker-pega-web-ready) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
 
@@ -10,9 +10,9 @@ Pega Platform is a distributed web application for customer engagement, customer
 
 This *ready* Docker image represents one component of a full image you can use to run a Pega node. It is built on top of Tomcat but does not contain the Pega .war file (hence it is *ready* for the .war file - see [pegasystems/pega on DockerHub][pegasystems/pega] for the full image which *includes* the .war file).
 
-## Constructing your image
+## Constructing your image from *pega-ready*
 
-The simplest way to build from this image is to create your own Dockerfile with contents similar to the example below, and specify the .war file from the Pega distribution kit.  You may also specify a database driver as shown in the example.  It's a best practice to build this image on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega Infinity software libraries and specify a valid JDBC driver for your target database.
+The simplest way to build from this image is to create your own Dockerfile with contents similar to the example below, and specify the .war file from the Pega distribution kit.  You may also specify a database driver as shown in the example.  It's a best practice to build this image on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega Infinity software libraries and specify a valid JDBC driver for your target database to bake it in.
 
 ```Dockerfile
 FROM busybox AS builder
@@ -75,7 +75,7 @@ DB_USERNAME 		| Specify the username to connect to your database. |
 DB_PASSWORD 		| Specify the password to connect to your database. |
 RULES_SCHEMA 		| Specify the rules schema for your database. | `rules`
 DATA_SCHEMA 		| Specify the data schema for your database. | `data`
-CUSTOMERDATA_SCHEMA | If configured, set the customerdata schema for your database. Defaults to value of dataSchema if not provided. |
+CUSTOMERDATA_SCHEMA | If configured, set the customer data schema for your database. Defaults to value of `dataSchema` if not provided. |
 
 ### JDBC connection examples
 
@@ -124,8 +124,8 @@ Name 			| Purpose 	| Default
 --- 			| --- 		| ---
 MAX_THREADS 	| The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300`
 JAVA_OPTS 		| Specify any additional parameters that should be appended to the `java` command. |
-INITIAL_HEAP 	| Speficy the initial size (`Xms`) of the java heap. | `2048m`
-MAX_HEAP 		| Speficy the maximum size (`Xmx`) of the java heap. | `4096m`
+INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`
+MAX_HEAP 		| Specify the maximum size (`Xmx`) of the java heap. | `4096m`
 HEAP_DUMP_PATH 	| Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps`
 
 
@@ -141,7 +141,7 @@ CASSANDRA_PASSWORD	| C* password	|
 
 ## Image customizations
 
-This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has been thoroughly validated. You may choose change this to use your preferred Tomcat base image, however any change should be thoroughly tested and verfied. Any problems that arise from changing the base of this image or customizing the contents of the ready image itself cannot be supported by Pegasystems.
+This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has been thoroughly validated. You may choose change this to use your preferred Tomcat base image, however any change should be thoroughly tested and verified. Any problems that arise from changing the base of this image or customizing the contents of the ready image  cannot be supported by Pegasystems.
 
 # Contributing
 
