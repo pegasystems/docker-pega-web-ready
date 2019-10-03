@@ -38,33 +38,33 @@ Build the image using the following command:
 docker build -t pega-tomcat .
 ```
 
-Since this image uses a secure base image, it doesn't include all the packages in the environment. Therefore use multi-stage docker build to include only unzip package in the final image to reduce the risk of vulnerabilities. 
-Upon successful completion of the above command, you will have a Docker
-image that is registered in your local registry named pega-tomcat:latest
-and that you can view using the `docker images` command.
+Since this image uses a secure base image, it doesn't include all the packages in the environment. Therefore use the multi-stage docker build to include only unzipped packages in the final image to reduce the risk of vulnerabilities. 
+Upon successful completion of the above command, you will have a Docker image that is registered in your local registry named pega-tomcat:latest, which you can view using the `docker images` command.
 
 ## Running the image
 
-You must use an orchestration tool to run Pega applications using containers. Pega provides support for deployments on Kubernetes using either Helm charts or direct yaml files.  You can find the source code for the deployment scripts in the [pega-helm-charts](https://github.com/pegasystems/pega-helm-charts) repository. For information about deploying Pega Platform on a client-managed cloud, see the [Cloud Choice](https://community.pega.com/knowledgebase/articles/cloud-choice) community article.
+You must use an orchestration tool to run Pega applications using containers. Pega provides support for deployments on Kubernetes using either Helm charts or direct yaml files.  You can find the source code for the deployment scripts in the [pega-helm-charts](https://github.com/pegasystems/pega-helm-charts) repository. For information about deploying Pega Platform on a client managed cloud, see the [Cloud Choice](https://community.pega.com/knowledgebase/articles/cloud-choice) community article.
 
 ## Mount points
 
-Mount points are used to link a directory within the Docker container to a durable location on a filesystem.  See Docker's [bind mounts](https://docs.docker.com/v17.09/engine/admin/volumes/bind-mounts/) documentation for more information.
+Mount points are used to link a directory within the Docker container to a durable location on a filesystem. For complete information, see the Docker documentation, [bind mounts](https://docs.docker.com/v17.09/engine/admin/volumes/bind-mounts/).
 
 Mount point 	| Purpose
 --- 			| ---
-`/kafkadata` 	| Used to persist Kafka's data when running as a stream node.
-`/heapdumps` 	| Used as the default output directory when a heapdump is generated.
-`/search_index`	| Used to persist a search index when operating as a search node.
+`/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
+`/heapdumps` 	| Used as the default output directory when you generate a heapdump.
+`/search_index`	| Used to persist a search index when the node hosts searched.
 
 ## Environment variables
 
-You can make adjustments by overriding environmental variables using the -e Docker flag.
+You customize your docker image by overriding environmental variables using the -e Docker flag.
 ```bash
 $ docker run -e "var_1=foo" -e "var_2=bar" <image name>[:tags]
 ```
 
 ### Database connection
+
+Specify your required settings for your connection to the database wher Pega will be installed.
 
 Name 				| Purpose 	| Default
 --- 				| --- 		| ---
@@ -75,9 +75,10 @@ DB_USERNAME 		| Specify the username to connect to your database. |
 DB_PASSWORD 		| Specify the password to connect to your database. |
 RULES_SCHEMA 		| Specify the rules schema for your database. | `rules`
 DATA_SCHEMA 		| Specify the data schema for your database. | `data`
-CUSTOMERDATA_SCHEMA | If configured, set the customer data schema for your database. Defaults to value of `dataSchema` if not provided. |
+CUSTOMERDATA_SCHEMA | If configured in your database, set the customer data schema for your database. If you do not provide a value, this setting defaults to `dataSchema`. |
 
 ### JDBC connection examples
+See the following examples for specifying the database and type of driver used for your connection.
 
 #### PostgreSQL
 ```bash
@@ -99,15 +100,9 @@ JDBC_CLASS=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 For a complete list of supported relational databases, see the [Pega Platform Support Guide](https://community.pega.com/knowledgebase/documents/platform-support-guide). 
 
-### Pega customization
-
-Name 						| Purpose 	| Default
---- 						| --- 		| ---
-NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  See [Node classification] on the Pega Community for more information. |
-PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
-PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
-
 ### Advanced JDBC configuration
+
+You can specify a variety settings for your connection to the database where Pega will be installed.
 
 Name 						| Purpose 	| Default
 --- 						| --- 		| ---
@@ -118,7 +113,19 @@ JDBC_MAX_WAIT 				| The maximum number of milliseconds that the pool will wait (
 JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `50`
 JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | `socketTimeout=90`
 
+### Pega customization
+
+You can specify a variety settings for nodes in your deployment.
+
+Name 						| Purpose 	| Default
+--- 						| --- 		| ---
+NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  for more information, see  [Node types for on-premises environments](https://community.pega.com/sites/default/files/help_v83/procomhelpmain.htm#engine/node-classification/eng-node-types-ref.htm). |
+PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
+PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
+
 ### Customize the Tomcat runtime
+
+You can specify a variety settings for the Tomcat server running in your deployment.
 
 Name 			| Purpose 	| Default
 --- 			| --- 		| ---
@@ -131,6 +138,8 @@ HEAP_DUMP_PATH 	| Specify a location for a heap dump using `XX:HeapDumpPath` | `
 
 ### Cassandra settings
 
+For Pega Decisioning or Pega Marketing deployments, you can specify how to run Cassandra server by either pointing to an existing deployment or deploy a new instance managed by Pega during your deployment.
+
 Name 				| Purpose 		| Default
 --- 				| --- 			| ---
 CASSANDRA_CLUSTER	| Enable connection to an external Cassandra cluster | `false`
@@ -141,7 +150,7 @@ CASSANDRA_PASSWORD	| C* password	|
 
 ## Image customizations
 
-This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has been thoroughly validated. You may choose change this to use your preferred Tomcat base image, however any change should be thoroughly tested and verified. Any problems that arise from changing the base of this image or customizing the contents of the ready image  cannot be supported by Pegasystems.
+This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has been thoroughly validated. You may choose change this to use your preferred Tomcat base image, however any change should be thoroughly tested and verified. Any problems that arise from changing the base of this image or customizing the contents of the ready image are not the responsibility of Pegasystems.
 
 # Contributing
 
