@@ -13,13 +13,13 @@ install:
   - chmod +x clair-scanner
   - sudo mv clair-scanner /usr/local/bin
   - docker run -d --name db arminc/clair-db
-  - docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:latest
+  - docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.6
   - curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
   
 script:
   - make test
   - docker images
-  - clair-scanner -w tests/cve-scan-whitelist.yaml -c "http://127.0.0.1:6060" --threshold="High" --ip "$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" $IMAGE_NAME:latest
+  - clair-scanner -w tests/cve-scan-whitelist.yaml -c "http://127.0.0.1:6060" --threshold="High" --ip "$(ip -4 addr show docker0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" $IMAGE_NAME:latest
 
 before_deploy:
   - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
