@@ -30,6 +30,7 @@ secret_root="${pega_root}/secrets"
 mkdir -p $secret_root
 
 prlog4j2="${config_root}/prlog4j2.xml"
+prconfig="${config_root}/prconfig.xml"
 context_xml="${config_root}/context.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
 
@@ -135,6 +136,16 @@ if [ -e "$prlog4j2" ]; then
   cp "$prlog4j2" ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/
 else
   echo "No prlog4j2 was specified in ${prlog4j2}.  Using defaults."
+fi
+
+#
+# Copying mounted prconfig file to webapps/prweb/WEB-INF/classes
+#
+if [ -e "$prconfig" ]; then
+  echo "Loading prconfig from ${prconfig}...";
+  cp "$prconfig" ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/
+else
+  echo "No prconfig was specified in ${prconfig}.  Using defaults."
 fi
 
 #
