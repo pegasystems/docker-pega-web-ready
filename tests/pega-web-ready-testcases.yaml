@@ -9,8 +9,6 @@ metadataTest:
      value: /usr/local/tomcat
    - key: PATH
      value: /usr/local/tomcat/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-   - key: JDBC_MIN_ACTIVE
-     value: 50
    - key: JDBC_MAX_ACTIVE
      value: 250
    - key: JDBC_MIN_IDLE
