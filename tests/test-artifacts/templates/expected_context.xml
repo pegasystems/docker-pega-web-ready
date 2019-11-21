@@ -13,11 +13,10 @@
 		url="jdbc:postgresql://localhost:5432/pegadb"
 		username="postgres"
 		password="postgres"
-		minActive="50"
-		maxActive="250"
+		maxTotal="250"
 		minIdle="10"
 		maxIdle="50"
-		maxWait="30000"
+		maxWaitMillis="30000"
         initialSize="50"
         connectionProperties="socketTimeout=90"
 	/>
