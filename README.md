@@ -117,11 +117,12 @@ JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our
 
 You can specify a variety settings for nodes in your deployment.
 
-Name 						| Purpose 	| Default
---- 						| --- 		| ---
-NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  for more information, see  [Node types for on-premises environments](https://community.pega.com/sites/default/files/help_v83/procomhelpmain.htm#engine/node-classification/eng-node-types-ref.htm). |
-PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
-PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
+Name 								| Purpose 	| Default
+--- 								| --- 		| ---
+NODE_TYPE 							| Specify a node type or classification to specialize the processing within this container.  for more information, see  [Node types for on-premises environments](https://community.pega.com/sites/default/files/help_v83/procomhelpmain.htm#engine/node-classification/eng-node-types-ref.htm). |
+PEGA_DIAGNOSTIC_USER 				| Set a Pega diagnostic username to download log files. |
+PEGA_DIAGNOSTIC_PASSWORD 	 		| Set a secure Pega diagnostic username to download log files. |
+WEB_REQUESTOR_PASSIVATION_TIMEOUT 	| Set web requestor inactivity timeout after which requestor is passivated (in seconds). | 3600
 
 ### Customize the Tomcat runtime
 
