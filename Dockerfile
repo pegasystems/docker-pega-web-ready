@@ -118,7 +118,6 @@ RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
     chmod -R g+rw ${CATALINA_HOME}/lib  && \
     chmod -R g+rw ${CATALINA_HOME}/work  && \
     chmod -R g+rw ${CATALINA_HOME}/conf  && \
-    chmod -R g+rw ${CATALINA_HOME}/webapps  && \
     chmod -R g+x /scripts && \
     chmod g+r ${CATALINA_HOME}/conf/web.xml && \
     mkdir /search_index && \
