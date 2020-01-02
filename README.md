@@ -30,6 +30,9 @@ COPY --from=builder /prweb ${CATALINA_HOME}/webapps/prweb
 
 # Make a jdbc driver available to tomcat applications
 COPY /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
+
+RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prconfig.xml
+RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prlog4j2.xml
 ```
 
 Build the image using the following command:
