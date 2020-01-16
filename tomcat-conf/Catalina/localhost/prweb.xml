@@ -1,6 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Context>
-
+  <!-- When including prconfig settings as JNDI environment entries, make sure that:
+    1. JNDI names are unique.
+    2. No JNDI names are wholely included as the prefix to another JNDI name. 
+       Ie, 'abc/feature1' and 'abc/feature1/threshold' can't be bound to objects.
+  -->
+  
   {{ if .Env.PEGA_SEARCH_URL }}
   <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="{{ .Env.PEGA_SEARCH_URL }}" type="java.lang.String"/>
   {{ end }}

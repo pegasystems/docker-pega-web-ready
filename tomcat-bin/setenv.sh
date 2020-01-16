@@ -51,7 +51,7 @@ CATALINA_OPTS="${CATALINA_OPTS} -DSMAAutoNodeDiscoveryJMXPort=${JMX_PORT} "
 CATALINA_OPTS="${CATALINA_OPTS} -DSMAAutoNodeDiscoveryPort=8080 "
 
 # Provide setting required for stream node 
-if [ "${NODE_TYPE}" = "Stream" ]; then
+if [ "${IS_STREAM_NODE}" = "true" ]; then
   CATALINA_OPTS="${CATALINA_OPTS} -Dprconfig/dsm/services=StreamServer "
   CATALINA_OPTS="${CATALINA_OPTS} -Dprconfig/dsm/services/stream/pyUnpackBasePath/tmp/kafka "
   CATALINA_OPTS="${CATALINA_OPTS} -Dprconfig/dsm/services/stream/server_properties/unclean.leader.election.enable=false "
