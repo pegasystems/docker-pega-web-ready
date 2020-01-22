@@ -10,6 +10,10 @@ JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"
 #
 JAVA_OPTS="${JAVA_OPTS} -Djava.security.properties=/usr/local/tomcat/conf/java.security.overwrite"
 #
+# Pass Node tier to Pega
+#
+JAVA_OPTS="${JAVA_OPTS} -DNodeTier=${NODE_TIER}"
+#
 # Setup Heapdump path
 #
 JAVA_OPTS="${JAVA_OPTS} -XX:HeapDumpPath=${HEAP_DUMP_PATH}"
