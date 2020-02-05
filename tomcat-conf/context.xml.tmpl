@@ -13,7 +13,6 @@
   	<Resource name="jdbc/PegaRULES"
 		auth="Container"
 		type="javax.sql.DataSource"
-		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
 		driverClassName="{{ .Env.JDBC_CLASS }}"
 		url="{{ .Env.JDBC_URL }}"
 		username="{{ .Env.SECRET_DB_USERNAME }}"
