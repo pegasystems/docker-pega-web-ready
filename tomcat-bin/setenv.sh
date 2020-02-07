@@ -37,7 +37,7 @@ CATALINA_OPTS="${CATALINA_OPTS} -DmaxThreads=${MAX_THREADS}"
 # Node settings
 CATALINA_OPTS="${CATALINA_OPTS} -Didentification.nodeid=${HOSTNAME}"
 CATALINA_OPTS="${CATALINA_OPTS} -DNodeType=${NODE_TYPE}"
-CATALINA_OPTS="${CATALINA_OPTS} -DNodeSettings=\"${NODE_SETTINGS}\""
+CATALINA_OPTS="${CATALINA_OPTS} -DNodeSettings=\"Pega-IntegrationEngine/EnableRequestorPools=false;${NODE_SETTINGS}\""
 
 # Index settings
 #  When left blank, disable indexing.
