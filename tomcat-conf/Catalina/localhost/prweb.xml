@@ -21,5 +21,6 @@
   <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
   <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
   <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata" type="java.lang.String" />
-
+  <Environment name="prconfig/cloud/isNodeAgnosticAdminStudio" value="true" type="java.lang.String"/>
+  
 </Context>
