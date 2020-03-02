@@ -6,9 +6,9 @@ The following table provides an overview of the different configuration files in
 
 | File Name | Source | Purpose | Customizability |
 | ---       | ---    | ---     | ---             |
-|prconfig.xml|prweb.war|Base prconfig.xml *Note: May be overidden by helm deployment* | None |
-|prlog4j2.xml|prweb.war|Base prlog4j2.xml *Note: May be overidden by helm deployment* | None |
-|context.xml|pegasystems/tomcat|Base web application context *Note: May be overidden by helm deployment* | None |
-|[prweb.xml](https://github.com/pegasystems/docker-pega-web-ready/blob/master/tomcat-conf/Catalina/localhost/prweb.xml)|docker-pega-web-ready|Recommended Pega platform configuration for Kubernetes *Note: Parameter settings may be overridden by helm* | Parameter values customizable via environment variables |
-|[context.xml.tmpl](https://github.com/pegasystems/docker-pega-web-ready/blob/master/tomcat-conf/context.xml.tmpl)|docker-pega-web-ready|Templatized web application context *Note: Parameter settings may be overridden by helm*| Parameter values customizable via environment variables |
+|prconfig.xml|prweb.war|Base prconfig.xml <br/>*Note: May be overidden by helm deployment* | None |
+|prlog4j2.xml|prweb.war|Base prlog4j2.xml <br/>*Note: May be overidden by helm deployment* | None |
+|context.xml|pegasystems/tomcat|Base web application context <br/>*Note: May be overidden by helm deployment* | None |
+|[prweb.xml](https://github.com/pegasystems/docker-pega-web-ready/blob/master/tomcat-conf/Catalina/localhost/prweb.xml)|docker-pega-web-ready|Recommended Pega platform configuration for Kubernetes <br/>*Note: Parameter settings may be overridden by helm* | Parameter values customizable via environment variables |
+|[context.xml.tmpl](https://github.com/pegasystems/docker-pega-web-ready/blob/master/tomcat-conf/context.xml.tmpl)|docker-pega-web-ready|Templatized web application context <br/>*Note: Parameter settings may be overridden by helm*| Parameter values customizable via environment variables |
 |[setenv.sh](https://github.com/pegasystems/docker-pega-web-ready/blob/master/tomcat-bin/setenv.sh)|docker-pega-web-ready|Sets up environment for Tomcat startup | Values customizable via environment variables |
