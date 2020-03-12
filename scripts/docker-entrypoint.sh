@@ -126,8 +126,6 @@ else
    export SECRET_CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
 fi
 
-/bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml:${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml
-
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
 #
@@ -147,6 +145,16 @@ if [ -e "$prconfig" ]; then
 else
   echo "No prconfig was specified in ${prconfig}.  Using defaults."
 fi
+
+/bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml:${CATALINA_HOME}/conf/Catalina/localhost/${PEGA_APP_CONTEXT_ROOT}.xml
+
+#
+# Move app to custom context root if specified
+#
+if [ ${PEGA_APP_CONTEXT_ROOT} != "prweb" ]; then
+    mv ${CATALINA_HOME}/webapps/prweb ${CATALINA_HOME}/webapps/${PEGA_APP_CONTEXT_ROOT}
+    rm ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml
+fi    
 
 #
 # Write config files from templates using dockerize ...
