@@ -56,12 +56,11 @@ ENV JDBC_URL='' \
 ENV JDBC_DRIVER_URI=''
 
 # Provide variables for the JDBC connection string
-ENV JDBC_MAX_ACTIVE=250 \
-    JDBC_MIN_IDLE=10 \
-    JDBC_MAX_IDLE=50 \
+ENV JDBC_MAX_ACTIVE=75 \
+    JDBC_MIN_IDLE=3 \
+    JDBC_MAX_IDLE=25 \
     JDBC_MAX_WAIT=30000 \
-    JDBC_INITIAL_SIZE=50 \
-    JDBC_CONNECTION_PROPERTIES="socketTimeout=90"
+    JDBC_INITIAL_SIZE=10 
 
 # Provide variables for the name of the rules, data, and customerdata schemas
 ENV RULES_SCHEMA=rules \
