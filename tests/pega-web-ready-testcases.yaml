@@ -19,6 +19,8 @@ metadataTest:
      value: 30000
    - key: JDBC_INITIAL_SIZE
      value: 10
+   - key: JDBC_CONNECTION_PROPERTIES
+     value: 
   exposedPorts: ["8080", "9001", "47100", "7003"]  
   # Add 5701-5710 ports                      
   entrypoint: [/scripts/docker-entrypoint.sh]
