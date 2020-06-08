@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<tomcat-users>
+  <role rolename="PegaDiagnosticUser"/>
+  <user 
+        username="{{ .Env.SECRET_PEGA_DIAGNOSTIC_USER }}"
+        password="{{ .Env.SECRET_PEGA_DIAGNOSTIC_PASSWORD }}"
+        roles="PegaDiagnosticUser"
+  />
+</tomcat-users>

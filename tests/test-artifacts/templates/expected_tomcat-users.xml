@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<tomcat-users>
+  <role rolename="PegaDiagnosticUser"/>
+  <user 
+        username="tomcat_user"
+        password="tomcat_pass"
+        roles="PegaDiagnosticUser"
+  />
+</tomcat-users>

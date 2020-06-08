@@ -1,13 +1,15 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-FROM tomcat:9-jre11
+FROM pegasystems/tomcat:9-jdk11 as release
+
+ARG VERSION
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
-      version="2.0.0"
+      version=${VERSION:-CUSTOM_BUILD}
 
-ENV PEGA_DOCKER_VERSION=2.0
+ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
@@ -54,13 +56,12 @@ ENV JDBC_URL='' \
 ENV JDBC_DRIVER_URI=''
 
 # Provide variables for the JDBC connection string
-ENV JDBC_MIN_ACTIVE=50 \
-    JDBC_MAX_ACTIVE=250 \
-    JDBC_MIN_IDLE=10 \
-    JDBC_MAX_IDLE=50 \
+ENV JDBC_MAX_ACTIVE=75 \
+    JDBC_MIN_IDLE=3 \
+    JDBC_MAX_IDLE=25 \
     JDBC_MAX_WAIT=30000 \
-    JDBC_INITIAL_SIZE=50 \
-    JDBC_CONNECTION_PROPERTIES="socketTimeout=90"
+    JDBC_INITIAL_SIZE=10 \
+    JDBC_CONNECTION_PROPERTIES=''
 
 # Provide variables for the name of the rules, data, and customerdata schemas
 ENV RULES_SCHEMA=rules \
@@ -129,3 +130,12 @@ CMD ["run"]
 
 # HTTP is 8080, JMX is 9001, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
 EXPOSE 8080 9001 5701-5710 47100 7003
+
+# *****Target for test environment*****
+
+FROM release as qualitytest
+RUN mkdir /tests
+RUN chmod 777 /tests
+COPY /tests /tests
+
+FROM release
