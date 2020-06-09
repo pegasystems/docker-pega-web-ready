@@ -9,5 +9,10 @@ pipeline {
       }
     }
 
+    stage('kishor') {
+      steps {
+        echo 'In Kishor stage'
+      }
+    }
   }
 }
