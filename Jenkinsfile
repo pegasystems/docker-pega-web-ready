@@ -4,7 +4,8 @@ pipeline {
     stage('second') {
       steps {
         echo 'PRs from same repository working!!'
-        echo 'testing PRs from forked repository'
+        echo ' PRs from forked repository tested'
+        echo ' PRs from forked repository is it creating branch build?'
       }
     }
 
