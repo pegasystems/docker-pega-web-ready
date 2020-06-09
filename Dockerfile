@@ -1,7 +1,7 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-FROM pegasystems/tomcat:9-jdk11 as release
+FROM pegasystems/tomcat:9-jdk10 as release
 
 ARG VERSION
 
@@ -12,8 +12,8 @@ LABEL vendor="Pegasystems Inc." \
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
 # Create directory for storing heapdump
-RUN mkdir -p /heapdumps  && \
-    chmod 770 /heapdumps
+RUN mkdir -p /heapdumps123  && \
+    chmod 770 /heapdumps123
 
 # Create common directory for mounting configuration and libraries
 RUN mkdir -p /opt/pega && \
@@ -56,8 +56,8 @@ ENV JDBC_URL='' \
 ENV JDBC_DRIVER_URI=''
 
 # Provide variables for the JDBC connection string
-ENV JDBC_MAX_ACTIVE=75 \
-    JDBC_MIN_IDLE=3 \
+ENV JDBC_MAX_ACTIVE=80 \
+    JDBC_MIN_IDLE=3222 \
     JDBC_MAX_IDLE=25 \
     JDBC_MAX_WAIT=30000 \
     JDBC_INITIAL_SIZE=10 \
