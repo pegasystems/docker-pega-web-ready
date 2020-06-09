@@ -3,7 +3,8 @@ pipeline {
   stages {
     stage('second') {
       steps {
-        echo 'test'
+        echo 'PRs from same repository working!!'
+        echo 'testing PRs from forked repository'
       }
     }
 
