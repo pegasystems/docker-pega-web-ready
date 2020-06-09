@@ -83,7 +83,7 @@ ENV MAX_THREADS="300" \
     NODE_SETTINGS=""
 
 # Configure Remote JMX support and bind to port 9001
-ENV JMX_PORT=9001
+ENV JMX_PORT=9002
 
 # Configure Cassandra.
 ENV CASSANDRA_CLUSTER=false \
