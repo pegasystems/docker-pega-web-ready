@@ -8,6 +8,11 @@ pipeline {
         echo ' PRs from forked repository is it creating branch status check?'
       }
     }
+     stage('madhuri') {
+      steps {
+        echo 'hello there!!'
+      }
+    }
 
   }
 }
