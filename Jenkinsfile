@@ -11,8 +11,16 @@ pipeline {
      stage('madhuri') {
       steps {
         echo 'hello there!!'
+        echo ' PRs from forked repository is it creating branch status check?'
+                echo 'checking PR with integ label'
+
       }
     }
 
+    stage('kishor') {
+      steps {
+        echo 'In Kishor stage'
+      }
+    }
   }
 }
