@@ -5,7 +5,12 @@ pipeline {
       steps {
         echo 'PRs from same repository working!!'
         echo ' PRs from forked repository tested'
-        echo ' PRs from forked repository is it creating branch status check? checking on github side'
+        echo ' PRs from forked repository is it creating branch status check? checking on github side again'
+        sleep 120
+                echo 'PR without integ label'
+
+         //  error "Failing it .........."
+
       }
     }
      stage('madhuri') {
