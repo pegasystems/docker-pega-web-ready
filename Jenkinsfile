@@ -7,6 +7,8 @@ pipeline {
         echo ' PRs from forked repository tested'
         echo ' PRs from forked repository is it creating branch status check? checking on github side again'
         sleep 120
+                echo 'PR without integ label'
+
          //  error "Failing it .........."
 
       }
