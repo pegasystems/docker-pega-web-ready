@@ -56,8 +56,8 @@ ENV JDBC_URL='' \
 ENV JDBC_DRIVER_URI=''
 
 # Provide variables for the JDBC connection string
-ENV JDBC_MAX_ACTIVE=80 \
-    JDBC_MIN_IDLE=3222 \
+ENV JDBC_MAX_ACTIVE=75 \
+    JDBC_MIN_IDLE=3 \
     JDBC_MAX_IDLE=25 \
     JDBC_MAX_WAIT=30000 \
     JDBC_INITIAL_SIZE=10 \
