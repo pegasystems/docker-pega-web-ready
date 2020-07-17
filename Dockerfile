@@ -40,6 +40,11 @@ RUN  mkdir -p /opt/pega/secrets  && \
      chgrp -R 0 /opt/pega && \
      chmod -R g+rw /opt/pega/secrets
 
+# Create directory for extracted prweb.war
+RUN mkdir -p /opt/pega/prweb && \
+    chgrp -R 0 /opt/pega/prweb && \
+    chmod -R g+rw /opt/pega/prweb
+
 # Create directory for extra stream volume
 RUN mkdir -p /opt/pega/streamvol && \
     chgrp -R 0 /opt/pega/streamvol && \
@@ -56,12 +61,12 @@ ENV JDBC_URL='' \
 ENV JDBC_DRIVER_URI=''
 
 # Provide variables for the JDBC connection string
-ENV JDBC_MAX_ACTIVE=250 \
-    JDBC_MIN_IDLE=10 \
-    JDBC_MAX_IDLE=50 \
+ENV JDBC_MAX_ACTIVE=75 \
+    JDBC_MIN_IDLE=3 \
+    JDBC_MAX_IDLE=25 \
     JDBC_MAX_WAIT=30000 \
-    JDBC_INITIAL_SIZE=50 \
-    JDBC_CONNECTION_PROPERTIES="socketTimeout=90"
+    JDBC_INITIAL_SIZE=10 \
+    JDBC_CONNECTION_PROPERTIES=''
 
 # Provide variables for the name of the rules, data, and customerdata schemas
 ENV RULES_SCHEMA=rules \
@@ -83,8 +88,7 @@ ENV MAX_THREADS="300" \
     NODE_SETTINGS=""
 
 # Configure Remote JMX support and bind to port 9001
-ENV JMX_PORT=9001 \
-    JMX_SERVER_HOSTNAME=127.0.0.1
+ENV JMX_PORT=9001
 
 # Configure Cassandra.
 ENV CASSANDRA_CLUSTER=false \

@@ -26,7 +26,7 @@ RUN unzip -q -o prweb.war -d /prweb
 FROM pegasystems/pega-ready
 
 # Import prweb to tomcat webapps directory
-COPY --from=builder /prweb ${CATALINA_HOME}/webapps/prweb
+COPY --from=builder /prweb /opt/pega/prweb
 
 # Make a jdbc driver available to tomcat applications
 COPY /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
@@ -106,12 +106,12 @@ You can specify a variety settings for your connection to the database where Peg
 
 Name 						| Purpose 	| Default
 --- 						| --- 		| ---
-JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be allocated from this pool at the same time. | `250`
-JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `10`
-JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `50`
+JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be allocated from this pool at the same time. | `75`
+JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `3`
+JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `25`
 JDBC_MAX_WAIT 				| The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `30000`
-JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `50`
-JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | `socketTimeout=90`
+JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `10`
+JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | 
 
 ### Pega customization
 
@@ -129,6 +129,7 @@ You can specify a variety settings for the Tomcat server running in your deploym
 
 Name 			| Purpose 	| Default
 --- 			| --- 		| ---
+PEGA_APP_CONTEXT_PATH   | The application context path that Tomcat uses to direct traffic to the Pega application | prweb
 MAX_THREADS 	| The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300`
 JAVA_OPTS 		| Specify any additional parameters that should be appended to the `java` command. |
 INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`

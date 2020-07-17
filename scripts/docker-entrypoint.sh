@@ -131,7 +131,7 @@ fi
 #
 if [ -e "$prlog4j2" ]; then
   echo "Loading prlog4j2 from ${prlog4j2}...";
-  cp "$prlog4j2" ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/
+  cp "$prlog4j2" /opt/pega/prweb/WEB-INF/classes/
 else
   echo "No prlog4j2 was specified in ${prlog4j2}.  Using defaults."
 fi
@@ -141,20 +141,21 @@ fi
 #
 if [ -e "$prconfig" ]; then
   echo "Loading prconfig from ${prconfig}...";
-  cp "$prconfig" ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/
+  cp "$prconfig" /opt/pega/prweb/WEB-INF/classes/
 else
   echo "No prconfig was specified in ${prconfig}.  Using defaults."
 fi
 
-/bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml:${CATALINA_HOME}/conf/Catalina/localhost/${PEGA_APP_CONTEXT_ROOT}.xml
+/bin/dockerize -template ${CATALINA_HOME}/webapps/ROOT/index.html:${CATALINA_HOME}/webapps/ROOT/index.html
 
-#
-# Move app to custom context root if specified
-#
-if [ ${PEGA_APP_CONTEXT_ROOT} != "prweb" ]; then
-    mv ${CATALINA_HOME}/webapps/prweb ${CATALINA_HOME}/webapps/${PEGA_APP_CONTEXT_ROOT}
-    rm ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml
-fi    
+appContextPath=${PEGA_APP_CONTEXT_PATH}
+appContextFileName=$(echo "$appContextPath"|sed 's/\//#/g')
+
+/bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
+
+if [ ${PEGA_APP_CONTEXT_PATH} != "prweb" ]; then
+    rm ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml 
+fi
 
 #
 # Write config files from templates using dockerize ...
@@ -209,7 +210,7 @@ rm ${CATALINA_HOME}/conf/context.xml.tmpl
 rm ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl
 
 
-unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD
+unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT
 
 unset pega_root lib_root config_root
 
