@@ -10,17 +10,17 @@ metadataTest:
    - key: PATH
      value: /usr/local/tomcat/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
    - key: JDBC_MAX_ACTIVE
-     value: 250
+     value: 75
    - key: JDBC_MIN_IDLE
-     value: 10
+     value: 3
    - key: JDBC_MAX_IDLE
-     value: 50
+     value: 25
    - key: JDBC_MAX_WAIT
      value: 30000
    - key: JDBC_INITIAL_SIZE
-     value: 50
+     value: 10
    - key: JDBC_CONNECTION_PROPERTIES
-     value: "socketTimeout=90"               
+     value: 
   exposedPorts: ["8080", "9001", "47100", "7003"]  
   # Add 5701-5710 ports                      
   entrypoint: [/scripts/docker-entrypoint.sh]
