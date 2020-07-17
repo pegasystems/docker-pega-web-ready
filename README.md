@@ -25,7 +25,7 @@ RUN unzip -q -o prweb.war -d /prweb
 
 FROM pegasystems/pega-ready
 
-# Import prweb to tomcat webapps directory
+# Copy preweb to the Pega deployment directory 
 COPY --from=builder /prweb /opt/pega/prweb
 
 # Make a jdbc driver available to tomcat applications
