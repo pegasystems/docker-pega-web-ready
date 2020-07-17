@@ -85,7 +85,8 @@ ENV MAX_THREADS="300" \
     INDEX_DIRECTORY="NONE" \
     HEAP_DUMP_PATH="/heapdumps" \
     NODE_TYPE="" \
-    NODE_SETTINGS=""
+    NODE_SETTINGS="" \
+    PEGA_APP_CONTEXT_PATH=prweb
 
 # Configure Remote JMX support and bind to port 9001
 ENV JMX_PORT=9001
