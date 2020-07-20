@@ -122,7 +122,7 @@ Name 						| Purpose 	| Default
 NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  for more information, see  [Node types for on-premises environments](https://community.pega.com/sites/default/files/help_v83/procomhelpmain.htm#engine/node-classification/eng-node-types-ref.htm). |
 PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
 PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
-
+NODE_TIER                 | Specify the display name of the tier to which you logically associate this node. |
 ### Customize the Tomcat runtime
 
 You can specify a variety settings for the Tomcat server running in your deployment.

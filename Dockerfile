@@ -80,6 +80,7 @@ ENV MAX_THREADS="300" \
     INDEX_DIRECTORY="NONE" \
     HEAP_DUMP_PATH="/heapdumps" \
     NODE_TYPE="" \
+    NODE_TIER="" \
     NODE_SETTINGS=""
 
 # Configure Remote JMX support and bind to port 9001
