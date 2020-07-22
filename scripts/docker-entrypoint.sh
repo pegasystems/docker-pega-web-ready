@@ -148,8 +148,7 @@ fi
 
 /bin/dockerize -template ${CATALINA_HOME}/webapps/ROOT/index.html:${CATALINA_HOME}/webapps/ROOT/index.html
 
-appContextPath=${PEGA_APP_CONTEXT_PATH}
-appContextFileName=$(echo "$appContextPath"|sed 's/\//#/g')
+appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
 
 /bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
 
