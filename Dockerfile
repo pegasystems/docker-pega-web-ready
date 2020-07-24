@@ -85,6 +85,7 @@ ENV MAX_THREADS="300" \
     INDEX_DIRECTORY="NONE" \
     HEAP_DUMP_PATH="/heapdumps" \
     NODE_TYPE="" \
+    NODE_TIER="" \
     NODE_SETTINGS="" \
     PEGA_APP_CONTEXT_PATH=prweb \
     PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
