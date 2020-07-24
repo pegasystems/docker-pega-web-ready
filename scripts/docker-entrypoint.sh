@@ -126,12 +126,22 @@ else
    export SECRET_CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
 fi
 
+if [ ${PEGA_APP_CONTEXT_PATH} = "prweb" ]; then
+   if [ ! -d "${CATALINA_HOME}/webapps/prweb" ]; then
+       mkdir ${CATALINA_HOME}/webapps/prweb
+       chmod -R g+rw ${CATALINA_HOME}/webapps/prweb
+       cp -r ${PEGA_DEPLOYMENT_DIR}/* ${CATALINA_HOME}/webapps/prweb
+       rm -rf ${PEGA_DEPLOYMENT_DIR}/*
+   fi 	
+   export PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
+fi
+
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
 #
 if [ -e "$prlog4j2" ]; then
   echo "Loading prlog4j2 from ${prlog4j2}...";
-  cp "$prlog4j2" /opt/pega/prweb/WEB-INF/classes/
+  cp "$prlog4j2" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prlog4j2 was specified in ${prlog4j2}.  Using defaults."
 fi
@@ -141,7 +151,7 @@ fi
 #
 if [ -e "$prconfig" ]; then
   echo "Loading prconfig from ${prconfig}...";
-  cp "$prconfig" /opt/pega/prweb/WEB-INF/classes/
+  cp "$prconfig" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prconfig was specified in ${prconfig}.  Using defaults."
 fi
