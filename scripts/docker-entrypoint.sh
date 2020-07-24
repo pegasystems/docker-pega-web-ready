@@ -126,15 +126,20 @@ else
    export SECRET_CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
 fi
 
-if [ ${PEGA_APP_CONTEXT_PATH} = "prweb" ]; then
-   if [ ! -d "${CATALINA_HOME}/webapps/prweb" ]; then
-       mkdir ${CATALINA_HOME}/webapps/prweb
-       chmod -R g+rw ${CATALINA_HOME}/webapps/prweb
-       cp -r ${PEGA_DEPLOYMENT_DIR}/* ${CATALINA_HOME}/webapps/prweb
-       rm -rf ${PEGA_DEPLOYMENT_DIR}/*
-   fi 	
-   export PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
+/bin/dockerize -template ${CATALINA_HOME}/webapps/ROOT/index.html:${CATALINA_HOME}/webapps/ROOT/index.html
+
+appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
+
+if [ ${PEGA_APP_CONTEXT_PATH} != "prweb" ]; then
+    # Move pega deployment out of webapps to avoid double deployment
+    cp -r ${PEGA_DEPLOYMENT_DIR}/* /opt/pega/prweb
+    rm -rf ${PEGA_DEPLOYMENT_DIR}
+    mv ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml 
+    export PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
 fi
+
+/bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
+
 
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
@@ -154,16 +159,6 @@ if [ -e "$prconfig" ]; then
   cp "$prconfig" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prconfig was specified in ${prconfig}.  Using defaults."
-fi
-
-/bin/dockerize -template ${CATALINA_HOME}/webapps/ROOT/index.html:${CATALINA_HOME}/webapps/ROOT/index.html
-
-appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
-
-/bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
-
-if [ ${PEGA_APP_CONTEXT_PATH} != "prweb" ]; then
-    rm ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml 
 fi
 
 #

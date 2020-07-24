@@ -87,7 +87,7 @@ ENV MAX_THREADS="300" \
     NODE_TYPE="" \
     NODE_SETTINGS="" \
     PEGA_APP_CONTEXT_PATH=prweb \
-    PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
+    PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
 
 # Configure Remote JMX support and bind to port 9001
 ENV JMX_PORT=9001

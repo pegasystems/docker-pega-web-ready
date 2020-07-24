@@ -25,8 +25,8 @@ RUN unzip -q -o prweb.war -d /prweb
 
 FROM pegasystems/pega-ready
 
-# Copy preweb to the Pega deployment directory 
-COPY --from=builder /prweb /opt/pega/prweb
+# Copy prweb to tomcat webapps directory
+COPY --from=builder /prweb ${CATALINA_HOME}/webapps/prweb
 
 # Make a jdbc driver available to tomcat applications
 COPY /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
@@ -122,7 +122,7 @@ Name 						| Purpose 	| Default
 NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  for more information, see  [Node types for on-premises environments](https://community.pega.com/sites/default/files/help_v83/procomhelpmain.htm#engine/node-classification/eng-node-types-ref.htm). |
 PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
 PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
-NODE_TIER                 | Specify the display name of the tier to which you logically associate this node. |
+
 ### Customize the Tomcat runtime
 
 You can specify a variety settings for the Tomcat server running in your deployment.
@@ -130,6 +130,7 @@ You can specify a variety settings for the Tomcat server running in your deploym
 Name 			| Purpose 	| Default
 --- 			| --- 		| ---
 PEGA_APP_CONTEXT_PATH   | The application context path that Tomcat uses to direct traffic to the Pega application | prweb
+PEGA_DEPLOYMENT_DIR   | The location of the Pega app deployment | /usr/local/tomcat/webapps/prweb
 MAX_THREADS 	| The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300`
 JAVA_OPTS 		| Specify any additional parameters that should be appended to the `java` command. |
 INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`
