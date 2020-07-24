@@ -132,9 +132,11 @@ appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
 
 if [ ${PEGA_APP_CONTEXT_PATH} != "prweb" ]; then
     # Move pega deployment out of webapps to avoid double deployment
-    cp -r ${PEGA_DEPLOYMENT_DIR}/* /opt/pega/prweb
-    rm -rf ${PEGA_DEPLOYMENT_DIR}
-    mv ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml 
+    if [ ! -d /opt/pega/prweb/WEB-INF ] 
+       cp -r ${PEGA_DEPLOYMENT_DIR}/* /opt/pega/prweb
+       rm -rf ${PEGA_DEPLOYMENT_DIR}
+       mv ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
+    fi   
     export PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
 fi
 
