@@ -126,14 +126,29 @@ else
    export SECRET_CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
 fi
 
-/bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml:${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml
+/bin/dockerize -template ${CATALINA_HOME}/webapps/ROOT/index.html:${CATALINA_HOME}/webapps/ROOT/index.html
+
+appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
+
+if [ ${PEGA_APP_CONTEXT_PATH} != "prweb" ]; then
+    # Move pega deployment out of webapps to avoid double deployment
+    if [ ! -d "/opt/pega/prweb/WEB-INF" ]; then 
+       cp -r ${PEGA_DEPLOYMENT_DIR}/* /opt/pega/prweb
+       rm -rf ${PEGA_DEPLOYMENT_DIR}
+       mv ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
+    fi   
+    export PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
+fi
+
+/bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
+
 
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
 #
 if [ -e "$prlog4j2" ]; then
   echo "Loading prlog4j2 from ${prlog4j2}...";
-  cp "$prlog4j2" ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/
+  cp "$prlog4j2" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prlog4j2 was specified in ${prlog4j2}.  Using defaults."
 fi
@@ -143,7 +158,7 @@ fi
 #
 if [ -e "$prconfig" ]; then
   echo "Loading prconfig from ${prconfig}...";
-  cp "$prconfig" ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/
+  cp "$prconfig" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prconfig was specified in ${prconfig}.  Using defaults."
 fi
@@ -201,7 +216,7 @@ rm ${CATALINA_HOME}/conf/context.xml.tmpl
 rm ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl
 
 
-unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD
+unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT
 
 unset pega_root lib_root config_root
 

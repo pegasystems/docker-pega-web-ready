@@ -74,6 +74,11 @@ fileExistenceTests:
   shouldExist: true
   permissions: 'drwxrwxr-x'
 
+- name: 'prweb deployment path'
+  path: '/opt/pega/prweb'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+
 - name: 'Secrets File Path'
   path: '/opt/pega/secrets'
   shouldExist: true

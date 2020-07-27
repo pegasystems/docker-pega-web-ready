@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<Context>
+<Context docBase="{{ .Env.PEGA_DEPLOYMENT_DIR }}">
   <!-- When including prconfig settings as JNDI environment entries, make sure that:
     1. JNDI names are unique.
     2. No JNDI names are wholely included as the prefix to another JNDI name. 
