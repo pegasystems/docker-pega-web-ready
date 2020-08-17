@@ -47,7 +47,7 @@ fileExistenceTests:
 - name: 'catalina file path'
   path: '/usr/local/tomcat/bin/catalina.sh'
   shouldExist: true
-  permissions: '-rwxr-xr-x'
+  permissions: '-rwxrwxr-x'
 
 - name: 'Heap Dumps File Path'
   path: '/heapdumps'
