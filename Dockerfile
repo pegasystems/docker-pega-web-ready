@@ -54,6 +54,11 @@ RUN  mkdir -p /opt/pega/secrets && \
      chown -R pegauser /opt/pega/secrets
 
 
+# Create directory for extracted prweb.war
+RUN mkdir -p /opt/pega/prweb && \
+    chgrp -R 0 /opt/pega/prweb && \
+    chmod -R g+rw /opt/pega/prweb
+
 # Create directory for extra stream volume
 RUN mkdir -p /opt/pega/streamvol && \
     chgrp -R 0 /opt/pega/streamvol && \
@@ -96,11 +101,13 @@ ENV MAX_THREADS="300" \
     INDEX_DIRECTORY="NONE" \
     HEAP_DUMP_PATH="/heapdumps" \
     NODE_TYPE="" \
-    NODE_SETTINGS=""
+    NODE_TIER="" \
+    NODE_SETTINGS="" \
+    PEGA_APP_CONTEXT_PATH=prweb \
+    PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
 
 # Configure Remote JMX support and bind to port 9001
-ENV JMX_PORT=9001 \
-    JMX_SERVER_HOSTNAME=127.0.0.1
+ENV JMX_PORT=9001
 
 # Configure Cassandra.
 ENV CASSANDRA_CLUSTER=false \
