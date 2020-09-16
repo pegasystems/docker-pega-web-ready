@@ -481,6 +481,52 @@ commandTests:
     exitCode: 0
     expectedOutput: ["Database Password is - db_password_from_file"]
 
+    # Database Username with overridden file content   
+  - name: "Database Username with overridden file content"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"      
+    - key: "DB_USERNAME_SECRET_PATH"
+      value: "opt/pega/ext-secrets" 
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        mv tests/test-artifacts/DB_USERNAME /opt/pega/secrets/DB_USERNAME &&
+        mkdir -p /opt/pega/ext-secrets &&
+        mv tests/test-artifacts/DB_USERNAME_EXT /opt/pega/ext-secrets/DB_USERNAME &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Database Username is - overridden_db_username"]
+
+    # Database Password with overridden file content
+  - name: "Database Password with overridden file content"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD_SECRET_PATH"
+      value: "opt/pega/ext-secrets"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        mv tests/test-artifacts/DB_PASSWORD /opt/pega/secrets/DB_PASSWORD &&
+        mkdir -p /opt/pega/ext-secrets &&
+        mv tests/test-artifacts/DB_PASSWORD_EXT /opt/pega/ext-secrets/DB_PASSWORD &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Database Password is - overridden_db_password"]
+
 # Cassandra Username as Environment Variable   
   - name: "Cassandra Username as Environment Variable"
     envVars:

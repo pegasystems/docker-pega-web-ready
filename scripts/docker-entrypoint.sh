@@ -26,6 +26,9 @@ mkdir -p $lib_root
 config_root="${pega_root}/config"
 mkdir -p $config_root
 
+# Contains script for resolving alternative secrets
+source /scripts/secret_helper.sh
+
 secret_root="${pega_root}/secrets"
 mkdir -p $secret_root
 
@@ -34,8 +37,8 @@ prconfig="${config_root}/prconfig.xml"
 context_xml="${config_root}/context.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
 
-db_username_file="${secret_root}/DB_USERNAME"
-db_password_file="${secret_root}/DB_PASSWORD"
+db_username_file=$(resolveSecretPath "${secret_root}" "$DB_USERNAME_SECRET_PATH" "DB_USERNAME")
+db_password_file=$(resolveSecretPath "${secret_root}" "$DB_PASSWORD_SECRET_PATH" "DB_PASSWORD")
 
 cassandra_username_file="${secret_root}/CASSANDRA_USERNAME"
 cassandra_password_file="${secret_root}/CASSANDRA_PASSWORD"
