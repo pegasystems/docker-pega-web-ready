@@ -491,7 +491,7 @@ commandTests:
     - key: "DB_PASSWORD"
       value: "postgres_pass"      
     - key: "DB_USERNAME_SECRET_PATH"
-      value: "opt/pega/ext-secrets" 
+      value: "/opt/pega/ext-secrets" 
     command: "bash"
     args:
     - -c
@@ -514,7 +514,7 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres_user"
     - key: "DB_PASSWORD_SECRET_PATH"
-      value: "opt/pega/ext-secrets"      
+      value: "/opt/pega/ext-secrets"      
     command: "bash"
     args:
     - -c
