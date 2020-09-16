@@ -1,12 +1,16 @@
 #!/bin/bash
-pega_diagnostic_username_file="/opt/pega/secrets/PEGA_DIAGNOSTIC_USER"
-pega_diagnostic_password_file="/opt/pega/secrets/PEGA_DIAGNOSTIC_PASSWORD"
 
-db_username_file="/opt/pega/secrets/DB_USERNAME"
-db_password_file="/opt/pega/secrets/DB_PASSWORD"
+source /scripts/secret_helper.sh
+secret_root="/opt/pega/secrets"
 
-cassandra_username_file="/opt/pega/secrets/CASSANDRA_USERNAME"
-cassandra_password_file="/opt/pega/secrets/CASSANDRA_PASSWORD"
+pega_diagnostic_username_file="${secret_root}/PEGA_DIAGNOSTIC_USER"
+pega_diagnostic_password_file="${secret_root}/PEGA_DIAGNOSTIC_PASSWORD"
+
+db_username_file=$(resolveSecretPath "${secret_root}" "$DB_USERNAME_SECRET_PATH" "DB_USERNAME")
+db_password_file=$(resolveSecretPath "${secret_root}" "$DB_PASSWORD_SECRET_PATH" "DB_PASSWORD")
+
+cassandra_username_file="${secret_root}/CASSANDRA_USERNAME"
+cassandra_password_file="${secret_root}/CASSANDRA_PASSWORD"
 
 echo "$NODE_TYPE"
 
