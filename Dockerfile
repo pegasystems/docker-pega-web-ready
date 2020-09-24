@@ -121,9 +121,9 @@ ENV PEGA_SEARCH_URL=
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
-               chgrp -R 0 /opt/pega/kafkadata && \
-               chmod -R g+rw /opt/pega/kafkadata && \
-               chown -R pegauser /opt/pega/kafkadata
+     chgrp -R 0 /opt/pega/kafkadata && \
+     chmod -R g+rw /opt/pega/kafkadata && \
+     chown -R pegauser /opt/pega/kafkadata
 
 # Remove existing webapps
 RUN rm -rf ${CATALINA_HOME}/webapps/*
@@ -171,7 +171,7 @@ EXPOSE 8080 9001 5701-5710 47100 7003
 FROM release as qualitytest
 USER root
 RUN mkdir /tests && \
-     chown -R pegauser /tests
+    chown -R pegauser /tests
 COPY tests /tests
 RUN chmod -R 777 /tests
 USER pegauser
