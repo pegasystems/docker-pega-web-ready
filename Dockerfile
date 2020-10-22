@@ -57,7 +57,8 @@ RUN  mkdir -p /opt/pega/secrets && \
 # Create directory for extracted prweb.war
 RUN mkdir -p /opt/pega/prweb && \
     chgrp -R 0 /opt/pega/prweb && \
-    chmod -R g+rw /opt/pega/prweb
+    chmod -R g+rw /opt/pega/prweb && \
+    chown -R pegauser /opt/pega/prweb
 
 # Create directory for extra stream volume
 RUN mkdir -p /opt/pega/streamvol && \
