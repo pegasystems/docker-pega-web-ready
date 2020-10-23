@@ -6,6 +6,10 @@
        Ie, 'abc/feature1' and 'abc/feature1/threshold' can't be bound to objects.
   -->
   
+  {{ if .Env.PEGA_SEARCH_TYPE }}
+  <Environment name="prconfig/database/databases/pegasearch/searchDeploymentType" value="{{ .Env.PEGA_SEARCH_TYPE }}" type="java.lang.String" />
+  {{ end }}
+
   {{ if .Env.PEGA_SEARCH_URL }}
   <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="{{ .Env.PEGA_SEARCH_URL }}" type="java.lang.String"/>
   {{ end }}
