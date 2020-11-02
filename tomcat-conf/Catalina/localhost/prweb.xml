@@ -16,8 +16,8 @@
 
   {{ if .Env.PEGA_STREAM_URL }}
   <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
-  <Environment name="prconfig/services/stream/provider/type" value="StreamService" type="java.lang.String"/>
-  <Environment name="prconfig/services/stream/provider/url" value="{{ .Env.PEGA_STREAM_URL }}/stream/spi/2" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider" value="StreamService" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider_url" value="{{ .Env.PEGA_STREAM_URL }}/stream/spi/2" type="java.lang.String"/>
   {{ end }}
 
   {{ if isTrue .Env.CASSANDRA_CLUSTER }}
