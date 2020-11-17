@@ -25,11 +25,13 @@ RUN unzip -q -o prweb.war -d /prweb
 
 FROM pegasystems/pega-ready
 
-# Import prweb to tomcat webapps directory
-COPY --from=builder /prweb ${CATALINA_HOME}/webapps/prweb
+# Copy prweb to tomcat webapps directory
+COPY --chown=pegauser:root --from=builder /prweb ${CATALINA_HOME}/webapps/prweb
+
+RUN chmod -R g+rw   ${CATALINA_HOME}/webapps/prweb
 
 # Make a jdbc driver available to tomcat applications
-COPY /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
+COPY --chown=pegauser:root /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
 
 RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prconfig.xml
 RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prlog4j2.xml
@@ -54,7 +56,7 @@ Mount points are used to link a directory within the Docker container to a durab
 
 Mount point 	| Purpose
 --- 			| ---
-`/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
+`/opt/pega/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
 `/heapdumps` 	| Used as the default output directory when you generate a heapdump.
 `/search_index`	| Used to persist a search index when the node hosts searched.
 
@@ -109,12 +111,12 @@ You can specify a variety settings for your connection to the database where Peg
 
 Name 						| Purpose 	| Default
 --- 						| --- 		| ---
-JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be allocated from this pool at the same time. | `250`
-JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `10`
-JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `50`
+JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be allocated from this pool at the same time. | `75`
+JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `3`
+JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `25`
 JDBC_MAX_WAIT 				| The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `30000`
-JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `50`
-JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | `socketTimeout=90`
+JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `10`
+JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | 
 
 ### Pega customization
 
@@ -125,6 +127,7 @@ Name 						| Purpose 	| Default
 NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  for more information, see  [Node types for on-premises environments](https://community.pega.com/sites/default/files/help_v83/procomhelpmain.htm#engine/node-classification/eng-node-types-ref.htm). |
 PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
 PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
+NODE_TIER                 | Specify the display name of the tier to which you logically associate this node. |
 
 ### Customize the Tomcat runtime
 
@@ -132,6 +135,8 @@ You can specify a variety settings for the Tomcat server running in your deploym
 
 Name 			| Purpose 	| Default
 --- 			| --- 		| ---
+PEGA_APP_CONTEXT_PATH   | The application context path that Tomcat uses to direct traffic to the Pega application | prweb
+PEGA_DEPLOYMENT_DIR   | The location of the Pega app deployment | /usr/local/tomcat/webapps/prweb
 MAX_THREADS 	| The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300`
 JAVA_OPTS 		| Specify any additional parameters that should be appended to the `java` command. |
 INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`

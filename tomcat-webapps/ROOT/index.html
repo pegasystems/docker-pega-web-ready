@@ -2,13 +2,13 @@
 <html lang="en-US">
     <head>
         <meta charset="UTF-8">
-        <meta http-equiv="refresh" content="1; url=/prweb">
+        <meta http-equiv="refresh" content="1; url=/{{ .Env.PEGA_APP_CONTEXT_PATH }}">
         <script type="text/javascript">
-            window.location.href = "/prweb"
+            window.location.href = "/{{ .Env.PEGA_APP_CONTEXT_PATH }}"
         </script>
         <title>Loading...</title>
     </head>
     <body>
-        If you are not redirected automatically, follow this <a href='/prweb'>link to continue</a>.
+        If you are not redirected automatically, follow this <a href='/{{ .Env.PEGA_APP_CONTEXT_PATH }}'>link to continue</a>.
     </body>
 </html>

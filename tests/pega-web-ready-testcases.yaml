@@ -10,17 +10,17 @@ metadataTest:
    - key: PATH
      value: /usr/local/tomcat/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
    - key: JDBC_MAX_ACTIVE
-     value: 250
+     value: 75
    - key: JDBC_MIN_IDLE
-     value: 10
+     value: 3
    - key: JDBC_MAX_IDLE
-     value: 50
+     value: 25
    - key: JDBC_MAX_WAIT
      value: 30000
    - key: JDBC_INITIAL_SIZE
-     value: 50
+     value: 10
    - key: JDBC_CONNECTION_PROPERTIES
-     value: "socketTimeout=90"               
+     value: 
   exposedPorts: ["8080", "9001", "47100", "7003"]  
   # Add 5701-5710 ports                      
   entrypoint: [/scripts/docker-entrypoint.sh]
@@ -38,6 +38,8 @@ fileExistenceTests:
   path: '/usr/local/tomcat/'
   shouldExist: true
   permissions: 'drwxr-xr-x'
+  uid: 9001
+  gid: 0
 
 - name: 'Incorrect path'
   path: '/usr/local/tomcat/test'
@@ -47,47 +49,72 @@ fileExistenceTests:
 - name: 'catalina file path'
   path: '/usr/local/tomcat/bin/catalina.sh'
   shouldExist: true
-  permissions: '-rwxr-xr-x'
+  permissions: '-rwxrwxr-x'
+  uid: 9001
+  gid: 0
 
 - name: 'Heap Dumps File Path'
   path: '/heapdumps'
   shouldExist: true
   permissions: 'drwxrwx---'
+  uid: 9001
+  gid: 0
 
 - name: 'opt/pega File Path'
   path: '/opt/pega'
   shouldExist: true
   permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
 
 - name: 'Filerepo File Path'
   path: '/opt/pega/filerepo'
   shouldExist: true
   permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
 
 - name: 'Config File Path'
   path: '/opt/pega/config'
   shouldExist: true
   permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
 
 - name: 'LIB File Path'
   path: '/opt/pega/lib'
   shouldExist: true
   permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'prweb deployment path'
+  path: '/opt/pega/prweb'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
 
 - name: 'Secrets File Path'
   path: '/opt/pega/secrets'
   shouldExist: true
   permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
 
 - name: 'StreamVolume File Path'
-  path: '/opt/pega/secrets'
+  path: '/opt/pega/streamvol'
   shouldExist: true
   permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
 
 - name: 'Kafka File Path'
   path: '/opt/pega/kafkadata'
   shouldExist: true
-  permissions: 'drwxrwxr-x' 
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
 
  # Simulate the functional use case for testing
 

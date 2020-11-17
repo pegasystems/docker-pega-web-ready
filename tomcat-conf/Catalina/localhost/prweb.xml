@@ -1,8 +1,23 @@
 <?xml version='1.0' encoding='utf-8'?>
-<Context>
+<Context docBase="{{ .Env.PEGA_DEPLOYMENT_DIR }}">
+  <!-- When including prconfig settings as JNDI environment entries, make sure that:
+    1. JNDI names are unique.
+    2. No JNDI names are wholely included as the prefix to another JNDI name. 
+       Ie, 'abc/feature1' and 'abc/feature1/threshold' can't be bound to objects.
+  -->
+  
+  {{ if .Env.PEGA_SEARCH_TYPE }}
+  <Environment name="prconfig/database/databases/pegasearch/searchDeploymentType" value="{{ .Env.PEGA_SEARCH_TYPE }}" type="java.lang.String" />
+  {{ end }}
 
   {{ if .Env.PEGA_SEARCH_URL }}
   <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="{{ .Env.PEGA_SEARCH_URL }}" type="java.lang.String"/>
+  {{ end }}
+
+  {{ if .Env.PEGA_STREAM_URL }}
+  <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider" value="StreamService" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider_url" value="{{ .Env.PEGA_STREAM_URL }}/stream/spi/2" type="java.lang.String"/>
   {{ end }}
 
   {{ if isTrue .Env.CASSANDRA_CLUSTER }}
@@ -16,12 +31,6 @@
   <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
   <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
   <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata" type="java.lang.String" />
-
-  {{ if .Env.IS_STREAM_NODE }}
-  <!-- additional DSM configs we add if THIS is a "Stream" node -->
-  <Environment name="prconfig/dsm/services" value="StreamServer" type="java.lang.String" />
-  <Environment name="prconfig/dsm/services/stream/pyUnpackBasePath" value="/tmp/kafka" type="java.lang.String" />
-  <Environment name="prconfig/dsm/services/stream/server_properties/unclean.leader.election.enable" value="false" type="java.lang.String" />
-  {{ end }}
-
+  <Environment name="prconfig/cloud/isNodeAgnosticAdminStudio" value="true" type="java.lang.String"/>
+  
 </Context>
