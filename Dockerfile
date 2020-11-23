@@ -122,7 +122,7 @@ ENV PEGA_SEARCH_URL=
 
 # Configure hazelcast. By default, hazelcast runs in embedded mode.
 Env CLIENT_MODE=false \
-    ON_PEGA_K8s= \
+    ON_PEGA_K8S= \
     CLUSTER_NAME= \
     NAMESPACE= \
     SERVICE_NAME=
