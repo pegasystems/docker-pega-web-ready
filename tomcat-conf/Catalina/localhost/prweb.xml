@@ -6,8 +6,18 @@
        Ie, 'abc/feature1' and 'abc/feature1/threshold' can't be bound to objects.
   -->
   
+  {{ if .Env.PEGA_SEARCH_TYPE }}
+  <Environment name="prconfig/database/databases/pegasearch/searchDeploymentType" value="{{ .Env.PEGA_SEARCH_TYPE }}" type="java.lang.String" />
+  {{ end }}
+
   {{ if .Env.PEGA_SEARCH_URL }}
   <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="{{ .Env.PEGA_SEARCH_URL }}" type="java.lang.String"/>
+  {{ end }}
+
+  {{ if .Env.PEGA_STREAM_URL }}
+  <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider" value="StreamService" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider_url" value="{{ .Env.PEGA_STREAM_URL }}/stream/spi/2" type="java.lang.String"/>
   {{ end }}
 
   {{ if isTrue .Env.CASSANDRA_CLUSTER }}
