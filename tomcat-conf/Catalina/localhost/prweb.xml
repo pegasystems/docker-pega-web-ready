@@ -35,7 +35,7 @@
 
   {{ if isTrue .Env.HZ_CLIENT_MODE }}
   <Environment name="prconfig/cluster/clientserver/clientmode" value="{{ .Env.HZ_CLIENT_MODE }}" type="java.lang.String"/>
-  <Environment name="prconfig/Pega-RULES/onPegaK8s" value="{{ .Env.HZ_ON_PEGA_K8S }}" type="java.lang.String"/>
+  <Environment name="prconfig/Pega-RULES/hzDiscoveryK8s" value="{{ .Env.HZ_DISCOVERY_K8S }}" type="java.lang.String"/>
   <Environment name="prconfig/identification/cluster/name" value="{{ .Env.HZ_CLUSTER_NAME }}" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/server/dns" value="{{ .Env.HZ_DNS }}" type="java.lang.String"/>
   {{ end }}
