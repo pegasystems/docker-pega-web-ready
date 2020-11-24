@@ -33,12 +33,11 @@
   <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata" type="java.lang.String" />
   <Environment name="prconfig/cloud/isNodeAgnosticAdminStudio" value="true" type="java.lang.String"/>
 
-  {{ if isTrue .Env.CLIENT_MODE }}
-  <Environment name="prconfig/cluster/clientserver/clientmode" value="{{ .Env.CLIENT_MODE }}" type="java.lang.String"/>
-  <Environment name="prconfig/Pega-RULES/onPegaK8s" value="{{ .Env.ON_PEGA_K8S }}" type="java.lang.String"/>
-  <Environment name="prconfig/identification/cluster/name" value="{{ .Env.CLUSTER_NAME }}" type="java.lang.String"/>
-  <Environment name="prconfig/cluster/clientserver/server/namespace" value="{{ .Env.NAMESPACE }}" type="java.lang.String"/>
-  <Environment name="prconfig/cluster/clientserver/server/servicename" value="{{ .Env.SERVICE_NAME }}" type="java.lang.String"/>
+  {{ if isTrue .Env.HZ_CLIENT_MODE }}
+  <Environment name="prconfig/cluster/clientserver/clientmode" value="{{ .Env.HZ_CLIENT_MODE }}" type="java.lang.String"/>
+  <Environment name="prconfig/Pega-RULES/onPegaK8s" value="{{ .Env.HZ_ON_PEGA_K8S }}" type="java.lang.String"/>
+  <Environment name="prconfig/identification/cluster/name" value="{{ .Env.HZ_CLUSTER_NAME }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/server/dns" value="{{ .Env.HZ_DNS }}" type="java.lang.String"/>
   {{ end }}
   
 </Context>

@@ -121,11 +121,10 @@ ENV CASSANDRA_CLUSTER=false \
 ENV PEGA_SEARCH_URL=
 
 # Configure hazelcast. By default, hazelcast runs in embedded mode.
-Env CLIENT_MODE=false \
-    ON_PEGA_K8S= \
-    CLUSTER_NAME= \
-    NAMESPACE= \
-    SERVICE_NAME=
+Env HZ_CLIENT_MODE=false \
+    HZ_ON_PEGA_K8S= \
+    HZ_CLUSTER_NAME= \
+    HZ_DNS=
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
