@@ -163,7 +163,7 @@ Name 				| Purpose 		| Default
 HZ_CLIENT_MODE | Enables client mode for infinity  | `false`
 HZ_DISCOVERY_K8S | Indicates infinity client will use K8s discovery plugin to look for hazelcast nodes |
 HZ_CLUSTER_NAME| Hazelcast cluster name |
-HZ_URL_SERVER| URL of Hazelcast server	|
+HZ_SERVER_URL| Hazelcast server url |
 
 ## Image customizations
 
