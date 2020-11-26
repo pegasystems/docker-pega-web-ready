@@ -37,7 +37,7 @@
   <Environment name="prconfig/cluster/clientserver/clientmode" value="{{ .Env.HZ_CLIENT_MODE }}" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/hzOnK8s" value="{{ .Env.HZ_DISCOVERY_K8S }}" type="java.lang.String"/>
   <Environment name="prconfig/identification/cluster/name" value="{{ .Env.HZ_CLUSTER_NAME }}" type="java.lang.String"/>
-  <Environment name="prconfig/cluster/clientserver/server/url" value="{{ .Env.HZ_SERVER_URL }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/server/hostname" value="{{ .Env.HZ_SERVER_HOSTNAME }}" type="java.lang.String"/>
   {{ end }}
   
 </Context>
