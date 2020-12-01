@@ -108,7 +108,7 @@ ENV MAX_THREADS="300" \
     PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
 
 # Configure Remote JMX support and bind to port 9001
-ENV JMX_PORT=9001 /
+ENV JMX_PORT=9001 \
     USE_CUSTOM_JMX_CONNECTION=
 
 # Configure Cassandra.
