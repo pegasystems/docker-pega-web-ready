@@ -32,6 +32,9 @@ RUN chmod -R g+rw   ${CATALINA_HOME}/webapps/prweb
 
 # Make a jdbc driver available to tomcat applications
 COPY --chown=pegauser:root /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
+
+RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prconfig.xml
+RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prlog4j2.xml
 ```
 
 Build the image using the following command:
@@ -53,7 +56,7 @@ Mount points are used to link a directory within the Docker container to a durab
 
 Mount point 	| Purpose
 --- 			| ---
-`/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
+`/opt/pega/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
 `/heapdumps` 	| Used as the default output directory when you generate a heapdump.
 `/search_index`	| Used to persist a search index when the node hosts searched.
 
