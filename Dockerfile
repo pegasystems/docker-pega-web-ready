@@ -121,6 +121,12 @@ ENV CASSANDRA_CLUSTER=false \
 # Configure search nodes. Empty string falls back to search being done on the nodes themselves.
 ENV PEGA_SEARCH_URL=
 
+# Configure hazelcast. By default, hazelcast runs in embedded mode.
+ENV HZ_CLIENT_MODE=false \
+    HZ_DISCOVERY_K8S= \
+    HZ_CLUSTER_NAME= \
+    HZ_SERVER_HOSTNAME=
+
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
      chgrp -R 0 /opt/pega/kafkadata && \

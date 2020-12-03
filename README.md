@@ -156,6 +156,18 @@ CASSANDRA_PORT		| C* port		| `9042`
 CASSANDRA_USERNAME	| C* username	|
 CASSANDRA_PASSWORD	| C* password	|
 
+
+### Hazelcast settings
+
+The clustering used in a Pega environment is powered by a technology called `Hazelcast`. Hazelcast can be used in an embedded mode with no additional configuration required.  Some larger deployments of more than 20 Pega containers may start to benefit from improved performance and stability of running Hazelcast in a dedicated ReplicaSet. For more information about deploying Pega with Hazelcast as an external server, see the Helm charts and the Pega Community documentation.
+
+Name 				| Purpose 		| Default
+--- 				| --- 			| ---
+HZ_CLIENT_MODE | Enables client mode for infinity  | `false`
+HZ_DISCOVERY_K8S | Indicates infinity client will use K8s discovery plugin to look for hazelcast nodes |
+HZ_CLUSTER_NAME| Hazelcast cluster name |
+HZ_SERVER_HOSTNAME| Hazelcast server hostname |
+
 ## Image customizations
 
 This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has been thoroughly validated. You may choose change this to use your preferred Tomcat base image, however any change should be thoroughly tested and verified. Any problems that arise from changing the base of this image or customizing the contents of the ready image are not the responsibility of Pegasystems.

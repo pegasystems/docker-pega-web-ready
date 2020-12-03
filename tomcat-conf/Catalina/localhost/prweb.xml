@@ -32,5 +32,12 @@
   <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
   <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata" type="java.lang.String" />
   <Environment name="prconfig/cloud/isNodeAgnosticAdminStudio" value="true" type="java.lang.String"/>
+
+  {{ if isTrue .Env.HZ_CLIENT_MODE }}
+  <Environment name="prconfig/cluster/clientserver/clientmode" value="{{ .Env.HZ_CLIENT_MODE }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/hzOnK8s" value="{{ .Env.HZ_DISCOVERY_K8S }}" type="java.lang.String"/>
+  <Environment name="prconfig/identification/cluster/name" value="{{ .Env.HZ_CLUSTER_NAME }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/server/hostname" value="{{ .Env.HZ_SERVER_HOSTNAME }}" type="java.lang.String"/>
+  {{ end }}
   
 </Context>
