@@ -6,4 +6,15 @@ fileExistenceTests:
 - name: 'test artifacts folder check'
   path: '/tests'
   shouldExist: false
-  permissions: 'drwxr-xr-x'
+  permissions: 'drwxrwxrwx'
+commandTests:
+- name: "test permission with non root user"
+  command: "bash"
+  args:
+    - -c
+    - |
+      bash -c 'cd root'
+  exitCode: 1
+- name: "check current user"
+  command: "whoami"
+  expectedOutput: ["pegauser"]
