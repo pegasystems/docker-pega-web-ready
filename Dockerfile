@@ -122,7 +122,7 @@ ENV CASSANDRA_CLUSTER=false \
 ENV PEGA_SEARCH_URL=
 
 # Configure hazelcast. By default, hazelcast runs in embedded mode.
-Env HZ_CLIENT_MODE=false \
+ENV HZ_CLIENT_MODE=false \
     HZ_DISCOVERY_K8S= \
     HZ_CLUSTER_NAME= \
     HZ_SERVER_HOSTNAME=
