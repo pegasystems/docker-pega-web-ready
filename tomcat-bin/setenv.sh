@@ -43,17 +43,15 @@ CATALINA_OPTS="${CATALINA_OPTS} -DNodeSettings=\"Pega-IntegrationEngine/EnableRe
 #  When left blank, disable indexing.
 CATALINA_OPTS="${CATALINA_OPTS} -Dindex.directory=${INDEX_DIRECTORY}"
 
-# Setup JMX
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=${JMX_PORT}"
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}"
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"	
-
-# Setup SMA with auto discovery
-CATALINA_OPTS="${CATALINA_OPTS} -DSMAAutoNodeDiscovery=true "
-CATALINA_OPTS="${CATALINA_OPTS} -DSMAAutoNodeDiscoveryJMXPort=${JMX_PORT} "
-CATALINA_OPTS="${CATALINA_OPTS} -DSMAAutoNodeDiscoveryPort=8080 "
+# If not setting USE_CUSTOM_JMX_CONNECTION to "true", specify default JVM arguments for JMX
+if [ "${USE_CUSTOM_JMX_CONNECTION}" != "true" ]; then
+  # Setup OOTB JMX connectivity
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=${JMX_PORT}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"	
+fi
 
 # Provide setting required for stream node 
 if [ "${IS_STREAM_NODE}" = "true" ]; then

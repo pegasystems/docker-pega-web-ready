@@ -3,10 +3,11 @@
 def labels = ""
 def imageName = ""
 def artifactoryURL = "https://index.docker.io/v1/"
+def automation = credentials('automationuser')
 
 node("docker"){
 
-  stage("Initialze"){
+  stage("Initialize"){
     currentBuild.displayName = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
       if (env.CHANGE_ID) {
         //Just a comment
@@ -27,8 +28,8 @@ node("docker"){
   stage ("Checkout and Build Images") {
       def scmVars = checkout scm
       branchName = "${scmVars.GIT_BRANCH}"
-      imageName = "scrumteamwhitewalkers/web-ready:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-      withCredentials([usernamePassword(credentialsId: "scrumteamwhitewalkers",
+    imageName = "${automation}/web-ready:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+      withCredentials([usernamePassword(credentialsId: "automation_repo",
       passwordVariable: 'ARTIFACTORY_PASSWORD', usernameVariable: 'ARTIFACTORY_USER')]) {
         sh "docker login -u ${ARTIFACTORY_USER} -p ${ARTIFACTORY_PASSWORD} ${artifactoryURL}"
         sh "docker build --no-cache -t ${imageName} ."
