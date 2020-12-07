@@ -39,7 +39,7 @@ node("docker"){
 
   stage("Setup Cluster and Execute Tests") {
     jobMap = [:]
-    jobMap["job"] = "../kubernetes-test-orchestrator/master"
+    jobMap["job"] = "../kubernetes-test-orchestrator/refactor"
     jobMap["parameters"] = [
                             string(name: 'PROVIDERS', value: labels),
                             string(name: 'WEB_READY_IMAGE_NAME', value: imageName),
