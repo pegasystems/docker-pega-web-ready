@@ -27,8 +27,8 @@ node("docker"){
   stage ("Checkout and Build Images") {
       def scmVars = checkout scm
       branchName = "${scmVars.GIT_BRANCH}"
-   withCredentials([string(credentialsId: 'automationuser', variable: 'REPO')]) {
-    imageName = "${REPO}/web-ready:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+   withCredentials([string(credentialsId: 'automationuser', variable: 'AutomationDockerId')]) {
+    imageName = "${AutomationDockerId}/web-ready:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
       withCredentials([usernamePassword(credentialsId: "automation_repo",
       passwordVariable: 'ARTIFACTORY_PASSWORD', usernameVariable: 'ARTIFACTORY_USER')]) {
         sh "docker login -u ${ARTIFACTORY_USER} -p ${ARTIFACTORY_PASSWORD} ${artifactoryURL}"
