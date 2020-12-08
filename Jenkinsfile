@@ -3,7 +3,6 @@
 def labels = ""
 def imageName = ""
 def artifactoryURL = "https://index.docker.io/v1/"
-def automation = credentials('automationuser')
 
 node("docker"){
 
@@ -28,13 +27,15 @@ node("docker"){
   stage ("Checkout and Build Images") {
       def scmVars = checkout scm
       branchName = "${scmVars.GIT_BRANCH}"
-    imageName = "${automation}/web-ready:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+      withCredentials([string(credentialsId: 'automationuser', variable: 'AutomationDockerId')]) {
+       imageName = "${AutomationDockerId}/web-ready:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
       withCredentials([usernamePassword(credentialsId: "automation_repo",
       passwordVariable: 'ARTIFACTORY_PASSWORD', usernameVariable: 'ARTIFACTORY_USER')]) {
         sh "docker login -u ${ARTIFACTORY_USER} -p ${ARTIFACTORY_PASSWORD} ${artifactoryURL}"
         sh "docker build --no-cache -t ${imageName} ."
         sh "docker push ${imageName}"
       }
+    }
   }
 
   stage("Setup Cluster and Execute Tests") {
