@@ -940,4 +940,4 @@ commandTests:
       mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
       bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
-    expectedOutput: ["Hazelcast Password is - hz_cs_auth_username"]
+    expectedOutput: ["Hazelcast Password is - hz_cs_auth_password"]
