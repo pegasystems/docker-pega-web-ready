@@ -883,7 +883,7 @@ commandTests:
     - key: "JDBC_URL"
       value: "jdbc:postgresql://localhost:5432/pegadb"
     - key: "JDBC_CLASS"
-       value: "org.postgresql.Driver"
+      value: "org.postgresql.Driver"
     - key: "DB_USERNAME"
       value: "postgres_user"
     - key: "DB_PASSWORD"
