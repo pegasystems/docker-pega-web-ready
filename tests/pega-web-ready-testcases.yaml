@@ -855,3 +855,89 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["Loading prlog4j2 from /opt/pega/config/prlog4j2.xml"]
+
+  # Hazelcast Username as file input
+  - name: "Hazelcast Username as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"
+    command: "bash"
+    args:
+     - -c
+     - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/HZ_CS_AUTH_USERNAME /opt/pega/secrets/HZ_CS_AUTH_USERNAME &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Hazelcast Username is - hazelcast_username_from_file"]
+
+  # Hazelcast Password as file input
+  - name: "Hazelcast Password as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      mv tests/test-artifacts/HZ_CS_AUTH_PASSWORD /opt/pega/secrets/HZ_CS_AUTH_PASSWORD &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Hazelcast Password is - hazelcast_password_from_file"]
+
+  # Hazelcast Username as Environment Variable
+  - name: "Hazelcast Username as Environment Variable"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"
+    - key: "HZ_CS_AUTH_USERNAME"
+      value: "hz_cs_auth_username"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Hazelcast Username is - hz_cs_auth_username"]
+
+  # Hazelcast Password as Environment Variable
+  - name: "Hazelcast Password as Environment Variable"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"
+    - key: "HZ_CS_AUTH_PASSWORD"
+      value: "hz_cs_auth_password"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Hazelcast Password is - hz_cs_auth_password"]

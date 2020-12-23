@@ -8,6 +8,9 @@ db_password_file="/opt/pega/secrets/DB_PASSWORD"
 cassandra_username_file="/opt/pega/secrets/CASSANDRA_USERNAME"
 cassandra_password_file="/opt/pega/secrets/CASSANDRA_PASSWORD"
 
+hazelcast_username_file="/opt/pega/secrets/HZ_CS_AUTH_USERNAME"
+hazelcast_password_file="/opt/pega/secrets/HZ_CS_AUTH_PASSWORD"
+
 echo "$NODE_TYPE"
 
 echo "Index Directory Value - $INDEX_DIRECTORY"
@@ -31,6 +34,22 @@ fi
 echo "Cassandra Username is - $SECRET_CASSANDRA_USERNAME"
 
 echo "Cassandra Password is - $SECRET_CASSANDRA_PASSWORD"
+
+if [ -e "$hazelcast_username_file" ]; then
+    export SECRET_HAZELCAST_USERNAME=$(<${hazelcast_username_file})
+else
+    export SECRET_HAZELCAST_USERNAME=hz_cs_auth_username
+fi
+
+if [ -e "$hazelcast_password_file" ]; then
+    export SECRET_HAZELCAST_PASSWORD=$(<${hazelcast_password_file})
+else
+    export SECRET_HAZELCAST_PASSWORD=hz_cs_auth_password
+fi
+
+echo "Hazelcast Username is - $SECRET_HAZELCAST_USERNAME"
+
+echo "Hazelcast Password is - $SECRET_HAZELCAST_PASSWORD"
 
 if [ -e "$db_username_file" ]; then
    export SECRET_DB_USERNAME=$(<${db_username_file})
