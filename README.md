@@ -25,11 +25,16 @@ RUN unzip -q -o prweb.war -d /prweb
 
 FROM pegasystems/pega-ready
 
-# Import prweb to tomcat webapps directory
-COPY --from=builder /prweb ${CATALINA_HOME}/webapps/prweb
+# Copy prweb to tomcat webapps directory
+COPY --chown=pegauser:root --from=builder /prweb ${CATALINA_HOME}/webapps/prweb
+
+RUN chmod -R g+rw   ${CATALINA_HOME}/webapps/prweb
 
 # Make a jdbc driver available to tomcat applications
-COPY /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
+COPY --chown=pegauser:root /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
+
+RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prconfig.xml
+RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prlog4j2.xml
 ```
 
 Build the image using the following command:
@@ -51,7 +56,7 @@ Mount points are used to link a directory within the Docker container to a durab
 
 Mount point 	| Purpose
 --- 			| ---
-`/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
+`/opt/pega/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
 `/heapdumps` 	| Used as the default output directory when you generate a heapdump.
 `/search_index`	| Used to persist a search index when the node hosts searched.
 
@@ -122,6 +127,7 @@ Name 						| Purpose 	| Default
 NODE_TYPE 					| Specify a node type or classification to specialize the processing within this container.  for more information, see  [Node types for on-premises environments](https://community.pega.com/sites/default/files/help_v83/procomhelpmain.htm#engine/node-classification/eng-node-types-ref.htm). |
 PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
 PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
+NODE_TIER                 | Specify the display name of the tier to which you logically associate this node. |
 
 ### Customize the Tomcat runtime
 
@@ -129,6 +135,8 @@ You can specify a variety settings for the Tomcat server running in your deploym
 
 Name 			| Purpose 	| Default
 --- 			| --- 		| ---
+PEGA_APP_CONTEXT_PATH   | The application context path that Tomcat uses to direct traffic to the Pega application | prweb
+PEGA_DEPLOYMENT_DIR   | The location of the Pega app deployment | /usr/local/tomcat/webapps/prweb
 MAX_THREADS 	| The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300`
 JAVA_OPTS 		| Specify any additional parameters that should be appended to the `java` command. |
 INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`
@@ -147,6 +155,18 @@ CASSANDRA_NODES		| A comma separated list of C* nodes (e.g. `10.20.205.26,10.20.
 CASSANDRA_PORT		| C* port		| `9042`
 CASSANDRA_USERNAME	| C* username	|
 CASSANDRA_PASSWORD	| C* password	|
+
+
+### Hazelcast settings
+
+The clustering used in a Pega environment is powered by a technology called `Hazelcast`. Hazelcast can be used in an embedded mode with no additional configuration required.  Some larger deployments of more than 20 Pega containers may start to benefit from improved performance and stability of running Hazelcast in a dedicated ReplicaSet. For more information about deploying Pega with Hazelcast as an external server, see the Helm charts and the Pega Community documentation.
+
+Name 				| Purpose 		| Default
+--- 				| --- 			| ---
+HZ_CLIENT_MODE | Enables client mode for infinity  | `false`
+HZ_DISCOVERY_K8S | Indicates infinity client will use K8s discovery plugin to look for hazelcast nodes |
+HZ_CLUSTER_NAME| Hazelcast cluster name |
+HZ_SERVER_HOSTNAME| Hazelcast server hostname |
 
 ## Image customizations
 
