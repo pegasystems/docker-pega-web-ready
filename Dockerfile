@@ -125,7 +125,9 @@ ENV PEGA_SEARCH_URL=
 ENV HZ_CLIENT_MODE=false \
     HZ_DISCOVERY_K8S= \
     HZ_CLUSTER_NAME= \
-    HZ_SERVER_HOSTNAME=
+    HZ_SERVER_HOSTNAME= \
+    HZ_CS_AUTH_USERNAME= \
+    HZ_CS_AUTH_PASSWORD=
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
