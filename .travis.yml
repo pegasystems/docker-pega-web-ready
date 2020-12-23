@@ -9,6 +9,7 @@ env:
     - secure: "Pu8tfrmmWAnQYmgZ9fmiosVj22XeoZ6mSwSKe3knjmLQYC8A/9VJSFjpZn11dqUQokhZMbgbTYthp4c4/JW7cy8nGWykg7a/osiWqNAuPYiJl+oUmPJcxW0Enagq8p5+RNbFfeND4GyX5ZdBi0xRaGh2CgUbmVYxbaSfq0Sbkfzgl4HkF8uqBPkjdfQLBJ/kAe5prXkAAAyu58LYvPNjpMoOSlOS+c7F+XNokMLzlsL+sKE/CC2l6tLjDslxLX5CzW8jA1vBkqhThAO0Fe5UYv+6AqDBfsYBro01bgmfMR9F/IwBkOH3eFcs/icm5BOeYaQ2It5YEhbSW1CY8U/iFmKkpKWe5q8Jw4fgRPB4QTcVu/M0ffvWtlaTwCV0T9kE93imfQidfrRSTbnDnZwunxpn3Ymx8OAhEzeLndq56wq0ShIJTkh65mtkHVf+75dQ6F4nHwB+RkhHT6ggGWGUNcYOkMb+UQq4bzpGmQNJC9zdFtqOp1EcB5WnlOrDxbyxJ8yrYNvKvJ8+wi1K+Z/RZvRCCE+P2AJQc2mMlgKelP7WUPnhcNRTEyMa6Q6L0EklluVRR3b4N7nbpqlwU+lYU2pyJ764ULNXJJfk7CmC3dhI3PBQ/BreFYNNd7TujrNK53T41VAYfHxhIoz8lwsHT/fOIKAKE7LLqXvbR3Tp+wo="
 
 install:
+  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
   - curl -L https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64 > clair-scanner
   - chmod +x clair-scanner
   - sudo mv clair-scanner /usr/local/bin
@@ -22,7 +23,6 @@ script:
   - clair-scanner -w tests/cve-scan-whitelist.yaml -c "http://127.0.0.1:6060" --threshold="High" --ip "$(ip -4 addr show docker0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" $IMAGE_NAME:latest
 
 before_deploy:
-  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
   - docker tag $IMAGE_NAME:latest $IMAGE_NAME:$VERSION #Tag for current version
 
 deploy:
