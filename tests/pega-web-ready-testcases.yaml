@@ -731,8 +731,16 @@ commandTests:
       value: "postgres"
     - key: "DB_PASSWORD"
       value: "postgres"
+    - key: "PEGA_SEARCH_TYPE"
+      value: "external"
     - key: "PEGA_SEARCH_URL"
-      value: "http://pega-search"               
+      value: "http://pega-search"
+    - key: "PEGA_STREAM_URL"
+      value: "http://pega-stream" 
+    - key: "CASSANDRA_CLUSTER"
+      value: "true"
+    - key: "HZ_CLIENT_MODE"
+      value: "true"      
     command: "bash"
     args:
     - -c
