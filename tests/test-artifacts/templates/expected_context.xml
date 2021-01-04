@@ -13,12 +13,12 @@
 		url="jdbc:postgresql://localhost:5432/pegadb"
 		username="postgres"
 		password="postgres"
-		maxTotal="250"
-		minIdle="10"
-		maxIdle="50"
+		maxTotal="75"
+		minIdle="3"
+		maxIdle="25"
 		maxWaitMillis="30000"
-        initialSize="50"
-        connectionProperties="socketTimeout=90"
+        initialSize="10"
+        connectionProperties=
 	/>
 
   <Environment name="url/initialization/explicittempdir" value="path" type="java.lang.String"/>
