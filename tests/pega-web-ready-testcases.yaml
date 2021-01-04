@@ -739,7 +739,7 @@ commandTests:
     - |
         bash -c './scripts/docker-entrypoint.sh' &&        
         diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml > /tests/test-artifacts/diffCheck.txt && 
-        cat /tests/test-artifacts/diffCheck.txt && [ -s /tests/test-artifacts/diffCheck.txt ] && echo "prweb.xml is not dockerized properly" || echo "prweb.xml is dockerized properly"  
+        cat /tests/test-artifacts/diffChek.txt && [ -s /tests/test-artifacts/diffCheck.txt ] && echo "prweb.xml is not dockerized properly" || echo "prweb.xml is dockerized properly"  
     exitCode: 0
     excludedOutput: ["prweb.xml is not dockerized properly"]
 # Verify the run argument for catalina.sh   
