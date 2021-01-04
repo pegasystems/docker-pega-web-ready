@@ -10,7 +10,7 @@
   <Environment name="prconfig/database/databases/pegasearch/searchDeploymentType" value="external" type="java.lang.String" />
   
 
-
+  
   <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="http://pega-search" type="java.lang.String"/>
   
 
