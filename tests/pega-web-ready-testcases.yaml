@@ -689,11 +689,9 @@ commandTests:
     - |
         mv /tests/test-artifacts/templates/context.xml.tmpl /opt/pega/config/context.xml.tmpl &&
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml > /tests/test-artifacts/templates/diffCheck.txt && 
-        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt ] && echo "context.xml is not properly dockerized" || echo "context.xml is properly dockerized"
-
+        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized"
     exitCode: 0
-    expectedOutput: ["context.xml is properly dockerized"]
+    excludedOutput: ["context.xml is not properly dockerized"]
 # Dockerize tomcat users xml   
   - name: "Dockerize tomcat users tmpl file"
     envVars:
@@ -715,11 +713,9 @@ commandTests:
     - |
         mv /tests/test-artifacts/templates/tomcat-users.xml.tmpl /opt/pega/config/tomcat-users.xml.tmpl &&
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml > /tests/test-artifacts/templates/diffCheck.txt && 
-        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt ] && echo "tomcat-users.xml is not properly dockerized" || echo "tomcat-users.xml is properly dockerized"
-
+        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml || echo "tomcat-users.xml is not properly dockerized"
     exitCode: 0
-    expectedOutput: ["tomcat-users.xml is properly dockerized",""]
+    excludedOutput: ["tomcat-users.xml is not properly dockerized",""]
 # Dockerize prweb.xml check
   - name: "Dockerize PRWEB Check"
     envVars:
