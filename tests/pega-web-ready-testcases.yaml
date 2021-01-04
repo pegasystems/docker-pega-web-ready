@@ -689,7 +689,7 @@ commandTests:
     - |
         mv /tests/test-artifacts/templates/context.xml.tmpl /opt/pega/config/context.xml.tmpl &&
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized"
+        cat /usr/local/tomcat/conf/context.xml && diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized"
     exitCode: 0
     excludedOutput: ["context.xml is not properly dockerized"]
 # Dockerize tomcat users xml   
@@ -711,11 +711,11 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/templates/tomcat-users.xml.tmpl /opt/pega/config/tomcat-users.xml.tmpl &&
+        mv /tests/test-artifacts/templates/tomcat-users.xml.tmpl /opt/pega/config/tomcat-users.xml.tmpl 
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml || echo "tomcat-users.xml is not properly dockerized"
+        cat /usr/local/tomcat/conf/tomcat-users.xml && diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml || echo "tomcat-users.xml is not properly dockerized"
     exitCode: 0
-    excludedOutput: ["tomcat-users.xml is not properly dockerized",""]
+    excludedOutput: ["tomcat-users.xml is not properly dockerized"]
 # Dockerize prweb.xml check
   - name: "Dockerize PRWEB Check"
     envVars:
@@ -741,8 +741,8 @@ commandTests:
     args:
     - -c
     - |
-        bash -c './scripts/docker-entrypoint.sh' && cat /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&      
-        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly"  
+        bash -c './scripts/docker-entrypoint.sh' &&      
+        cat /usr/local/tomcat/conf/Catalina/localhost/prweb.xml && diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly"  
     exitCode: 0
     excludedOutput: ["prweb.xml is not dockerized properly"]
 # Verify the run argument for catalina.sh   
