@@ -108,7 +108,8 @@ ENV MAX_THREADS="300" \
     PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
 
 # Configure Remote JMX support and bind to port 9001
-ENV JMX_PORT=9001
+ENV JMX_PORT=9001 \
+    USE_CUSTOM_JMX_CONNECTION=
 
 # Configure Cassandra.
 ENV CASSANDRA_CLUSTER=false \
@@ -119,6 +120,14 @@ ENV CASSANDRA_CLUSTER=false \
 
 # Configure search nodes. Empty string falls back to search being done on the nodes themselves.
 ENV PEGA_SEARCH_URL=
+
+# Configure hazelcast. By default, hazelcast runs in embedded mode.
+ENV HZ_CLIENT_MODE=false \
+    HZ_DISCOVERY_K8S= \
+    HZ_CLUSTER_NAME= \
+    HZ_SERVER_HOSTNAME= \
+    HZ_CS_AUTH_USERNAME= \
+    HZ_CS_AUTH_PASSWORD=
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
