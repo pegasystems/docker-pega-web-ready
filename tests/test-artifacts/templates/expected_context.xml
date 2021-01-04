@@ -18,7 +18,7 @@
 		maxIdle="25"
 		maxWaitMillis="30000"
         initialSize="10"
-        connectionProperties=
+        connectionProperties=""
 	/>
 
   <Environment name="url/initialization/explicittempdir" value="path" type="java.lang.String"/>
