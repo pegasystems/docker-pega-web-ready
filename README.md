@@ -167,6 +167,8 @@ HZ_CLIENT_MODE | Enables client mode for infinity  | `false`
 HZ_DISCOVERY_K8S | Indicates infinity client will use K8s discovery plugin to look for hazelcast nodes |
 HZ_CLUSTER_NAME| Hazelcast cluster name |
 HZ_SERVER_HOSTNAME| Hazelcast server hostname |
+HZ_CS_AUTH_USERNAME | Hazelcast username for authentication |
+HZ_CS_AUTH_PASSWORD | Hazelcast password for authentication |
 
 ## Image customizations
 

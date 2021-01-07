@@ -38,6 +38,8 @@
   <Environment name="prconfig/cluster/clientserver/hzOnK8s" value="{{ .Env.HZ_DISCOVERY_K8S }}" type="java.lang.String"/>
   <Environment name="prconfig/identification/cluster/name" value="{{ .Env.HZ_CLUSTER_NAME }}" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/server/hostname" value="{{ .Env.HZ_SERVER_HOSTNAME }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/authentication/username" value="{{ .Env.SECRET_HZ_CS_AUTH_USERNAME }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/authentication/password" value="{{ .Env.SECRET_HZ_CS_AUTH_PASSWORD }}" type="java.lang.String"/>
   {{ end }}
   
 </Context>
