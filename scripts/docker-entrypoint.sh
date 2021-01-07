@@ -43,6 +43,9 @@ cassandra_password_file="${secret_root}/CASSANDRA_PASSWORD"
 pega_diagnostic_username_file="${secret_root}/PEGA_DIAGNOSTIC_USER"
 pega_diagnostic_password_file="${secret_root}/PEGA_DIAGNOSTIC_PASSWORD"
 
+hazelcast_username_file="${secret_root}/HZ_CS_AUTH_USERNAME"
+hazelcast_password_file="${secret_root}/HZ_CS_AUTH_PASSWORD"
+
 # Define the JDBC_URL variable based on inputs
 if [ "$JDBC_URL" == "" ]; then
   echo "JDBC_URL must be specified.";
@@ -124,6 +127,25 @@ if [ -e "$cassandra_password_file" ]; then
    export SECRET_CASSANDRA_PASSWORD=$(<${cassandra_password_file})
 else
    export SECRET_CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
+fi
+
+if [ -e "$hazelcast_username_file" ]; then
+   export SECRET_HZ_CS_AUTH_USERNAME=$(<${hazelcast_username_file})
+else
+   export SECRET_HZ_CS_AUTH_USERNAME=${HZ_CS_AUTH_USERNAME}
+fi
+
+if [ -e "$hazelcast_password_file" ]; then
+   export SECRET_HZ_CS_AUTH_PASSWORD=$(<${hazelcast_password_file})
+else
+   export SECRET_HZ_CS_AUTH_PASSWORD=${HZ_CS_AUTH_PASSWORD}
+fi
+
+if [ "HZ_CLIENT_MODE" == true ]; then
+    if [ "$SECRET_HZ_CS_AUTH_USERNAME" == "" ] || [ "$SECRET_HZ_CS_AUTH_PASSWORD" == "" ]; then
+        echo "HZ_CS_AUTH_USERNAME & HZ_CS_AUTH_PASSWORD must be specified in hazelcast client server mode deployments.";
+        exit 1
+    fi
 fi
 
 /bin/dockerize -template ${CATALINA_HOME}/webapps/ROOT/index.html:${CATALINA_HOME}/webapps/ROOT/index.html
@@ -216,7 +238,7 @@ rm ${CATALINA_HOME}/conf/context.xml.tmpl
 rm ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl
 
 
-unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT
+unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT HZ_CS_AUTH_USERNAME SECRET_HZ_CS_AUTH_USERNAME HZ_CS_AUTH_PASSWORD SECRET_HZ_CS_AUTH_PASSWORD
 
 unset pega_root lib_root config_root
 
