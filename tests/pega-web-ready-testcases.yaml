@@ -689,11 +689,35 @@ commandTests:
     - |
         mv /tests/test-artifacts/templates/context.xml.tmpl /opt/pega/config/context.xml.tmpl &&
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml > /tests/test-artifacts/templates/diffCheck.txt && 
-        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt ] && echo "context.xml is not properly dockerized" || echo "context.xml is properly dockerized"
-
+        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized"
     exitCode: 0
-    expectedOutput: ["context.xml is properly dockerized"]
+    excludedOutput: ["context.xml is not properly dockerized"]
+
+# Dockerize context xml (Negative test case)
+  - name: "Dockerize context.xml tmpl file"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "dummy"
+    - key: "DB_PASSWORD"
+      value: "dummy"
+    - key: "RULES_SCHEMA"
+      value: "rules_negative"
+    - key: "DATA_SCHEMA"
+      value: "data_negative"
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/templates/context.xml.tmpl /opt/pega/config/context.xml.tmpl &&
+        bash -c './scripts/docker-entrypoint.sh' &&
+        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized"
+    exitCode: 0
+    expectedOutput: ["context.xml is not properly dockerized"]
+
 # Dockerize tomcat users xml   
   - name: "Dockerize tomcat users tmpl file"
     envVars:
@@ -713,13 +737,11 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/templates/tomcat-users.xml.tmpl /opt/pega/config/tomcat-users.xml.tmpl &&
+        mv /tests/test-artifacts/templates/tomcat-users.xml.tmpl /opt/pega/config/tomcat-users.xml.tmpl 
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml > /tests/test-artifacts/templates/diffCheck.txt && 
-        cat /tests/test-artifacts/templates/diffCheck.txt && [ -s /tests/test-artifacts/templates/diffCheck.txt ] && echo "tomcat-users.xml is not properly dockerized" || echo "tomcat-users.xml is properly dockerized"
-
+        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml || echo "tomcat-users.xml is not properly dockerized"
     exitCode: 0
-    expectedOutput: ["tomcat-users.xml is properly dockerized",""]
+    excludedOutput: ["tomcat-users.xml is not properly dockerized"]
 # Dockerize prweb.xml check
   - name: "Dockerize PRWEB Check"
     envVars:
@@ -731,17 +753,55 @@ commandTests:
       value: "postgres"
     - key: "DB_PASSWORD"
       value: "postgres"
+    - key: "PEGA_SEARCH_TYPE"
+      value: "external"
     - key: "PEGA_SEARCH_URL"
-      value: "http://pega-search"               
+      value: "http://pega-search"
+    - key: "PEGA_STREAM_URL"
+      value: "http://pega-stream" 
+    - key: "CASSANDRA_CLUSTER"
+      value: "true"
+    - key: "HZ_CLIENT_MODE"
+      value: "true"      
     command: "bash"
     args:
     - -c
     - |
-        bash -c './scripts/docker-entrypoint.sh' &&        
-        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml > /tests/test-artifacts/diffCheck.txt && 
-        cat /tests/test-artifacts/diffCheck.txt && [ -s /tests/test-artifacts/diffCheck.txt ] && echo "prweb.xml is not dockerized properly" || echo "prweb.xml is dockerized properly"  
+        bash -c './scripts/docker-entrypoint.sh' &&      
+        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly" 
     exitCode: 0
-    expectedOutput: ["prweb.xml is dockerized properly"]
+    excludedOutput: ["prweb.xml is not dockerized properly"]
+
+# Dockerize prweb.xml check (Negative test case)
+  - name: "Dockerize PRWEB Check"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "dummy"
+    - key: "DB_PASSWORD"
+      value: "dummy"
+    - key: "PEGA_SEARCH_TYPE"
+      value: "external"
+    - key: "PEGA_SEARCH_URL"
+      value: "http://pega-search"
+    - key: "PEGA_STREAM_URL"
+      value: "http://pega-stream"
+    - key: "CASSANDRA_CLUSTER"
+      value: "false"
+    - key: "HZ_CLIENT_MODE"
+      value: "false"
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh' &&
+        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly"
+    exitCode: 0
+    expectedOutput: ["prweb.xml is not dockerized properly"]
+
 # Verify the run argument for catalina.sh   
   - name: "Verify run argument for catalina.sh"
     envVars:
@@ -856,7 +916,7 @@ commandTests:
     exitCode: 0
     expectedOutput: ["Loading prlog4j2 from /opt/pega/config/prlog4j2.xml"]
 
-  # Hazelcast Username as file input
+    # Hazelcast Username as file input
   - name: "Hazelcast Username as file input"
     envVars:
     - key: "JDBC_URL"

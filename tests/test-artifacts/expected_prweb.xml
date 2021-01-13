@@ -1,7 +1,45 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Context docBase="/usr/local/tomcat/webapps/prweb">
+  <!-- When including prconfig settings as JNDI environment entries, make sure that:
+    1. JNDI names are unique.
+    2. No JNDI names are wholely included as the prefix to another JNDI name. 
+       Ie, 'abc/feature1' and 'abc/feature1/threshold' can't be bound to objects.
+  -->
+  
+  
+  <Environment name="prconfig/database/databases/pegasearch/searchDeploymentType" value="external" type="java.lang.String" />
+  
+
+  
   <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="http://pega-search" type="java.lang.String"/>
+  
+
+  
+  <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider" value="StreamService" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider_url" value="http://pega-stream" type="java.lang.String"/>
+  
+
+  
+  <Environment name="prconfig/dnode/external_cassandra_cluster" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/external_cassandra_nodes" value="" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/external_cassandra_port" value="9042" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_username" value="" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_password" value="" type="java.lang.String"/>
+  
+
   <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
   <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
-  <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata" type="java.lang.String" />
+  <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata/data" type="java.lang.String" />
+  <Environment name="prconfig/cloud/isNodeAgnosticAdminStudio" value="true" type="java.lang.String"/>
+
+  
+  <Environment name="prconfig/cluster/clientserver/clientmode" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/hzOnK8s" value="" type="java.lang.String"/>
+  <Environment name="prconfig/identification/cluster/name" value="" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/server/hostname" value="" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/authentication/username" value="" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/authentication/password" value="" type="java.lang.String"/>
+  
+  
 </Context>
