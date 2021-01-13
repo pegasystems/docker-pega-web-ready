@@ -1,5 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Context>
+  <!-- When including prconfig settings as JNDI environment entries, make sure that:
+    1. JNDI names are unique.
+    2. No JNDI names are wholely included as the prefix to another JNDI name. 
+       Ie, 'abc/feature1' and 'abc/feature1/threshold' can't be bound to objects.
+  -->
 
   <WatchedResource>WEB-INF/web.xml</WatchedResource>
 
@@ -8,17 +13,16 @@
   	<Resource name="jdbc/PegaRULES"
 		auth="Container"
 		type="javax.sql.DataSource"
-		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
 		driverClassName="org.postgresql.Driver"
 		url="jdbc:postgresql://localhost:5432/pegadb"
 		username="postgres"
 		password="postgres"
-		maxTotal="250"
-		minIdle="10"
-		maxIdle="50"
+		maxTotal="75"
+		minIdle="3"
+		maxIdle="25"
 		maxWaitMillis="30000"
-        initialSize="50"
-        connectionProperties="socketTimeout=90"
+        initialSize="10"
+        connectionProperties=""
 	/>
 
   <Environment name="url/initialization/explicittempdir" value="path" type="java.lang.String"/>
