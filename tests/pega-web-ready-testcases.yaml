@@ -18,7 +18,7 @@ metadataTest:
    - key: JDBC_MAX_WAIT
      value: 30000
    - key: JDBC_INITIAL_SIZE
-     value: 10
+     value: 4
    - key: JDBC_CONNECTION_PROPERTIES
      value: 
   exposedPorts: ["8080", "9001", "47100", "7003"]  
