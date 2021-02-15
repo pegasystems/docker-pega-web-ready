@@ -169,6 +169,10 @@
                pattern="%{X-Forwarded-For}i %h %l %u %t &quot;%r&quot; %s %b" 
                resolveHosts="false" />
 
+        <Valve className="org.apache.catalina.valves.ErrorReportValve"
+               showReport="false" 
+               showServerInfo="false" />
+
       </Host>
     </Engine>
   </Service>
