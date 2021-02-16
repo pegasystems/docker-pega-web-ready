@@ -3,12 +3,13 @@ services:
 
 env:
   global:
-    - IMAGE_NAME=pegasystems/pega-ready
-    - VERSION=2.1.0
+    - IMAGE_NAME="pegasystems/pega-ready"
+    - VERSION="2.1.0-${TRAVIS_REPO_SLUG%%/*}-$TRAVIS_BUILD_NUMBER"
     - secure: "eumCrUvnKXEJd+6bV6WB03O4H1CSUB2wcTFIXL8liYrDJgU4690gTX+N85xZvo3Fjb4XeIEfjmhuxzO9XiypPdqM/Q2o06ryTWnxOdIGtnAMLClRqsJKwjZXxT2L5YfDaHZgzTQDiT7GuxtHfVsGU4vnpUpA2+UR+zQR2M9itkdwI6msZww9zyy+i+s5HLhOCWiyc0sFQrMTeJhu5d3SiqfF5QMEGlkO3IzYQR+r1QGNgaMeZgAiqArS/uLfJ0AubDrtChXc7IVP7RERa5RIa+PeHrCQEWPn92G0cLj3wozpTyti8saurPMkWVu3FQ7YquFFRVrb8BB7sDUG7M9lsHu4wVrajUWebG235uCcyMd8d6i3WgCg/reBdEY05p7lwH0T7noFfUTC2Cz5hLvzd18kgMSf5H58stUzlkKQ73lqosbOZBHW5jIy35qcmoe9UVcBrUl9mvRToahD5xDyjndaZBVGIyxlu0DdkZOnfvPztIkSxFsymzjy5RX4cqU1g5PA8Xfbck1DtOxnlpKm28tengMqqSP/I4C00IoUK2kQODiMrK0gJoZ5MO4anKM8Eda3Hnzh10ZPRq6EaZqb2TCuNduKOVWxqopst9Ros0+JsDy1evN+Xu+XdZhcR2We42YI+c05K0wYEmqxRlEHImG8d5BahHNGoJ8AfUICaNE="
     - secure: "Pu8tfrmmWAnQYmgZ9fmiosVj22XeoZ6mSwSKe3knjmLQYC8A/9VJSFjpZn11dqUQokhZMbgbTYthp4c4/JW7cy8nGWykg7a/osiWqNAuPYiJl+oUmPJcxW0Enagq8p5+RNbFfeND4GyX5ZdBi0xRaGh2CgUbmVYxbaSfq0Sbkfzgl4HkF8uqBPkjdfQLBJ/kAe5prXkAAAyu58LYvPNjpMoOSlOS+c7F+XNokMLzlsL+sKE/CC2l6tLjDslxLX5CzW8jA1vBkqhThAO0Fe5UYv+6AqDBfsYBro01bgmfMR9F/IwBkOH3eFcs/icm5BOeYaQ2It5YEhbSW1CY8U/iFmKkpKWe5q8Jw4fgRPB4QTcVu/M0ffvWtlaTwCV0T9kE93imfQidfrRSTbnDnZwunxpn3Ymx8OAhEzeLndq56wq0ShIJTkh65mtkHVf+75dQ6F4nHwB+RkhHT6ggGWGUNcYOkMb+UQq4bzpGmQNJC9zdFtqOp1EcB5WnlOrDxbyxJ8yrYNvKvJ8+wi1K+Z/RZvRCCE+P2AJQc2mMlgKelP7WUPnhcNRTEyMa6Q6L0EklluVRR3b4N7nbpqlwU+lYU2pyJ764ULNXJJfk7CmC3dhI3PBQ/BreFYNNd7TujrNK53T41VAYfHxhIoz8lwsHT/fOIKAKE7LLqXvbR3Tp+wo="
 
 install:
+  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" || true
   - curl -L https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64 > clair-scanner
   - chmod +x clair-scanner
   - sudo mv clair-scanner /usr/local/bin
@@ -22,7 +23,7 @@ script:
   - clair-scanner -w tests/cve-scan-whitelist.yaml -c "http://127.0.0.1:6060" --threshold="High" --ip "$(ip -4 addr show docker0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" $IMAGE_NAME:latest
 
 before_deploy:
-  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" 
   - docker tag $IMAGE_NAME:latest $IMAGE_NAME:$VERSION #Tag for current version
 
 deploy:
