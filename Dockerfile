@@ -82,7 +82,7 @@ ENV JDBC_MAX_ACTIVE=75 \
     JDBC_MIN_IDLE=3 \
     JDBC_MAX_IDLE=25 \
     JDBC_MAX_WAIT=30000 \
-    JDBC_INITIAL_SIZE=10 \
+    JDBC_INITIAL_SIZE=4 \
     JDBC_CONNECTION_PROPERTIES=''
 
 # Provide variables for the name of the rules, data, and customerdata schemas
