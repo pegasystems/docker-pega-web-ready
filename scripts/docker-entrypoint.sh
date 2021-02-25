@@ -204,8 +204,8 @@ else
        export SECRET_DB_PASSWORD=${DB_PASSWORD}
     fi
 
-    if [ "$SECRET_DB_USERNAME" == "" ] || [ "$SECRET_DB_PASSWORD" == "" ] ; then
-      echo "DB_USERNAME and DB_PASSWORD must be specified.";
+    if [ "$SECRET_DB_USERNAME" == "" ] ; then
+      echo "DB_USERNAME must be specified.";
       exit 1
     fi
 
