@@ -115,7 +115,7 @@ JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be alloca
 JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `3`
 JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `25`
 JDBC_MAX_WAIT 				| The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `30000`
-JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `10`
+JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `4`
 JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | 
 
 ### Pega customization
@@ -167,6 +167,8 @@ HZ_CLIENT_MODE | Enables client mode for infinity  | `false`
 HZ_DISCOVERY_K8S | Indicates infinity client will use K8s discovery plugin to look for hazelcast nodes |
 HZ_CLUSTER_NAME| Hazelcast cluster name |
 HZ_SERVER_HOSTNAME| Hazelcast server hostname |
+HZ_CS_AUTH_USERNAME | Hazelcast username for authentication |
+HZ_CS_AUTH_PASSWORD | Hazelcast password for authentication |
 
 ## Image customizations
 

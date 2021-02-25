@@ -82,7 +82,7 @@ ENV JDBC_MAX_ACTIVE=75 \
     JDBC_MIN_IDLE=3 \
     JDBC_MAX_IDLE=25 \
     JDBC_MAX_WAIT=30000 \
-    JDBC_INITIAL_SIZE=10 \
+    JDBC_INITIAL_SIZE=4 \
     JDBC_CONNECTION_PROPERTIES=''
 
 # Provide variables for the name of the rules, data, and customerdata schemas
@@ -125,7 +125,9 @@ ENV PEGA_SEARCH_URL=
 ENV HZ_CLIENT_MODE=false \
     HZ_DISCOVERY_K8S= \
     HZ_CLUSTER_NAME= \
-    HZ_SERVER_HOSTNAME=
+    HZ_SERVER_HOSTNAME= \
+    HZ_CS_AUTH_USERNAME= \
+    HZ_CS_AUTH_PASSWORD=
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
