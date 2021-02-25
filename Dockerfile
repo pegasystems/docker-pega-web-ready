@@ -141,6 +141,8 @@ RUN mkdir -p /opt/pega/prometheus && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus
+
+RUN chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
     
 # Remove existing webapps
 RUN rm -rf ${CATALINA_HOME}/webapps/*
