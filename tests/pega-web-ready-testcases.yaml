@@ -88,6 +88,21 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
+- name: 'prometheus lib path'
+  path: '/opt/pega/prometheus'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'prometheus lib file'
+  path: '/opt/pega/prometheus/jmx_prometheus_javaagent.jar'
+  shouldExist: true
+  permissions: '-r--r-----'
+  uid: 9001
+  gid: 0
+
+
 - name: 'prweb deployment path'
   path: '/opt/pega/prweb'
   shouldExist: true

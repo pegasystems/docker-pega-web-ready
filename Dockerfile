@@ -135,6 +135,14 @@ RUN  mkdir -p /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
+# Set up dir for prometheus lib
+RUN mkdir -p /opt/pega/prometheus && \
+    curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar && \
+    chgrp -R 0 /opt/pega/prometheus && \
+    chmod -R g+rw /opt/pega/prometheus && \
+    chown -R pegauser /opt/pega/prometheus && \
+    chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
+    
 # Remove existing webapps
 RUN rm -rf ${CATALINA_HOME}/webapps/*
 
@@ -173,8 +181,8 @@ CMD ["run"]
 
 # Expose required ports
 
-# HTTP is 8080, JMX is 9001, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
-EXPOSE 8080 9001 5701-5710 47100 7003
+# HTTP is 8080, JMX is 9001, prometheus is 9090, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
+EXPOSE 8080 9001 9090 5701-5710 47100 7003
 
 # *****Target for test environment*****
 
