@@ -1016,3 +1016,32 @@ commandTests:
       bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Hazelcast Password is - hz_cs_auth_password"]
+  # Verify empty DB_USERNAME
+  - name: "Empty DB_USERNAME check fails"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 1
+    expectedOutput: ["DB_USERNAME must be specified."]
+  # Verify empty DB_PASSWORD as DB_PASSWORD is no longer mandatory with AWS Secrets
+  - name: "Empty DB_PASSWORD check passes"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    expectedOutput: ["No context.xml was specified"]
