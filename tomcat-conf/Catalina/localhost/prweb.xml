@@ -32,7 +32,7 @@
   <!-- TODO: placeholder for non-conflicting setting name -->
   <!--<Environment name="prconfig/dnode/cassandra_client_encryption" value="{{ .Env.CASSANDRA_CLIENT_ENCRYPTION }}"  type="java.lang.String"/>-->
   <Environment name="prconfig/dnode/cassandra_client_encryption/truststore" value="{{ .Env.CASSANDRA_TRUSTSTORE }}"  type="java.lang.String"/>
-  <Environment name="prconfig/dnode/cassandra_client_encryption/truststore_password" value="{{ .Env.SECRET_CASSANDRA_KEYSTORE_PASSWORD }}"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_client_encryption/truststore_password" value="{{ .Env.SECRET_CASSANDRA_TRUSTSTORE_PASSWORD }}"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_client_encryption/keystore" value="{{ .Env.CASSANDRA_KEYSTORE }}"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_client_encryption/keystore_password" value="{{.Env.SECRET_CASSANDRA_KEYSTORE_PASSWORD }}"  type="java.lang.String"/>
   {{ end }}
