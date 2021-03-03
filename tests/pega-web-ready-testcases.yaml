@@ -778,6 +778,8 @@ commandTests:
       value: "true"
     - key: "HZ_CLIENT_MODE"
       value: "true"      
+    - key: "CASSANDRA_CLIENT_ENCRYPTION"
+      value: "true"
     command: "bash"
     args:
     - -c
