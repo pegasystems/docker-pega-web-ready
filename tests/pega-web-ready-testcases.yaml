@@ -780,6 +780,8 @@ commandTests:
       value: "true"      
     - key: "CASSANDRA_CLIENT_ENCRYPTION"
       value: "true"
+    - key: "CASSANDRA_TRUSTSTORE"
+      value: "/fake/path"
     command: "bash"
     args:
     - -c
