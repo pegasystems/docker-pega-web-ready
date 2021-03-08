@@ -29,12 +29,10 @@
   
 
   
-  <!-- TODO: placeholder for non-conflicting setting name -->
-  <!--<Environment name="prconfig/dnode/cassandra_client_encryption" value="true"  type="java.lang.String"/>-->
-  <Environment name="prconfig/dnode/cassandra_client_encryption/truststore" value=""  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_client_encryption/enabled" value="true"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_client_encryption/truststore" value="/fake/path"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_client_encryption/truststore_password" value=""  type="java.lang.String"/>
-  <Environment name="prconfig/dnode/cassandra_client_encryption/keystore" value=""  type="java.lang.String"/>
-  <Environment name="prconfig/dnode/cassandra_client_encryption/keystore_password" value=""  type="java.lang.String"/>
+  
   
 
   <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
