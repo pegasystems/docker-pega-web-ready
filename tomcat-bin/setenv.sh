@@ -51,6 +51,12 @@ if [ "${USE_CUSTOM_JMX_CONNECTION}" != "true" ]; then
   CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"	
 fi
 
+# Add applicable node types if it is not empty
+#
+if [[ ! -z  ${APPLICABLE_NODE_TYPES} ]]; then
+	CATALINA_OPTS=" ${CATALINA_OPTS} -DapplicableNodeTypes=${APPLICABLE_NODE_TYPES} "
+fi
+
 # Provide setting required for stream node 
 if [ "${IS_STREAM_NODE}" = "true" ]; then
   CATALINA_OPTS="${CATALINA_OPTS} -Dprconfig/dsm/services=StreamServer "
