@@ -82,7 +82,7 @@ ENV JDBC_MAX_ACTIVE=75 \
     JDBC_MIN_IDLE=3 \
     JDBC_MAX_IDLE=25 \
     JDBC_MAX_WAIT=30000 \
-    JDBC_INITIAL_SIZE=10 \
+    JDBC_INITIAL_SIZE=4 \
     JDBC_CONNECTION_PROPERTIES=''
 
 # Provide variables for the name of the rules, data, and customerdata schemas
@@ -108,17 +108,31 @@ ENV MAX_THREADS="300" \
     PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
 
 # Configure Remote JMX support and bind to port 9001
-ENV JMX_PORT=9001
+ENV JMX_PORT=9001 \
+    USE_CUSTOM_JMX_CONNECTION=
 
 # Configure Cassandra.
 ENV CASSANDRA_CLUSTER=false \
     CASSANDRA_NODES= \
     CASSANDRA_PORT=9042 \
     CASSANDRA_USERNAME= \
-    CASSANDRA_PASSWORD=
+    CASSANDRA_PASSWORD= \
+    CASSANDRA_CLIENT_ENCRYPTION=false \
+    CASSANDRA_TRUSTSTORE= \
+    CASSANDRA_TRUSTSTORE_PASSWORD= \
+    CASSANDRA_KEYSTORE= \
+    CASSANDRA_KEYSTORE_PASSWORD=
 
 # Configure search nodes. Empty string falls back to search being done on the nodes themselves.
 ENV PEGA_SEARCH_URL=
+
+# Configure hazelcast. By default, hazelcast runs in embedded mode.
+ENV HZ_CLIENT_MODE=false \
+    HZ_DISCOVERY_K8S= \
+    HZ_CLUSTER_NAME= \
+    HZ_SERVER_HOSTNAME= \
+    HZ_CS_AUTH_USERNAME= \
+    HZ_CS_AUTH_PASSWORD=
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
@@ -126,6 +140,14 @@ RUN  mkdir -p /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
+# Set up dir for prometheus lib
+RUN mkdir -p /opt/pega/prometheus && \
+    curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar && \
+    chgrp -R 0 /opt/pega/prometheus && \
+    chmod -R g+rw /opt/pega/prometheus && \
+    chown -R pegauser /opt/pega/prometheus && \
+    chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
+    
 # Remove existing webapps
 RUN rm -rf ${CATALINA_HOME}/webapps/*
 
@@ -164,8 +186,8 @@ CMD ["run"]
 
 # Expose required ports
 
-# HTTP is 8080, JMX is 9001, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
-EXPOSE 8080 9001 5701-5710 47100 7003
+# HTTP is 8080, JMX is 9001, prometheus is 9090, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
+EXPOSE 8080 9001 9090 5701-5710 47100 7003
 
 # *****Target for test environment*****
 

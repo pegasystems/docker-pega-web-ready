@@ -32,6 +32,9 @@ RUN chmod -R g+rw   ${CATALINA_HOME}/webapps/prweb
 
 # Make a jdbc driver available to tomcat applications
 COPY --chown=pegauser:root /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
+
+RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prconfig.xml
+RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prlog4j2.xml
 ```
 
 Build the image using the following command:
@@ -53,7 +56,7 @@ Mount points are used to link a directory within the Docker container to a durab
 
 Mount point 	| Purpose
 --- 			| ---
-`/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
+`/opt/pega/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
 `/heapdumps` 	| Used as the default output directory when you generate a heapdump.
 `/search_index`	| Used to persist a search index when the node hosts searched.
 
@@ -112,7 +115,7 @@ JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be alloca
 JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `3`
 JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `25`
 JDBC_MAX_WAIT 				| The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `30000`
-JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `10`
+JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `4`
 JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | 
 
 ### Pega customization
@@ -152,6 +155,20 @@ CASSANDRA_NODES		| A comma separated list of C* nodes (e.g. `10.20.205.26,10.20.
 CASSANDRA_PORT		| C* port		| `9042`
 CASSANDRA_USERNAME	| C* username	|
 CASSANDRA_PASSWORD	| C* password	|
+
+
+### Hazelcast settings
+
+The clustering used in a Pega environment is powered by a technology called `Hazelcast`. Hazelcast can be used in an embedded mode with no additional configuration required.  Some larger deployments of more than 20 Pega containers may start to benefit from improved performance and stability of running Hazelcast in a dedicated ReplicaSet. For more information about deploying Pega with Hazelcast as an external server, see the Helm charts and the Pega Community documentation.
+
+Name 				| Purpose 		| Default
+--- 				| --- 			| ---
+HZ_CLIENT_MODE | Enables client mode for infinity  | `false`
+HZ_DISCOVERY_K8S | Indicates infinity client will use K8s discovery plugin to look for hazelcast nodes |
+HZ_CLUSTER_NAME| Hazelcast cluster name |
+HZ_SERVER_HOSTNAME| Hazelcast server hostname |
+HZ_CS_AUTH_USERNAME | Hazelcast username for authentication |
+HZ_CS_AUTH_PASSWORD | Hazelcast password for authentication |
 
 ## Image customizations
 

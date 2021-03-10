@@ -29,8 +29,6 @@ JAVA_OPTS="-Xms${INITIAL_HEAP} -Xmx${MAX_HEAP} ${JAVA_OPTS}"
 echo JAVA_OPTS: \"${JAVA_OPTS}\"
 export  JAVA_OPTS
 
-CATALINA_OPTS=""
-
 # Tomcat Listener Settings
 CATALINA_OPTS="${CATALINA_OPTS} -DmaxThreads=${MAX_THREADS}"
 
@@ -43,17 +41,15 @@ CATALINA_OPTS="${CATALINA_OPTS} -DNodeSettings=\"Pega-IntegrationEngine/EnableRe
 #  When left blank, disable indexing.
 CATALINA_OPTS="${CATALINA_OPTS} -Dindex.directory=${INDEX_DIRECTORY}"
 
-# Setup JMX
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=${JMX_PORT}"
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}"
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
-CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"	
-
-# Setup SMA with auto discovery
-CATALINA_OPTS="${CATALINA_OPTS} -DSMAAutoNodeDiscovery=true "
-CATALINA_OPTS="${CATALINA_OPTS} -DSMAAutoNodeDiscoveryJMXPort=${JMX_PORT} "
-CATALINA_OPTS="${CATALINA_OPTS} -DSMAAutoNodeDiscoveryPort=8080 "
+# If not setting USE_CUSTOM_JMX_CONNECTION to "true", specify default JVM arguments for JMX
+if [ "${USE_CUSTOM_JMX_CONNECTION}" != "true" ]; then
+  # Setup OOTB JMX connectivity
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=${JMX_PORT}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"	
+fi
 
 # Provide setting required for stream node 
 if [ "${IS_STREAM_NODE}" = "true" ]; then
@@ -61,6 +57,13 @@ if [ "${IS_STREAM_NODE}" = "true" ]; then
   CATALINA_OPTS="${CATALINA_OPTS} -Dprconfig/dsm/services/stream/pyUnpackBasePath/tmp/kafka "
   CATALINA_OPTS="${CATALINA_OPTS} -Dprconfig/dsm/services/stream/server_properties/unclean.leader.election.enable=false "
 fi
+
+# recommended non-overridable  JVM Arguments
+CATALINA_OPTS="${CATALINA_OPTS} -XX:+DisableExplicitGC"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.security.egd=file:///dev/urandom"
+CATALINA_OPTS="${CATALINA_OPTS} -XX:+ExitOnOutOfMemoryError"
+# recommended overridable JVM Arguments 
+CATALINA_OPTS="-XX:+UseStringDeduplication ${CATALINA_OPTS}"
 
 echo CATALINA_OPTS: \"${CATALINA_OPTS}\"
 

@@ -6,8 +6,18 @@
        Ie, 'abc/feature1' and 'abc/feature1/threshold' can't be bound to objects.
   -->
   
+  {{ if .Env.PEGA_SEARCH_TYPE }}
+  <Environment name="prconfig/database/databases/pegasearch/searchDeploymentType" value="{{ .Env.PEGA_SEARCH_TYPE }}" type="java.lang.String" />
+  {{ end }}
+
   {{ if .Env.PEGA_SEARCH_URL }}
   <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="{{ .Env.PEGA_SEARCH_URL }}" type="java.lang.String"/>
+  {{ end }}
+
+  {{ if .Env.PEGA_STREAM_URL }}
+  <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider" value="StreamService" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider_url" value="{{ .Env.PEGA_STREAM_URL }}" type="java.lang.String"/>
   {{ end }}
 
   {{ if isTrue .Env.CASSANDRA_CLUSTER }}
@@ -18,9 +28,30 @@
   <Environment name="prconfig/dnode/cassandra_password" value="{{ default .Env.SECRET_CASSANDRA_PASSWORD "dnode_ext" }}" type="java.lang.String"/>
   {{ end }}
 
+  {{ if isTrue .Env.CASSANDRA_CLIENT_ENCRYPTION}}
+  <Environment name="prconfig/dnode/cassandra_client_encryption/enabled" value="{{ .Env.CASSANDRA_CLIENT_ENCRYPTION }}"  type="java.lang.String"/>
+  {{ if .Env.CASSANDRA_TRUSTSTORE -}}
+  <Environment name="prconfig/dnode/cassandra_client_encryption/truststore" value="{{ .Env.CASSANDRA_TRUSTSTORE }}"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_client_encryption/truststore_password" value="{{ .Env.SECRET_CASSANDRA_TRUSTSTORE_PASSWORD }}"  type="java.lang.String"/>
+  {{- end }}
+  {{ if .Env.CASSANDRA_KEYSTORE -}}
+  <Environment name="prconfig/dnode/cassandra_client_encryption/keystore" value="{{ .Env.CASSANDRA_KEYSTORE }}"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_client_encryption/keystore_password" value="{{.Env.SECRET_CASSANDRA_KEYSTORE_PASSWORD }}"  type="java.lang.String"/>
+  {{- end }}
+  {{ end }}
+
   <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
   <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
-  <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata" type="java.lang.String" />
+  <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata/data" type="java.lang.String" />
   <Environment name="prconfig/cloud/isNodeAgnosticAdminStudio" value="true" type="java.lang.String"/>
+
+  {{ if isTrue .Env.HZ_CLIENT_MODE }}
+  <Environment name="prconfig/cluster/clientserver/clientmode" value="{{ .Env.HZ_CLIENT_MODE }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/hzOnK8s" value="{{ .Env.HZ_DISCOVERY_K8S }}" type="java.lang.String"/>
+  <Environment name="prconfig/identification/cluster/name" value="{{ .Env.HZ_CLUSTER_NAME }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/server/hostname" value="{{ .Env.HZ_SERVER_HOSTNAME }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/authentication/username" value="{{ .Env.SECRET_HZ_CS_AUTH_USERNAME }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/authentication/password" value="{{ .Env.SECRET_HZ_CS_AUTH_PASSWORD }}" type="java.lang.String"/>
+  {{ end }}
   
 </Context>

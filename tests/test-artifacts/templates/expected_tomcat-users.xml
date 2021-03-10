@@ -2,8 +2,8 @@
 <tomcat-users>
   <role rolename="PegaDiagnosticUser"/>
   <user 
-        username="tomcat_user"
-        password="tomcat_pass"
+        username=""
+        password=""
         roles="PegaDiagnosticUser"
   />
 </tomcat-users>
