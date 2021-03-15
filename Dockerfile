@@ -14,8 +14,8 @@ LABEL vendor="Pegasystems Inc." \
 RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser pegauser
 
-RUN groupadd -g 9001 tomcat && \
-    useradd -r -u 9001 -g tomcat tomcat
+RUN groupadd -g 9002 tomcat && \
+    useradd -r -u 9002 -g tomcat tomcat
 
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
