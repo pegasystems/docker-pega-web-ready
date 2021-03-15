@@ -9,7 +9,6 @@ LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
       version=${VERSION:-CUSTOM_BUILD}
 
-RUN apt-get update && apt-get install -y gosu && rm -rf /var/lib/apt/lists/*
 
 # Creating new user and group
 
@@ -19,6 +18,11 @@ RUN groupadd -g 9001 pegauser && \
 RUN groupadd -g 9002 tomcat && \
     useradd -r -u 9002 -g tomcat tomcat
 
+RUN apt-get update && \
+    apt-get install -y gosu && \
+    rm -rf /var/lib/apt/lists/* && \
+    chgrp pegauser /usr/sbin/gosu && \
+    chmod g+s /usr/sbin/gosu
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
