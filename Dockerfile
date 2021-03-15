@@ -172,11 +172,11 @@ RUN chmod -R 777 ${CATALINA_HOME}/logs  && \
     chmod -R 775 ${CATALINA_HOME}/lib  && \
     chmod -R 775 ${CATALINA_HOME}/work  && \
     chmod -R 775 ${CATALINA_HOME}/conf  && \
+    mkdir -p ${CATALINA_HOME}/conf/path && \
+    chmod -R 777 ${CATALINA_HOME}/conf/path  && \
     chmod -R 775 ${CATALINA_HOME}/bin  && \
     chmod -R 775 ${CATALINA_HOME}/webapps && \
     chmod -R g+x /scripts && \
-    chown -R pegauser /path && \
-    chmod -R 777 /path  && \
     chown -R pegauser /scripts && \
     chmod g+r ${CATALINA_HOME}/conf/web.xml && \
     chown -R pegauser ${CATALINA_HOME}  && \
