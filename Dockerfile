@@ -14,8 +14,15 @@ LABEL vendor="Pegasystems Inc." \
 RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser pegauser
 
+RUN groupadd -g 9001 tomcat && \
+    useradd -r -u 9001 -g tomcat tomcat
+
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
+
+# Limit permissions for curl
+RUN chgrp -R pegauser /usr/bin/curl && \
+    chmod 770 /usr/bin/curl
 
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
@@ -161,12 +168,13 @@ COPY scripts /scripts
 RUN curl -sL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar zxf - -C /bin/
 
 # Update access of required directories to allow not running in root for openshift
-RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
-    chmod -R g+rw ${CATALINA_HOME}/lib  && \
-    chmod -R g+rw ${CATALINA_HOME}/work  && \
-    chmod -R g+rw ${CATALINA_HOME}/conf  && \
-    chmod -R g+rw ${CATALINA_HOME}/bin  && \
-    chmod -R g+rw ${CATALINA_HOME}/webapps && \
+RUN chmod -R 777 ${CATALINA_HOME}/logs  && \
+    chmod -R 775 ${CATALINA_HOME}/lib  && \
+    chmod -R 775 ${CATALINA_HOME}/work  && \
+    chmod -R 775 ${CATALINA_HOME}/conf  && \
+    chmod -R 777 ${CATALINA_HOME}/conf/path  && \
+    chmod -R 775 ${CATALINA_HOME}/bin  && \
+    chmod -R 775 ${CATALINA_HOME}/webapps && \
     chmod -R g+x /scripts && \
     chown -R pegauser /scripts && \
     chmod g+r ${CATALINA_HOME}/conf/web.xml && \

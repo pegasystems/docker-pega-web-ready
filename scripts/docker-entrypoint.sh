@@ -258,7 +258,7 @@ unset pega_root lib_root config_root
 
 # Run tomcat if the first argument is run otherwise try to run whatever the argument is a command
 if [ "$1" = 'run' ]; then
-  exec catalina.sh "$@"
+  sudo -u tomcat -H sh -c "exec ${CATALINA_HOME}/bin/catalina.sh /"$@/""
 else
-  exec "$@"
+  sudo -u tomcat -H sh -c "exec /"$@/""
 fi
