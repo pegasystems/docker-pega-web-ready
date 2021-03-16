@@ -186,8 +186,8 @@ CMD ["run"]
 
 # Expose required ports
 
-# HTTP is 8080, JMX is 9001, prometheus is 9090, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
-EXPOSE 8080 9001 9090 5701-5710 47100 7003
+# HTTP is 8080, k8s liveliness probe (HTTP) is 8081, JMX is 9001, prometheus is 9090, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
+EXPOSE 8080 8081 9001 9090 5701-5710 47100 7003
 
 # *****Target for test environment*****
 
