@@ -264,7 +264,9 @@ echo $@
 
 # Run tomcat if the first argument is run otherwise try to run whatever the argument is a command
 if [ "$1" = 'run' ]; then
+  echo "Running catalina.sh"
   exec gosu tomcat catalina.sh "$@"
 else
+  echo "Running standard"
   exec gosu tomcat "$@"
 fi
