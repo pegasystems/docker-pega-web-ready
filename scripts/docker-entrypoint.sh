@@ -260,12 +260,8 @@ unset pega_root lib_root config_root
 # Run tomcat if the first argument is run otherwise try to run whatever the argument is a command
 if [ ! -z "$1" ]; then
   if [ "$1" = 'run' ]; then
-    echo "Running catalina.sh"
     exec gosu tomcat catalina.sh "$@"
   else
-    echo "Running $@"
     exec gosu tomcat "$@"
   fi
-else
-  echo "Running nothing"
 fi
