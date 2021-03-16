@@ -256,9 +256,9 @@ unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_US
 
 unset pega_root lib_root config_root
 
-# Run tomcat if the first argument is run otherwise try to run whatever the argument is a command
+# Run tomcat (as tomcat, 9002) if the first argument is run otherwise try to run whatever the argument is a command
 if [ "$1" = 'run' ]; then
-  exec gosu tomcat "${CATALINA_HOME}/bin/catalina.sh" "$@"
+  exec gosu 9002 "${CATALINA_HOME}/bin/catalina.sh" "$@"
 else
-  exec gosu tomcat "$@"
+  exec gosu 9002 "$@"
 fi
