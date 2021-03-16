@@ -22,8 +22,7 @@ RUN apt-get update && \
     apt-get install -y gosu && \
     rm -rf /var/lib/apt/lists/* && \
     chgrp pegauser /usr/sbin/gosu && \
-    chmod g+s /usr/sbin/gosu && \
-    ls -la /usr/sbin/gosu
+    chmod g+s /usr/sbin/gosu
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
