@@ -32,6 +32,8 @@ mkdir -p $secret_root
 prlog4j2="${config_root}/prlog4j2.xml"
 prconfig="${config_root}/prconfig.xml"
 context_xml="${config_root}/context.xml"
+server_xml="${config_root}/server.xml"
+web_xml="${config_root}/web.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
 
 db_username_file="${secret_root}/DB_USERNAME"
@@ -178,7 +180,6 @@ fi
 
 /bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
 
-
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
 #
@@ -197,6 +198,26 @@ if [ -e "$prconfig" ]; then
   cp "$prconfig" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prconfig was specified in ${prconfig}.  Using defaults."
+fi
+
+#
+# Copying mounted server.xml file to conf
+#
+if [ -e "${server_xml}" ]; then
+  echo "Loading server.xml from ${server_xml}...";
+  cp "${server_xml}" "${CATALINA_HOME}/conf/"
+else
+  echo "No server.xml was specified in ${server_xml}. Using defaults."
+fi
+
+#
+# Copying mounted web.xml file to conf
+#
+if [ -e "${web_xml}" ]; then
+  echo "Loading web.xml from ${web_xml}...";
+  cp "${web_xml}" "${PEGA_DEPLOYMENT_DIR}/WEB-INF/"
+else
+  echo "No web.xml was specified in ${web_xml}. Using defaults."
 fi
 
 #
