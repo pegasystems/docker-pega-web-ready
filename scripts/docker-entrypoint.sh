@@ -256,6 +256,11 @@ unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_US
 
 unset pega_root lib_root config_root
 
+echo "testing variable values"
+echo "$1"
+echo $1
+echo "$@"
+echo $@
 
 # Run tomcat if the first argument is run otherwise try to run whatever the argument is a command
 if [ "$1" = 'run' ]; then
