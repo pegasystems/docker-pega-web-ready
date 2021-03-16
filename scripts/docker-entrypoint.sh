@@ -259,7 +259,7 @@ unset pega_root lib_root config_root
 
 # Run tomcat (as tomcat, 9002) if the first argument is run otherwise try to run whatever the argument is a command
 if [ "$1" = 'run' ]; then
-  gosu tomcat "${CATALINA_HOME}/bin/catalina.sh" "$@"
+  exec gosu tomcat "${CATALINA_HOME}/bin/catalina.sh $@"
 else
-  gosu tomcat "$@"
+  exec gosu tomcat "$@"
 fi
