@@ -1099,3 +1099,27 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh'
     expectedOutput: ["No context.xml was specified"]
+
+# Ensure tomcat can't curl
+- name: "Dockerize context.xml tmpl file"
+  envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "RULES_SCHEMA"
+      value: "rules"
+    - key: "DATA_SCHEMA"
+      value: "data"
+  command: "bash"
+  args:
+    - -c
+    - |
+      bash -c './scripts/docker-entrypoint.sh' &&
+      gosu tomcat curl --write-out "%{http_code}\n" --silent --output /dev/null "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+  exitCode: 0
+  expectedOutput: ["500"]
