@@ -1126,7 +1126,6 @@ commandTests:
     args:
       - -c
       - |
-        bash -c './scripts/docker-entrypoint.sh' &&
-        whoami
+        bash -c './scripts/docker-entrypoint.sh whoami'
     exitCode: 0
     expectedOutput: ["tomcat"]
