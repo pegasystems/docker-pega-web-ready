@@ -74,21 +74,21 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
-  name: 'catalina bin filepath'
+- name: 'catalina bin filepath'
   path: '/usr/local/tomcat/bin'
   shouldExist: true
   permissions: 'drwxrwxr-x'
   uid: 9001
   gid: 0
 
-  name: 'catalina webapps filepath'
+- name: 'catalina webapps filepath'
   path: '/usr/local/tomcat/webapps'
   shouldExist: true
   permissions: 'drwxrwxr-x'
   uid: 9001
   gid: 0
 
-  name: 'catalina logs filepath'
+- name: 'catalina logs filepath'
   path: '/usr/local/tomcat/logs'
   shouldExist: true
   permissions: 'drwxrwxrwx'
@@ -102,7 +102,7 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
-  name: 'Heap Dumps File Path'
+- name: 'Heap Dumps File Path'
   path: '/heapdumps'
   shouldExist: true
   permissions: 'drwxrwx---'
