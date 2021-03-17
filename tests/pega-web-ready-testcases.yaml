@@ -53,7 +53,56 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
-- name: 'Heap Dumps File Path'
+- name: 'catalina lib filepath'
+  path: '/usr/local/tomcat/lib'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'catalina work filepath'
+  path: '/usr/local/tomcat/work'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'catalina conf filepath'
+  path: '/usr/local/tomcat/conf'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+  name: 'catalina bin filepath'
+  path: '/usr/local/tomcat/bin'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+  name: 'catalina webapps filepath'
+  path: '/usr/local/tomcat/webapps'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+  name: 'catalina logs filepath'
+  path: '/usr/local/tomcat/logs'
+  shouldExist: true
+  permissions: 'drwxrwxrwx'
+  uid: 9001
+  gid: 0
+
+- name: 'catalina temp dir filepath'
+  path: '/usr/local/tomcat/conf/path'
+  shouldExist: true
+  permissions: '-rwxrwxrwx'
+  uid: 9001
+  gid: 0
+
+  name: 'Heap Dumps File Path'
   path: '/heapdumps'
   shouldExist: true
   permissions: 'drwxrwx---'
@@ -142,7 +191,6 @@ commandTests:
     - |
         rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
         bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
-        whoami &&
         sleep 15s &&
         curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080"
     exitCode: 0
