@@ -142,10 +142,12 @@ commandTests:
     - |
         rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
         bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        whoami &&
         sleep 15s &&
         curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080"
     exitCode: 0
     expectedOutput: ["200"]
+
 # Verify Java install    
   - name: "Java version check"
     command: "which"
@@ -164,7 +166,7 @@ commandTests:
     - |
         java -version  2>&1 | grep "OpenJDK 64-Bit Server VM AdoptOpenJDK"
     expectedOutput: [".*OpenJDK 64-Bit Server VM AdoptOpenJDK.*"] 
-# Verify Cataline_home variable       
+# Verify Catalina_home variable
   - name: "Catalina Home check"
     command: "echo"
     args: ["$CATALINA_HOME"]
