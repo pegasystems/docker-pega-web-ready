@@ -262,7 +262,6 @@ if [ ! -z "$1" ]; then
   if [ "$1" = 'run' ]; then
     exec gosu tomcat catalina.sh "$@"
   else
-    echo "running exec gosu tomcat $@"
     exec gosu tomcat "$@"
   fi
 fi
