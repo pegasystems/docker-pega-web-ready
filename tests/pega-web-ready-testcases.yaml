@@ -106,8 +106,8 @@ fileExistenceTests:
   path: '/usr/bin/curl'
   shouldExist: true
   permissions: '-rwxrwx---'
-  uid: 9001
-  gid: 0
+  uid: 0
+  gid: 9001
 
 - name: 'Heap Dumps File Path'
   path: '/heapdumps'
