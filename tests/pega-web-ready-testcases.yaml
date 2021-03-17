@@ -98,7 +98,7 @@ fileExistenceTests:
 - name: 'catalina temp dir filepath'
   path: '/usr/local/tomcat/conf/path'
   shouldExist: true
-  permissions: '-rwxrwxrwx'
+  permissions: 'drwxrwxrwx'
   uid: 9001
   gid: 0
 
