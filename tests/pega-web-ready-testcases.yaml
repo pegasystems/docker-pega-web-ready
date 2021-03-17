@@ -1127,5 +1127,5 @@ commandTests:
       - -c
       - |
         bash -c './scripts/docker-entrypoint.sh curl --write-out "%{http_code}\n" --silent --output /dev/null "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"'
-    exitCode: 0
-    expectedOutput: ["error: exec failed: permission denied"]
+    exitCode: 1
+    expectedOutput: ["permission denied"]
