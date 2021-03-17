@@ -102,6 +102,13 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
+- name: '/usr/bin/curl permissions'
+  path: '/usr/bin/curl'
+  shouldExist: true
+  permissions: '-rwxrwx---'
+  uid: 9001
+  gid: 0
+
 - name: 'Heap Dumps File Path'
   path: '/heapdumps'
   shouldExist: true
@@ -1101,7 +1108,7 @@ commandTests:
     expectedOutput: ["No context.xml was specified"]
 
   # Ensure tomcat can't curl
-  - name: "Dockerize context.xml tmpl file"
+  - name: "Ensure tomcat user can't curl"
     envVars:
       - key: "JDBC_URL"
         value: "jdbc:postgresql://localhost:5432/pegadb"
@@ -1120,6 +1127,6 @@ commandTests:
       - -c
       - |
         bash -c './scripts/docker-entrypoint.sh' &&
-        curl --write-out "%{http_code}\n" --silent --output /dev/null "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+        whoami
     exitCode: 0
-    expectedOutput: ["500"]
+    expectedOutput: ["tomcat"]
