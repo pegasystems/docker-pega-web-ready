@@ -152,14 +152,14 @@ ENV HZ_CLIENT_MODE=false \
 RUN  mkdir -p /opt/pega/kafkadata && \
      chgrp -R 0 /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
-     chown -R pegauser /opt/pega/kafkadata
+     chown -R tomcat /opt/pega/kafkadata
 
 # Set up dir for prometheus lib
 RUN mkdir -p /opt/pega/prometheus && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
-    chown -R pegauser /opt/pega/prometheus && \
+    chown -R tomcat /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
     
 # Remove existing webapps
@@ -179,8 +179,8 @@ RUN chmod -R 777 ${CATALINA_HOME}/logs  && \
     chmod -R 775 ${CATALINA_HOME}/lib  && \
     chmod -R 775 ${CATALINA_HOME}/work  && \
     chmod -R 775 ${CATALINA_HOME}/conf  && \
-    mkdir -p ${CATALINA_HOME}/conf/path && \
-    chmod -R 777 ${CATALINA_HOME}/conf/path  && \
+    mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
+    chmod -R 777 ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
     chmod -R 775 ${CATALINA_HOME}/bin  && \
     chmod -R 775 ${CATALINA_HOME}/webapps && \
     chmod -R g+x /scripts && \
@@ -189,7 +189,7 @@ RUN chmod -R 777 ${CATALINA_HOME}/logs  && \
     chown -R pegauser ${CATALINA_HOME}  && \
     mkdir /search_index && \
     chmod -R g+w /search_index && \
-    chown -R pegauser /search_index
+    chown -R tomcat /search_index
 
 #switched the user to pegauser
 USER pegauser
