@@ -1177,25 +1177,25 @@ commandTests:
     exitCode: 1
     expectedError: ["permission denied"]
 
-# Ensure tomcat user can't gosu as root
-- name: "Ensure tomcat user can't gosu as root"
-  envVars:
-    - key: "JDBC_URL"
-      value: "jdbc:postgresql://localhost:5432/pegadb"
-    - key: "JDBC_CLASS"
-      value: "org.postgresql.Driver"
-    - key: "DB_USERNAME"
-      value: "postgres"
-    - key: "DB_PASSWORD"
-      value: "postgres"
-    - key: "RULES_SCHEMA"
-      value: "rules"
-    - key: "DATA_SCHEMA"
-      value: "data"
-  command: "bash"
-  args:
-    - -c
-    - |
-      bash -c './scripts/docker-entrypoint.sh gosu root whoami'
-  exitCode: 1
-  expectedError: ["permission denied"]
+  # Ensure tomcat user can't gosu as root
+  - name: "Ensure tomcat user can't gosu as root"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh gosu root whoami'
+    exitCode: 1
+    expectedError: ["permission denied"]
