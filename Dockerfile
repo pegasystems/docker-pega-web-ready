@@ -151,16 +151,16 @@ ENV HZ_CLIENT_MODE=false \
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
-     chgrp -R pegauser /opt/pega/kafkadata && \
+     chgrp -R tomcat /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
-     chown -R tomcat /opt/pega/kafkadata
+     chown -R pegauser /opt/pega/kafkadata
 
 # Set up dir for prometheus lib
 RUN mkdir -p /opt/pega/prometheus && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar && \
-    chgrp -R pegauser /opt/pega/prometheus && \
+    chgrp -R tomcat /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
-    chown -R tomcat /opt/pega/prometheus && \
+    chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
     
 # Remove existing webapps
