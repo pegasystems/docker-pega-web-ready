@@ -99,6 +99,7 @@ ENV MAX_THREADS="300" \
     JAVA_OPTS="" \
     MAX_HEAP="4096m" \
     INITIAL_HEAP="2048m" \
+    MAX_METASPACE="1024m" \
     INDEX_DIRECTORY="NONE" \
     HEAP_DUMP_PATH="/heapdumps" \
     NODE_TYPE="" \

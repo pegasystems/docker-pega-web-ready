@@ -23,6 +23,11 @@ JAVA_OPTS="${JAVA_OPTS} -XX:HeapDumpPath=${HEAP_DUMP_PATH}"
 # Pega log directory
 JAVA_OPTS="${JAVA_OPTS} -Dpega.logdir=${CATALINA_HOME}/logs/${HOSTNAME}"
 
+# Set metaspace if provided
+if [[ ! -z "${MAX_METASPACE}"]]
+  JAVA_OPTS="${JAVA_OPTS} -XX:MaxMetaspaceSize=${MAX_METASPACE}"
+fi
+
 # Heap size settings (set before existing JAVA_OPTS so that duplicate settings in JAVA_OPTS will win)
 JAVA_OPTS="-Xms${INITIAL_HEAP} -Xmx${MAX_HEAP} ${JAVA_OPTS}"
 

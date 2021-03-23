@@ -141,6 +141,7 @@ MAX_THREADS 	| The max number of active threads in this pool using Tomcat's `max
 JAVA_OPTS 		| Specify any additional parameters that should be appended to the `java` command. |
 INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`
 MAX_HEAP 		| Specify the maximum size (`Xmx`) of the java heap. | `4096m`
+MAX_METASPACE 	| Specify the maximum size (`XX:MaxMetaspaceSize`) of the java metaspace. | `1024m`
 HEAP_DUMP_PATH 	| Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps`
 
 
