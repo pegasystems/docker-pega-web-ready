@@ -151,14 +151,14 @@ ENV HZ_CLIENT_MODE=false \
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
-     chgrp -R 0 /opt/pega/kafkadata && \
+     chgrp -R pegauser /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
      chown -R tomcat /opt/pega/kafkadata
 
 # Set up dir for prometheus lib
 RUN mkdir -p /opt/pega/prometheus && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar && \
-    chgrp -R 0 /opt/pega/prometheus && \
+    chgrp -R pegauser /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R tomcat /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
@@ -191,6 +191,8 @@ RUN chmod -R 777 ${CATALINA_HOME}/logs  && \
     mkdir /search_index && \
     chmod -R g+w /search_index && \
     chown -R tomcat /search_index
+
+RUN unzip -q -o prweb.war -d ${CATALINA_HOME}/webapps/prweb
 
 #switched the user to pegauser
 USER pegauser
