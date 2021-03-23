@@ -192,7 +192,6 @@ RUN chmod -R 777 ${CATALINA_HOME}/logs  && \
     chmod -R g+w /search_index && \
     chown -R tomcat /search_index
 
-RUN unzip -q -o prweb.war -d ${CATALINA_HOME}/webapps/prweb
 
 #switched the user to pegauser
 USER pegauser
