@@ -38,7 +38,7 @@ fileExistenceTests:
   path: '/usr/local/tomcat/'
   shouldExist: true
   permissions: 'drwxr-xr-x'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: 'Incorrect path'
@@ -63,7 +63,7 @@ fileExistenceTests:
 - name: 'catalina work filepath'
   path: '/usr/local/tomcat/work'
   shouldExist: true
-  permissions: 'drwxrwxr-x'
+  permissions: 'drwxrwxrwx'
   uid: 9002
   gid: 0
 
@@ -105,7 +105,7 @@ fileExistenceTests:
 - name: 'catalina temp dir filepath'
   path: '/usr/local/tomcat/work/Catalina/localhost/prweb'
   shouldExist: true
-  permissions: 'drwxrwxrwx'
+  permissions: 'drwxr-xrwx'
   uid: 9002
   gid: 0
 
@@ -120,7 +120,7 @@ fileExistenceTests:
   path: '/opt/pega'
   shouldExist: true
   permissions: 'drwxrwxr-x'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: 'Filerepo File Path'
@@ -147,7 +147,7 @@ fileExistenceTests:
 - name: 'prometheus lib path'
   path: '/opt/pega/prometheus'
   shouldExist: true
-  permissions: 'drwxrwxr-x'
+  permissions: 'drwxrwxrwx'
   uid: 9001
   gid: 0
 
@@ -183,7 +183,7 @@ fileExistenceTests:
 - name: 'Kafka File Path'
   path: '/opt/pega/kafkadata'
   shouldExist: true
-  permissions: 'drwxrwxr-x'
+  permissions: 'drwxrwxrwx'
   uid: 9002
   gid: 0
 
@@ -1175,7 +1175,7 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh curl --write-out "%{http_code}\n" --silent --output /dev/null "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"'
     exitCode: 1
-    expectedOutput: ["permission denied"]
+    expectedError: ["permission denied"]
 
   # Ensure pegauser can't gosu as root
   - name: "Ensure pegauser can't gosu as root"
@@ -1198,4 +1198,4 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh gosu root whoami'
     exitCode: 1
-    expectedOutput: ["permission denied"]
+    expectedError: ["permission denied"]
