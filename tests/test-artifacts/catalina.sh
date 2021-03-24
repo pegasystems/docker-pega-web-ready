@@ -84,7 +84,5 @@ echo "Pega Diagnostic Password is - $SECRET_PEGA_DIAGNOSTIC_PASSWORD"
 
 source "${CATALINA_HOME}/bin/setenv.sh"
 
-echo "JAVA_OPTS: ${JAVA_OPTS}"
-
 echo "Starting -- Catalina.sh"
 
