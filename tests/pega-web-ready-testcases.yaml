@@ -1097,3 +1097,64 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh'
     expectedOutput: ["No context.xml was specified"]
+    # Verify default metaspace 
+  - name: "Cassandra Password as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["-XX:MaxMetaspaceSize=1024m"]
+    # Verify customized metaspace 
+  - name: "Cassandra Password as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"
+    - key: "MAX_METASPACE"
+      value: "2048m"
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["-XX:MaxMetaspaceSize=2048m"] 
+        # Verify default metaspace 
+  - name: "Cassandra Password as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres_user"
+    - key: "DB_PASSWORD"
+      value: "postgres_pass"
+    - key: "MAX_METASPACE"
+      value: ""
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    excludedOutput: ["-XX:MaxMetaspaceSize"] 
