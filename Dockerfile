@@ -184,11 +184,14 @@ RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
     chmod -R g+x /scripts && \
     chown -R deploymentuser /scripts && \
     chmod g+r ${CATALINA_HOME}/conf/web.xml && \
-    chown -R pegauser ${CATALINA_HOME}  && \
+    chown -R deploymentuser ${CATALINA_HOME}  && \
     chmod -R u+rx ${CATALINA_HOME} && \
     chmod  u+rwx ${CATALINA_HOME}/logs && \
     mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
     chmod u+rwx ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
+    chmod -R o+rx ${CATALINA_HOME}
+    chmod -R o+rwx ${CATALINA_HOME}/logs
+    chmod -R o+rwx ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
     mkdir /search_index && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index

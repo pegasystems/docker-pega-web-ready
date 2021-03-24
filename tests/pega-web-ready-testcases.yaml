@@ -50,42 +50,42 @@ fileExistenceTests:
   path: '/usr/local/tomcat/bin/catalina.sh'
   shouldExist: true
   permissions: '-rwxrwxr-x'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: 'catalina lib filepath'
   path: '/usr/local/tomcat/lib'
   shouldExist: true
   permissions: 'drwxrwxr-x'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: 'catalina work filepath'
   path: '/usr/local/tomcat/work'
   shouldExist: true
   permissions: 'drwxrwxr-x'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: 'catalina conf filepath'
   path: '/usr/local/tomcat/conf'
   shouldExist: true
   permissions: 'drwxrwxr-x'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: 'catalina bin filepath'
   path: '/usr/local/tomcat/bin'
   shouldExist: true
   permissions: 'drwxrwxr-x'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: 'catalina webapps filepath'
   path: '/usr/local/tomcat/webapps'
   shouldExist: true
   permissions: 'drwxrwxr-x'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: 'Heap Dumps File Path'
@@ -99,14 +99,14 @@ fileExistenceTests:
   path: '/usr/local/tomcat/logs'
   shouldExist: true
   permissions: 'drwxrwxrwx'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: 'catalina temp dir filepath'
   path: '/usr/local/tomcat/work/Catalina/localhost/prweb'
   shouldExist: true
   permissions: 'drwxrwxrwx'
-  uid: 9001
+  uid: 9002
   gid: 0
 
 - name: '/usr/bin/curl permissions'
