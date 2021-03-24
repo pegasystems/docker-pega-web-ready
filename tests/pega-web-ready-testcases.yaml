@@ -38,7 +38,7 @@ fileExistenceTests:
   path: '/usr/local/tomcat/'
   shouldExist: true
   permissions: 'drwxr-xr-x'
-  uid: 9002
+  uid: 9001
   gid: 0
 
 - name: 'Incorrect path'
@@ -57,7 +57,7 @@ fileExistenceTests:
   path: '/usr/local/tomcat/lib'
   shouldExist: true
   permissions: 'dr-xrwxrwx'
-  uid: 9002
+  uid: 9001
   gid: 0
 
 - name: 'catalina work filepath'
@@ -99,7 +99,7 @@ fileExistenceTests:
   path: '/usr/local/tomcat/logs'
   shouldExist: true
   permissions: 'drwxrwxrwx'
-  uid: 9002
+  uid: 9001
   gid: 0
 
 - name: 'catalina temp dir filepath'
