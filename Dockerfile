@@ -212,8 +212,8 @@ EXPOSE 8080 9001 9090 5701-5710 47100 7003
 FROM release as qualitytest
 USER root
 RUN mkdir /tests && \
-    chown -R pegauser /tests
+    chown -R deploymentuser /tests
 COPY tests /tests
 RUN chmod -R 777 /tests
-USER pegauser
+USER deploymentuser
 FROM release
