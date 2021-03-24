@@ -151,8 +151,9 @@ ENV HZ_CLIENT_MODE=false \
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
-     chgrp -R tomcat /opt/pega/kafkadata && \
+     chgrp -R 0 /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
+     chmod -R o+rwx /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
 # Set up dir for prometheus lib
