@@ -185,7 +185,7 @@ fileExistenceTests:
   shouldExist: true
   permissions: 'drwxrwxr-x'
   uid: 9001
-  gid: 9002
+  gid: 0
 
  # Simulate the functional use case for testing
 
