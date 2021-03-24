@@ -1098,7 +1098,7 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh'
     expectedOutput: ["No context.xml was specified"]
     # Verify default metaspace 
-  - name: "Cassandra Password as file input"
+  - name: "Default metaspace"
     envVars:
     - key: "JDBC_URL"
       value: "jdbc:postgresql://localhost:5432/pegadb"
@@ -1117,7 +1117,7 @@ commandTests:
     exitCode: 0
     expectedOutput: ["-XX:MaxMetaspaceSize=1024m"]
     # Verify customized metaspace 
-  - name: "Cassandra Password as file input"
+  - name: "Customized metaspace"
     envVars:
     - key: "JDBC_URL"
       value: "jdbc:postgresql://localhost:5432/pegadb"
@@ -1137,8 +1137,8 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["-XX:MaxMetaspaceSize=2048m"] 
-        # Verify default metaspace 
-  - name: "Cassandra Password as file input"
+    # Verify default metaspace 
+  - name: "empty metaspace"
     envVars:
     - key: "JDBC_URL"
       value: "jdbc:postgresql://localhost:5432/pegadb"

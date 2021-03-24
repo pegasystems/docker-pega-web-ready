@@ -24,7 +24,7 @@ JAVA_OPTS="${JAVA_OPTS} -XX:HeapDumpPath=${HEAP_DUMP_PATH}"
 JAVA_OPTS="${JAVA_OPTS} -Dpega.logdir=${CATALINA_HOME}/logs/${HOSTNAME}"
 
 # Set metaspace if provided
-if [[ ! -z "${MAX_METASPACE}"]]
+if [[ -n "${MAX_METASPACE}" ]] ; then
   JAVA_OPTS="${JAVA_OPTS} -XX:MaxMetaspaceSize=${MAX_METASPACE}"
 fi
 
