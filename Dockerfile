@@ -177,23 +177,17 @@ COPY scripts /scripts
 RUN curl -sL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar zxf - -C /bin/
 
 # Update access of required directories to allow not running in root for openshift
-RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
-    chmod -R g+rw ${CATALINA_HOME}/lib  && \
-    chmod -R g+rw ${CATALINA_HOME}/work  && \
-    chmod -R g+rw ${CATALINA_HOME}/conf  && \
-    chmod -R g+rw ${CATALINA_HOME}/bin  && \
-    chmod -R g+rw ${CATALINA_HOME}/webapps && \
+RUN chmod -R 777 ${CATALINA_HOME}/logs  && \
+    chmod -R 577 ${CATALINA_HOME}/lib  && \
+    chmod -R 577 ${CATALINA_HOME}/work  && \
+    chmod -R 577 ${CATALINA_HOME}/conf  && \
+    mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
+    chmod -R 777 ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
+    chmod -R 577 ${CATALINA_HOME}/bin  && \
+    chmod -R 577 ${CATALINA_HOME}/webapps && \
+    chown -R pegauser ${CATALINA_HOME}  && \
     chmod -R g+x /scripts && \
     chown -R deploymentuser /scripts && \
-    chmod g+r ${CATALINA_HOME}/conf/web.xml && \
-    chmod -R u+rx ${CATALINA_HOME} && \
-    chmod  u+rwx ${CATALINA_HOME}/logs && \
-    mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
-    chmod u+rwx ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
-    chmod -R o+rx ${CATALINA_HOME} && \
-    chmod -R o+rwx ${CATALINA_HOME}/logs && \
-    chmod -R o+rwx ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
-    chown -R deploymentuser ${CATALINA_HOME}  && \
     mkdir /search_index && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
