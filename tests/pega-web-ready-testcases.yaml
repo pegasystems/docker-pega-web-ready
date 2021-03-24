@@ -53,12 +53,68 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
+- name: 'catalina lib filepath'
+  path: '/usr/local/tomcat/lib'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'catalina work filepath'
+  path: '/usr/local/tomcat/work'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'catalina conf filepath'
+  path: '/usr/local/tomcat/conf'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'catalina bin filepath'
+  path: '/usr/local/tomcat/bin'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'catalina webapps filepath'
+  path: '/usr/local/tomcat/webapps'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
 - name: 'Heap Dumps File Path'
   path: '/heapdumps'
   shouldExist: true
   permissions: 'drwxrwx---'
   uid: 9001
   gid: 0
+
+- name: 'catalina logs filepath'
+  path: '/usr/local/tomcat/logs'
+  shouldExist: true
+  permissions: 'drwxrwxrwx'
+  uid: 9001
+  gid: 0
+
+- name: 'catalina temp dir filepath'
+  path: '/usr/local/tomcat/work/Catalina/localhost/prweb'
+  shouldExist: true
+  permissions: 'drwxrwxrwx'
+  uid: 9001
+  gid: 0
+
+- name: '/usr/bin/curl permissions'
+  path: '/usr/bin/curl'
+  shouldExist: true
+  permissions: '-rwxrwx---'
+  uid: 0
+  gid: 9002
 
 - name: 'opt/pega File Path'
   path: '/opt/pega'
@@ -164,7 +220,7 @@ commandTests:
     - |
         java -version  2>&1 | grep "OpenJDK 64-Bit Server VM AdoptOpenJDK"
     expectedOutput: [".*OpenJDK 64-Bit Server VM AdoptOpenJDK.*"] 
-# Verify Cataline_home variable       
+# Verify Catalina_home variable
   - name: "Catalina Home check"
     command: "echo"
     args: ["$CATALINA_HOME"]
@@ -1097,3 +1153,37 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh'
     expectedOutput: ["No context.xml was specified"]
+
+  # Ensure pegauser can't curl
+  - name: "Ensure pegauser can't curl"
+      envVars:
+        - key: "JDBC_URL"
+          value: "jdbc:postgresql://localhost:5432/pegadb"
+        - key: "JDBC_CLASS"
+          value: "org.postgresql.Driver"
+        - key: "DB_USERNAME"
+          value: "postgres"
+      command: "bash"
+      args:
+        - -c
+        - |
+          bash -c './scripts/docker-entrypoint.sh curl --write-out "%{http_code}\n" --silent --output /dev/null "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"'
+      exitCode: 1
+      expectedOutput: ["permission denied"]
+
+  # Ensure pegauser can't gosu as root
+  - name: "Ensure pegauser can't gosu as root"
+      envVars:
+        - key: "JDBC_URL"
+          value: "jdbc:postgresql://localhost:5432/pegadb"
+        - key: "JDBC_CLASS"
+          value: "org.postgresql.Driver"
+        - key: "DB_USERNAME"
+          value: "postgres"
+      command: "bash"
+      args:
+        - -c
+        - |
+          bash -c './scripts/docker-entrypoint.sh gosu root whoami'
+      exitCode: 1
+      expectedOutput: ["permission denied"]

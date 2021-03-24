@@ -14,6 +14,20 @@ LABEL vendor="Pegasystems Inc." \
 RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser pegauser
 
+RUN groupadd -g 9002 deploymentuser && \
+    useradd -r -u 9002 -g deploymentuser deployment
+
+RUN apt-get update && \
+    apt-get install -y gosu && \
+    rm -rf /var/lib/apt/lists/* && \
+    chgrp deploymentuser /usr/sbin/gosu && \
+    chmod u+s /usr/sbin/gosu && \
+    chmod g+s /usr/sbin/gosu && \
+    chmod o= /usr/sbin/gosu
+
+# Limit permissions for curl
+RUN chgrp -R deploymentuser /usr/bin/curl && \
+    chmod 770 /usr/bin/curl
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
@@ -171,12 +185,16 @@ RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
     chown -R pegauser /scripts && \
     chmod g+r ${CATALINA_HOME}/conf/web.xml && \
     chown -R pegauser ${CATALINA_HOME}  && \
+    chmod -R u+rx ${CATALINA_HOME} && \
+    chmod  u+rwx ${CATALINA_HOME}/logs && \
+    mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
+    chmod u+rwx ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
     mkdir /search_index && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
 
 #switched the user to pegauser
-USER pegauser
+USER deploymentuser
 
 #running in pegauser context
 RUN chmod 770 /scripts/docker-entrypoint.sh
