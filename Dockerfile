@@ -15,7 +15,7 @@ RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser pegauser
 
 RUN groupadd -g 9002 deploymentuser && \
-    useradd -r -u 9002 -g deploymentuser deployment
+    useradd -r -u 9002 -g deploymentuser deploymentuser
 
 RUN apt-get update && \
     apt-get install -y gosu && \
@@ -182,7 +182,7 @@ RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
     chmod -R g+rw ${CATALINA_HOME}/bin  && \
     chmod -R g+rw ${CATALINA_HOME}/webapps && \
     chmod -R g+x /scripts && \
-    chown -R pegauser /scripts && \
+    chown -R deploymentuser /scripts && \
     chmod g+r ${CATALINA_HOME}/conf/web.xml && \
     chown -R pegauser ${CATALINA_HOME}  && \
     chmod -R u+rx ${CATALINA_HOME} && \
@@ -193,10 +193,10 @@ RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
 
-#switched the user to pegauser
+#switched the user to deploymentuser
 USER deploymentuser
 
-#running in pegauser context
+#running in deploymentuser context
 RUN chmod 770 /scripts/docker-entrypoint.sh
 
 ENTRYPOINT ["/scripts/docker-entrypoint.sh"]
