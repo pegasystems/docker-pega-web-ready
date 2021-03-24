@@ -35,50 +35,50 @@ ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 RUN mkdir -p /heapdumps  && \
     chgrp -R 0 /heapdumps && \
     chmod 770 /heapdumps && \
-    chown -R pegauser /heapdumps
+    chown -R deploymentuser /heapdumps
 
 # Create common directory for mounting configuration and libraries
 RUN mkdir -p /opt/pega && \
     chgrp -R 0 /opt/pega && \
     chmod -R g+rw /opt/pega && \
-    chown -R pegauser /opt/pega
+    chown -R deploymentuser /opt/pega
 
 # Create directory for filesystem repository
 RUN  mkdir -p /opt/pega/filerepo  && \
      chgrp -R 0 /opt/pega/filerepo && \
      chmod -R g+rw /opt/pega/filerepo && \
-     chown -R pegauser /opt/pega/filerepo
+     chown -R deploymentuser /opt/pega/filerepo
 
 # Create directory for mounting configuration files
 RUN  mkdir -p /opt/pega/config  && \
      chgrp -R 0 /opt/pega/config && \
      chmod -R g+rw /opt/pega/config && \
-     chown -R pegauser /opt/pega/config
+     chown -R deploymentuser /opt/pega/config
 
 # Create directory for mounting libraries
 RUN  mkdir -p /opt/pega/lib  && \
      chgrp -R 0 /opt/pega/lib && \
      chmod -R g+rw /opt/pega/lib && \
-     chown -R pegauser /opt/pega/lib
+     chown -R deploymentuser /opt/pega/lib
 
 # Create directory for mounting secrets
 RUN  mkdir -p /opt/pega/secrets && \
      chgrp -R 0 /opt/pega && \
      chmod -R g+rw /opt/pega/secrets && \
-     chown -R pegauser /opt/pega/secrets
+     chown -R deploymentuser /opt/pega/secrets
 
 
 # Create directory for extracted prweb.war
 RUN mkdir -p /opt/pega/prweb && \
     chgrp -R 0 /opt/pega/prweb && \
     chmod -R g+rw /opt/pega/prweb && \
-    chown -R pegauser /opt/pega/prweb
+    chown -R deploymentuser /opt/pega/prweb
 
 # Create directory for extra stream volume
 RUN mkdir -p /opt/pega/streamvol && \
     chgrp -R 0 /opt/pega/streamvol && \
     chmod -R g+rw /opt/pega/streamvol && \
-    chown -R pegauser /opt/pega/streamvol
+    chown -R deploymentuser /opt/pega/streamvol
 
 
 # Set up an empty JDBC URL which will, if set to a non-empty value, be used in preference
@@ -152,13 +152,15 @@ ENV HZ_CLIENT_MODE=false \
 RUN  mkdir -p /opt/pega/kafkadata && \
      chgrp -R 0 /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
-     chown -R pegauser /opt/pega/kafkadata
+     chown -R deploymentuser /opt/pega/kafkadata && \
+     chmod -R o+rw /opt/pega/kafkadata
 
 # Set up dir for prometheus lib
 RUN mkdir -p /opt/pega/prometheus && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
+    chmod -R o+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
     
