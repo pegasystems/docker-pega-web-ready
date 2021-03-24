@@ -17,4 +17,4 @@ commandTests:
   exitCode: 1
 - name: "check current user"
   command: "whoami"
-  expectedOutput: ["pegauser"]
+  expectedOutput: ["deploymentuser"]
