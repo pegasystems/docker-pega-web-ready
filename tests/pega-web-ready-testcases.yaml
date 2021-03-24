@@ -1156,46 +1156,46 @@ commandTests:
 
   # Ensure pegauser can't curl
   - name: "Ensure pegauser can't curl"
-      envVars:
-        - key: "JDBC_URL"
-          value: "jdbc:postgresql://localhost:5432/pegadb"
-        - key: "JDBC_CLASS"
-          value: "org.postgresql.Driver"
-        - key: "DB_USERNAME"
-          value: "postgres"
-        - key: "DB_PASSWORD"
-          value: "postgres"
-        - key: "RULES_SCHEMA"
-          value: "rules"
-        - key: "DATA_SCHEMA"
-          value: "data"
-      command: "bash"
-      args:
-        - -c
-        - |
-          bash -c './scripts/docker-entrypoint.sh curl --write-out "%{http_code}\n" --silent --output /dev/null "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"'
-      exitCode: 1
-      expectedOutput: ["permission denied"]
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh curl --write-out "%{http_code}\n" --silent --output /dev/null "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"'
+    exitCode: 1
+    expectedOutput: ["permission denied"]
 
   # Ensure pegauser can't gosu as root
   - name: "Ensure pegauser can't gosu as root"
-      envVars:
-        - key: "JDBC_URL"
-          value: "jdbc:postgresql://localhost:5432/pegadb"
-        - key: "JDBC_CLASS"
-          value: "org.postgresql.Driver"
-        - key: "DB_USERNAME"
-          value: "postgres"
-        - key: "DB_PASSWORD"
-          value: "postgres"
-        - key: "RULES_SCHEMA"
-          value: "rules"
-        - key: "DATA_SCHEMA"
-          value: "data"
-      command: "bash"
-      args:
-        - -c
-        - |
-          bash -c './scripts/docker-entrypoint.sh gosu root whoami'
-      exitCode: 1
-      expectedOutput: ["permission denied"]
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh gosu root whoami'
+    exitCode: 1
+    expectedOutput: ["permission denied"]
