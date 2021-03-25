@@ -178,6 +178,8 @@ if [ ${PEGA_APP_CONTEXT_PATH} != "prweb" ]; then
     export PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
 fi
 
+chmod -R o+rwx /opt/pega/kafkadata
+
 /bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
 
 #
