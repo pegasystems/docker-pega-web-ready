@@ -15,7 +15,7 @@ RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser pegauser
 
 RUN groupadd -g 9002 deploymentuser && \
-    useradd -r -u 9002 -g deploymentuser -G root deploymentuser
+    useradd -r -u 9002 -g root -G deploymentuser deploymentuser
 
 RUN apt-get update && \
     apt-get install -y gosu && \
