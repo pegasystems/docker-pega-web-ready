@@ -84,7 +84,7 @@ fileExistenceTests:
 - name: 'catalina webapps filepath'
   path: '/usr/local/tomcat/webapps'
   shouldExist: true
-  permissions: 'dr-xrwxrwx'
+  permissions: 'drwxrwxrwx'
   uid: 9001
   gid: 0
 

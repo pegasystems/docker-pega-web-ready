@@ -184,7 +184,7 @@ RUN chmod -R 777 ${CATALINA_HOME}/logs  && \
     mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
     chmod -R 777 ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
     chmod -R 577 ${CATALINA_HOME}/bin  && \
-    chmod -R 577 ${CATALINA_HOME}/webapps && \
+    chmod -R 777 ${CATALINA_HOME}/webapps && \
     chown -R pegauser ${CATALINA_HOME}  && \
     chmod -R g+x /scripts && \
     chown -R deploymentuser /scripts && \
