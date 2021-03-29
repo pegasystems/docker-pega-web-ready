@@ -63,7 +63,7 @@ fileExistenceTests:
 - name: 'catalina work filepath'
   path: '/usr/local/tomcat/work'
   shouldExist: true
-  permissions: 'drwxrwxr-x'
+  permissions: 'drwxrwxrwx'
   uid: 9001
   gid: 0
 
