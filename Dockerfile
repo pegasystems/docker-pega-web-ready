@@ -159,8 +159,9 @@ RUN  mkdir -p /opt/pega/kafkadata && \
 # Set up dir for prometheus lib
 RUN mkdir -p /opt/pega/prometheus && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar && \
-    chgrp -R tomcat /opt/pega/prometheus && \
+    chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
+    chmod -R o+rwx /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
     
@@ -193,7 +194,8 @@ RUN mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
     chown -R pegauser /scripts && \
     mkdir /search_index && \
     chmod -R g+w /search_index && \
-    chown -R tomcat /search_index
+    chown -R pegauser /search_index && \
+    chmod -R o+rwx /search_index
 
 
 #switched the user to pegauser
