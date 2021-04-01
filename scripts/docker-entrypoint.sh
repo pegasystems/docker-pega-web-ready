@@ -66,7 +66,7 @@ if [ "$JDBC_DRIVER_URI" != "" ]; then
      jarabsurl="$(cut -d'?' -f1 <<<"$url")"
      echo "$jarabsurl"
      filename=$(basename $jarabsurl)
-     if curl --output /dev/null --silent --fail -r 0-0 $url
+     if curl -ksSL --output /dev/null --silent --fail -r 0-0 $url
      then
        curl -ksSL -o ${lib_root}/$filename ${url}
      else
