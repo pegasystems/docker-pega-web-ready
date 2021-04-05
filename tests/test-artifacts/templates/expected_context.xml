@@ -21,7 +21,7 @@
 		minIdle="3"
 		maxIdle="25"
 		maxWaitMillis="30000"
-        initialSize="10"
+        initialSize="4"
         connectionProperties=""
 	/>
 

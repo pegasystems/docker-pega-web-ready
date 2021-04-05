@@ -28,6 +28,13 @@
   <Environment name="prconfig/dnode/cassandra_password" value="" type="java.lang.String"/>
   
 
+  
+  <Environment name="prconfig/dnode/cassandra_client_encryption/enabled" value="true"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_client_encryption/truststore" value="/fake/path"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_client_encryption/truststore_password" value=""  type="java.lang.String"/>
+  
+  
+
   <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
   <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
   <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata/data" type="java.lang.String" />
