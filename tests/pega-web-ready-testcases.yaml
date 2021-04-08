@@ -308,7 +308,6 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 1    
     expectedOutput: ["Could not download jar from "]
-    expectedError: ["The requested URL returned error"]
 # Verify Downloaded jar in opt/pega/lib   
   - name: "JDBC_DRIVER jar check in opt/pega/lib"
     envVars:
