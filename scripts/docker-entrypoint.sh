@@ -65,8 +65,10 @@ if [ "$JDBC_DRIVER_URI" != "" ]; then
   for url in $urls
     do
      echo "Downloading database driver: ${url}";
-     filename=$(basename $url)
-     if curl -ksSL --output /dev/null --silent --head --fail $url
+     jarabsurl="$(cut -d'?' -f1 <<<"$url")"
+     echo "$jarabsurl"
+     filename=$(basename $jarabsurl)
+     if curl -ksSL --output /dev/null --silent --fail -r 0-0 $url
      then
        curl -ksSL -o ${lib_root}/$filename ${url}
      else
