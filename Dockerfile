@@ -13,24 +13,22 @@ LABEL vendor="Pegasystems Inc." \
 # Creating new user and group
 
 RUN groupadd -g 9001 pegauser && \
-    useradd -r -u 9001 -g pegauser pegauser
+    useradd -r -u 9001 -g pegauser -G root pegauser
 
 RUN groupadd -g 9002 tomcat && \
     useradd -r -u 9002 -g tomcat tomcat
 
 RUN apt-get update && \
-    apt-get install -y gosu && \
+    apt-get install -y gosu libcap2-bin && \
     rm -rf /var/lib/apt/lists/* && \
-    chgrp pegauser /usr/sbin/gosu && \
-    chmod u+s /usr/sbin/gosu && \
-    chmod g+s /usr/sbin/gosu && \
-    chmod o= /usr/sbin/gosu
+    chown pegauser:root /usr/sbin/gosu && \
+    chmod o= /usr/sbin/gosu && \
+    setcap cap_setuid,cap_setgid+ep /usr/sbin/gosu
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
 # Limit permissions for curl
-RUN chgrp -R pegauser /usr/bin/curl && \
-    chmod 770 /usr/bin/curl
+RUN chmod 750 /usr/bin/curl
 
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
