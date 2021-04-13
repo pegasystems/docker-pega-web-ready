@@ -290,6 +290,6 @@ if [ ! -z "$1" ]; then
   if [ "$1" = 'run' ]; then
     exec $sudo_args catalina.sh "$@"
   else
-    exec "$sudo_args" "$@"
+    exec $sudo_args "$@"
   fi
 fi
