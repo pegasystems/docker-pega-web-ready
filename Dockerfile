@@ -19,11 +19,12 @@ RUN groupadd -g 9002 tomcat && \
     useradd -r -u 9002 -g tomcat tomcat
 
 RUN apt-get update && \
-    apt-get install -y gosu libcap2-bin && \
-    rm -rf /var/lib/apt/lists/* && \
-    chown pegauser:root /usr/sbin/gosu && \
-    chmod o= /usr/sbin/gosu && \
-    setcap cap_setuid,cap_setgid+ep /usr/sbin/gosu
+    apt-get install -y sudo && \
+    rm -rf /var/lib/apt/lists/*
+           
+RUN rm -rf /etc/sudoers && \
+    echo "Defaults>ALL passwd_tries=0" > /etc/sudoers && \
+    echo "pegauser ALL=(tomcat) NOPASSWD: SETENV: ALL" >> /etc/sudoers
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
@@ -79,6 +80,8 @@ RUN mkdir -p /opt/pega/streamvol && \
     chmod -R g+rw /opt/pega/streamvol && \
     chown -R pegauser /opt/pega/streamvol
 
+# If this is set to true, run pega as a user that has constrained access. 
+ENV RUN_AS_RESTRICTED_USER=true
 
 # Set up an empty JDBC URL which will, if set to a non-empty value, be used in preference
 # to the "constructed" JDBC URL

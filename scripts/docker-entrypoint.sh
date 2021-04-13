@@ -178,7 +178,7 @@ if [ ${PEGA_APP_CONTEXT_PATH} != "prweb" ]; then
     export PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
 fi
 
-gosu root chmod -R o+rwx /opt/pega/kafkadata
+chmod -R o+rwx /opt/pega/kafkadata
 
 /bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
 
@@ -282,9 +282,14 @@ unset pega_root lib_root config_root
 
 # Run tomcat if the first argument is run otherwise try to run whatever the argument is a command
 if [ ! -z "$1" ]; then
+  sudo_args=""
+  if [ "$RUN_AS_RESTRICTED_USER" == "true" ]; then 
+    sudo_args="sudo -n -E -u tomcat " 
+  fi
+
   if [ "$1" = 'run' ]; then
-    exec gosu tomcat catalina.sh "$@"
+    exec $sudo_args catalina.sh "$@"
   else
-    exec gosu tomcat "$@"
+    exec "$sudo_args" "$@"
   fi
 fi
