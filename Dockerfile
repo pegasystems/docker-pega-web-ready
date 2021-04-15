@@ -1,7 +1,7 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-FROM pegasystems/tomcat:9-jdk11 as release
+FROM pegasystems/tomcat:9-jdk11
 
 ARG VERSION
 
@@ -18,7 +18,7 @@ RUN groupadd -g 9001 pegauser && \
 RUN groupadd -g 9002 tomcat && \
     useradd -r -u 9002 -g tomcat tomcat
 
-RUN apt-get update && \
+RUN apt-get update --fix-missing && \
     apt-get install -y sudo && \
     rm -rf /var/lib/apt/lists/*
            
@@ -178,8 +178,15 @@ COPY scripts /scripts
 #Installing dockerize for generating config files using templates
 RUN curl -sL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar zxf - -C /bin/
 
+RUN apt-get update && \
+    apt-get install -y unzip
+
+COPY prweb.war /prweb.war
+RUN mkdir prweb
+
 # Update access of required directories to allow not running in root for openshift
 RUN mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
+    mkdir -p ${CATALINA_HOME}/webapps/prweb && \
     chmod -R g+rw ${CATALINA_HOME}/logs  && \
     chmod -R g+rw ${CATALINA_HOME}/lib  && \
     chmod -R g+rw ${CATALINA_HOME}/work  && \
@@ -198,7 +205,7 @@ RUN mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
     chown -R pegauser /search_index && \
     chmod -R o+rwx /search_index
 
-
+RUN unzip -q -o prweb.war -d ${CATALINA_HOME}/webapps/prweb
 #switched the user to pegauser
 USER pegauser
 
@@ -212,14 +219,3 @@ CMD ["run"]
 
 # HTTP is 8080, JMX is 9001, prometheus is 9090, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
 EXPOSE 8080 9001 9090 5701-5710 47100 7003
-
-# *****Target for test environment*****
-
-FROM release as qualitytest
-USER root
-RUN mkdir /tests && \
-    chown -R pegauser /tests
-COPY tests /tests
-RUN chmod -R 777 /tests
-USER pegauser
-FROM release
