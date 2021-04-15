@@ -1201,4 +1201,28 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh sudo root whoami'
     exitCode: 1
-    expectedError: ["Permission denied"]
+
+  # Ensure non-restricted user can sudo as root
+  - name: "Ensure non-restricted user can sudo as root"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+      - key: "RUN_AS_RESTRICTED_USER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh sudo root whoami'
+    exitCode: 0
+    expectedOutput: ["root"]
