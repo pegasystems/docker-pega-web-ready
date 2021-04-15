@@ -64,6 +64,7 @@ CATALINA_OPTS="${CATALINA_OPTS} -Djava.security.egd=file:///dev/urandom"
 CATALINA_OPTS="${CATALINA_OPTS} -XX:+ExitOnOutOfMemoryError"
 # recommended overridable JVM Arguments 
 CATALINA_OPTS="-XX:+UseStringDeduplication ${CATALINA_OPTS}"
+CATALINA_OPTS="-Xlog:gc*,gc+heap=debug,gc+humongous=debug:file=/usr/local/tomcat/logs/gc.log:uptime,pid,level,time,tags:filecount=3,filesize=2M ${CATALINA_OPTS}"
 
 echo CATALINA_OPTS: \"${CATALINA_OPTS}\"
 
