@@ -1176,7 +1176,7 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh curl --write-out "%{http_code}\n" --silent --output /dev/null "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"'
     exitCode: 1
-    expectedError: ["permission denied"]
+    expectedError: ["Permission denied"]
 
   # Ensure tomcat user can't sudo as root
   - name: "Ensure tomcat user can't sudo as root"
@@ -1201,4 +1201,4 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh sudo root whoami'
     exitCode: 1
-    expectedError: ["permission denied"]
+    expectedError: ["Permission denied"]
