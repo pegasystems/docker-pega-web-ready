@@ -1202,8 +1202,8 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh sudo root whoami'
     exitCode: 1
 
-  # Ensure non-restricted user can sudo as root
-  - name: "Ensure non-restricted user can sudo as root"
+  # Ensure non-restricted user can't sudo as root
+  - name: "Ensure non-restricted user can't sudo as root"
     envVars:
       - key: "JDBC_URL"
         value: "jdbc:postgresql://localhost:5432/pegadb"
@@ -1224,5 +1224,4 @@ commandTests:
       - -c
       - |
         bash -c './scripts/docker-entrypoint.sh sudo root whoami'
-    exitCode: 0
-    expectedOutput: ["root"]
+    exitCode: 1
