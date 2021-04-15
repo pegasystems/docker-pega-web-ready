@@ -81,7 +81,7 @@ RUN mkdir -p /opt/pega/streamvol && \
     chown -R pegauser /opt/pega/streamvol
 
 # If this is set to true, run pega as a user that has constrained access. 
-ENV RUN_AS_RESTRICTED_USER=true
+ENV RUN_AS_RESTRICTED_USER=false
 
 # Set up an empty JDBC URL which will, if set to a non-empty value, be used in preference
 # to the "constructed" JDBC URL
