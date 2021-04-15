@@ -105,9 +105,9 @@ fileExistenceTests:
 - name: '/usr/bin/curl permissions'
   path: '/usr/bin/curl'
   shouldExist: true
-  permissions: '-rwxrwx---'
+  permissions: '-rwxr-x---'
   uid: 0
-  gid: 9001
+  gid: 0
 
 - name: 'Heap Dumps File Path'
   path: '/heapdumps'
@@ -1168,6 +1168,8 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
+      - key: "ENV RUN_AS_RESTRICTED_USER"
+        value: "true"
     command: "bash"
     args:
       - -c
@@ -1176,8 +1178,8 @@ commandTests:
     exitCode: 1
     expectedError: ["permission denied"]
 
-  # Ensure tomcat user can't gosu as root
-  - name: "Ensure tomcat user can't gosu as root"
+  # Ensure tomcat user can't sudo as root
+  - name: "Ensure tomcat user can't sudo as root"
     envVars:
       - key: "JDBC_URL"
         value: "jdbc:postgresql://localhost:5432/pegadb"
@@ -1195,6 +1197,6 @@ commandTests:
     args:
       - -c
       - |
-        bash -c './scripts/docker-entrypoint.sh gosu root whoami'
+        bash -c './scripts/docker-entrypoint.sh sudo root whoami'
     exitCode: 1
     expectedError: ["permission denied"]
