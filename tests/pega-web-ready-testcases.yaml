@@ -1168,7 +1168,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "ENV RUN_AS_RESTRICTED_USER"
+      - key: "RUN_AS_RESTRICTED_USER"
         value: "true"
     command: "bash"
     args:
@@ -1193,6 +1193,8 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
+      - key: "RUN_AS_RESTRICTED_USER"
+        value: "true"
     command: "bash"
     args:
       - -c
