@@ -37,7 +37,7 @@ fileExistenceTests:
 - name: 'tomcat path'
   path: '/usr/local/tomcat/'
   shouldExist: true
-  permissions: 'drwxr-xr-x'
+  permissions: 'drwxrwxr-x'
   uid: 9001
   gid: 0
 
@@ -63,7 +63,7 @@ fileExistenceTests:
 - name: 'catalina work filepath'
   path: '/usr/local/tomcat/work'
   shouldExist: true
-  permissions: 'drwxrwxrwx'
+  permissions: 'drwxrwxr-x'
   uid: 9001
   gid: 0
 
@@ -154,7 +154,7 @@ fileExistenceTests:
 - name: 'prometheus lib file'
   path: '/opt/pega/prometheus/jmx_prometheus_javaagent.jar'
   shouldExist: true
-  permissions: '-r--r-----'
+  permissions: '-r--r--r--'
   uid: 9001
   gid: 0
 
