@@ -15,8 +15,8 @@ LABEL vendor="Pegasystems Inc." \
 RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser -G root pegauser
 
-RUN groupadd -g 9002 tomcat && \
-    useradd -r -u 9002 -g tomcat tomcat
+RUN groupadd -g 1337 tomcat && \
+    useradd -r -u 1337 -g tomcat --create-home tomcat
 
 RUN apt-get update && \
     apt-get install -y sudo && \
@@ -175,6 +175,7 @@ RUN mkdir -p ${CATALINA_HOME}/work/Catalina/localhost/prweb && \
     chmod -R 775 ${CATALINA_HOME}  && \
     chmod -R 777 ${CATALINA_HOME}/logs && \
     chmod -R 777 ${CATALINA_HOME}/work/Catalina/localhost/prweb && \    
+    chmod -R 777 ${CATALINA_HOME}/temp && \  
     chown -R pegauser ${CATALINA_HOME} 
 
 
