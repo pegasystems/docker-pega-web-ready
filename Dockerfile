@@ -15,8 +15,9 @@ LABEL vendor="Pegasystems Inc." \
 RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser -G root pegauser
 
-RUN groupadd -g 1337 tomcat && \
-    useradd -r -u 1337 -g tomcat --create-home tomcat
+RUN groupadd -g 9002 tomcat && \
+    groupadd -g 1337 istio && \
+    useradd -r -u 9002 -g tomcat -G istio --create-home tomcat
 
 RUN apt-get update && \
     apt-get install -y sudo && \
