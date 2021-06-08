@@ -32,6 +32,8 @@ mkdir -p $secret_root
 prlog4j2="${config_root}/prlog4j2.xml"
 prconfig="${config_root}/prconfig.xml"
 context_xml="${config_root}/context.xml"
+server_xml="${config_root}/server.xml"
+web_xml="${config_root}/web.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
 
 db_username_file="${secret_root}/DB_USERNAME"
@@ -39,6 +41,8 @@ db_password_file="${secret_root}/DB_PASSWORD"
 
 cassandra_username_file="${secret_root}/CASSANDRA_USERNAME"
 cassandra_password_file="${secret_root}/CASSANDRA_PASSWORD"
+cassandra_truststore_password_file="${secret_root}/CASSANDRA_TRUSTSTORE_PASSWORD"
+cassandra_keystore_password_file="${secret_root}/CASSANDRA_KEYSTORE_PASSWORD"
 
 pega_diagnostic_username_file="${secret_root}/PEGA_DIAGNOSTIC_USER"
 pega_diagnostic_password_file="${secret_root}/PEGA_DIAGNOSTIC_PASSWORD"
@@ -61,8 +65,10 @@ if [ "$JDBC_DRIVER_URI" != "" ]; then
   for url in $urls
     do
      echo "Downloading database driver: ${url}";
-     filename=$(basename $url)
-     if curl -ksSL --output /dev/null --silent --head --fail $url
+     jarabsurl="$(cut -d'?' -f1 <<<"$url")"
+     echo "$jarabsurl"
+     filename=$(basename $jarabsurl)
+     if curl -ksSL --output /dev/null --silent --fail -r 0-0 $url
      then
        curl -ksSL -o ${lib_root}/$filename ${url}
      else
@@ -129,6 +135,18 @@ else
    export SECRET_CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
 fi
 
+if [ -e "$cassandra_truststore_password_file" ]; then
+   export SECRET_CASSANDRA_TRUSTSTORE_PASSWORD=$(<${cassandra_truststore_password_file})
+else
+   export SECRET_CASSANDRA_TRUSTSTORE_PASSWORD=${CASSANDRA_TRUSTSTORE_PASSWORD}
+fi
+
+if [ -e "$cassandra_keystore_password_file" ]; then
+   export SECRET_CASSANDRA_KEYSTORE_PASSWORD=$(<${cassandra_keystore_password_file})
+else
+   export SECRET_CASSANDRA_KEYSTORE_PASSWORD=${CASSANDRA_KEYSTORE_PASSWORD}
+fi
+
 if [ -e "$hazelcast_username_file" ]; then
    export SECRET_HZ_CS_AUTH_USERNAME=$(<${hazelcast_username_file})
 else
@@ -164,7 +182,6 @@ fi
 
 /bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
 
-
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
 #
@@ -186,6 +203,26 @@ else
 fi
 
 #
+# Copying mounted server.xml file to conf
+#
+if [ -e "${server_xml}" ]; then
+  echo "Loading server.xml from ${server_xml}...";
+  cp "${server_xml}" "${CATALINA_HOME}/conf/"
+else
+  echo "No server.xml was specified in ${server_xml}. Using defaults."
+fi
+
+#
+# Copying mounted web.xml file to conf
+#
+if [ -e "${web_xml}" ]; then
+  echo "Loading web.xml from ${web_xml}...";
+  cp "${web_xml}" "${PEGA_DEPLOYMENT_DIR}/WEB-INF/"
+else
+  echo "No web.xml was specified in ${web_xml}. Using defaults."
+fi
+
+#
 # Write config files from templates using dockerize ...
 #
 if [ -e "$context_xml" ]; then
@@ -204,8 +241,8 @@ else
        export SECRET_DB_PASSWORD=${DB_PASSWORD}
     fi
 
-    if [ "$SECRET_DB_USERNAME" == "" ] || [ "$SECRET_DB_PASSWORD" == "" ] ; then
-      echo "DB_USERNAME and DB_PASSWORD must be specified.";
+    if [ "$SECRET_DB_USERNAME" == "" ] ; then
+      echo "DB_USERNAME must be specified.";
       exit 1
     fi
 
@@ -238,7 +275,7 @@ rm ${CATALINA_HOME}/conf/context.xml.tmpl
 rm ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl
 
 
-unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT HZ_CS_AUTH_USERNAME SECRET_HZ_CS_AUTH_USERNAME HZ_CS_AUTH_PASSWORD SECRET_HZ_CS_AUTH_PASSWORD
+unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT HZ_CS_AUTH_USERNAME SECRET_HZ_CS_AUTH_USERNAME HZ_CS_AUTH_PASSWORD SECRET_HZ_CS_AUTH_PASSWORD CASSANDRA_TRUSTSTORE_PASSWORD SECRET_CASSANDRA_TRUSTSTORE_PASSWORD CASSANDRA_KEYSTORE_PASSWORD SECRET_CASSANDRA_KEYSTORE_PASSWORD
 
 unset pega_root lib_root config_root
 

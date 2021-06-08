@@ -1,5 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Context>
+  <!-- When including prconfig settings as JNDI environment entries, make sure that:
+    1. JNDI names are unique.
+    2. No JNDI names are wholely included as the prefix to another JNDI name. 
+       Ie, 'abc/feature1' and 'abc/feature1/threshold' can't be bound to objects.
+  -->
 
   <WatchedResource>WEB-INF/web.xml</WatchedResource>
 
@@ -8,15 +13,14 @@
   	<Resource name="jdbc/PegaRULES"
 		auth="Container"
 		type="javax.sql.DataSource"
-		factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
 		driverClassName="{{ .Env.JDBC_CLASS }}"
 		url="{{ .Env.JDBC_URL }}"
 		username="{{ .Env.SECRET_DB_USERNAME }}"
 		password="{{ .Env.SECRET_DB_PASSWORD }}"
-		maxActive="{{ .Env.JDBC_MAX_ACTIVE }}"
+		maxTotal="{{ .Env.JDBC_MAX_ACTIVE }}"
 		minIdle="{{ .Env.JDBC_MIN_IDLE }}"
 		maxIdle="{{ .Env.JDBC_MAX_IDLE }}"
-		maxWait="{{ .Env.JDBC_MAX_WAIT }}"
+		maxWaitMillis="{{ .Env.JDBC_MAX_WAIT }}"
         initialSize="{{ .Env.JDBC_INITIAL_SIZE }}"
         connectionProperties="{{ .Env.JDBC_CONNECTION_PROPERTIES }}"
 	/>
