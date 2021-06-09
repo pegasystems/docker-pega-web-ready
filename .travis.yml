@@ -20,7 +20,8 @@ install:
 script:
   - make test
   - docker images
-  - clair-scanner -w tests/cve-scan-whitelist.yaml --ip "$(ip -4 addr show docker0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" --threshold="High" $IMAGE_NAME:latest
+  - echo "$(hostname -i)"
+  - clair-scanner -w tests/cve-scan-whitelist.yaml --ip "$(hostname -i)" --threshold="High" $IMAGE_NAME:latest
 
 before_deploy:
   - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" 
