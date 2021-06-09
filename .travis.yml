@@ -20,6 +20,7 @@ install:
 script:
   - make test
   - docker images
+  - curl http://127.0.0.1:6060
   - clair-scanner -w tests/cve-scan-whitelist.yaml -c "http://127.0.0.1:6060" --threshold="High" --ip "$(hostname -i)" $IMAGE_NAME:latest
 
 before_deploy:
