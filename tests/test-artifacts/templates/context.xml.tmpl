@@ -23,6 +23,8 @@
 		maxWaitMillis="{{ .Env.JDBC_MAX_WAIT }}"
         initialSize="{{ .Env.JDBC_INITIAL_SIZE }}"
         connectionProperties="{{ .Env.JDBC_CONNECTION_PROPERTIES }}"
+        timeBetweenEvictionRunsMillis="{{ .Env.JDBC_TIME_BETWEEN_EVICTIONS }}"
+        minEvictableIdleTimeMillis="{{ .Env.JDBC_MIN_EVICTABLE_IDLE_TIME }}"
 	/>
 
   <Environment name="url/initialization/explicittempdir" value="path" type="java.lang.String"/>
