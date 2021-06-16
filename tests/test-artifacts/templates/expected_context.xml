@@ -21,8 +21,10 @@
 		minIdle="3"
 		maxIdle="25"
 		maxWaitMillis="30000"
-        initialSize="4"
+        initialSize="3"
         connectionProperties=""
+        timeBetweenEvictionRunsMillis="30000"
+        minEvictableIdleTimeMillis="60000"
 	/>
 
   <Environment name="url/initialization/explicittempdir" value="path" type="java.lang.String"/>

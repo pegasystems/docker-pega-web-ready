@@ -18,9 +18,13 @@ metadataTest:
    - key: JDBC_MAX_WAIT
      value: 30000
    - key: JDBC_INITIAL_SIZE
-     value: 4
+     value: 3
    - key: JDBC_CONNECTION_PROPERTIES
-     value: 
+     value:
+   - key: JDBC_TIME_BETWEEN_EVICTIONS
+     value: 30000
+   - key: JDBC_MIN_EVICTABLE_IDLE_TIME
+     value: 60000
   exposedPorts: ["8080", "9001", "47100", "7003"]  
   # Add 5701-5710 ports                      
   entrypoint: [/scripts/docker-entrypoint.sh]
