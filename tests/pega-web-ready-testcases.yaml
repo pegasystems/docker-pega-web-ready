@@ -16,7 +16,7 @@ metadataTest:
    - key: JDBC_MAX_IDLE
      value: 25
    - key: JDBC_MAX_WAIT
-     value: 30000
+     value: 10000
    - key: JDBC_INITIAL_SIZE
      value: 3
    - key: JDBC_CONNECTION_PROPERTIES

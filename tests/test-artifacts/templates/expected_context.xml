@@ -20,7 +20,7 @@
 		maxTotal="75"
 		minIdle="3"
 		maxIdle="25"
-		maxWaitMillis="30000"
+		maxWaitMillis="10000"
         initialSize="3"
         connectionProperties=""
         timeBetweenEvictionRunsMillis="30000"
