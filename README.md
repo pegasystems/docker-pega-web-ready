@@ -7,9 +7,11 @@ Pega Platform is a distributed web application for customer engagement, customer
 
 
 # Using this image
+
 This *ready* Docker image represents one component of a full image you can use to run a Pega node. It is built on top of Tomcat but does not contain the Pega .war file (hence it is *ready* for the .war file - see [pegasystems/pega on DockerHub][pegasystems/pega] for the full image which *includes* the .war file).
 
 ##### User access and control for ready image
+
 This *ready* Docker image runs with built in user i.e. pegauser:pegauser (9001:9001). This has been done to provide limited access policy for image. The file system access is controlled by running image with non-root user. Only required file access has been given to pegauser:pegauser. While constructing your image from *pega-ready* consider the user access and control. Provide required files(or directories) access and ownership to the user. 
 
 ## Constructing your image from *pega-ready*
