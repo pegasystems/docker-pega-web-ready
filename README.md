@@ -137,7 +137,6 @@ Name 			| Purpose 	| Default
 --- 			| --- 		| ---
 PEGA_APP_CONTEXT_PATH   | The application context path that Tomcat uses to direct traffic to the Pega application | prweb
 PEGA_DEPLOYMENT_DIR   | The location of the Pega app deployment | /usr/local/tomcat/webapps/prweb
-MAX_THREADS 	| The max number of active threads in this pool using Tomcat's `maxThreads` setting. | `300`
 JAVA_OPTS 		| Specify any additional parameters that should be appended to the `java` command. |
 INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`
 MAX_HEAP 		| Specify the maximum size (`Xmx`) of the java heap. | `4096m`

@@ -95,8 +95,7 @@ ENV PEGA_DIAGNOSTIC_USER='' \
     PEGA_DIAGNOSTIC_PASSWORD=''
 
 # Parameterize variables to customize the tomcat runtime
-ENV MAX_THREADS="300" \
-    JAVA_OPTS="" \
+ENV JAVA_OPTS="" \
     MAX_HEAP="4096m" \
     INITIAL_HEAP="2048m" \
     INDEX_DIRECTORY="NONE" \
