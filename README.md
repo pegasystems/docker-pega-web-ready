@@ -5,7 +5,6 @@ Pega Platform is a distributed web application for customer engagement, customer
 
 [![Build Status](https://travis-ci.com/pegasystems/docker-pega-web-ready.svg?branch=master)](https://travis-ci.com/pegasystems/docker-pega-web-ready) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
 
-
 # Using this image
 
 This *ready* Docker image represents one component of a full image you can use to run a Pega node. It is built on top of Tomcat but does not contain the Pega .war file (hence it is *ready* for the .war file - see [pegasystems/pega on DockerHub][pegasystems/pega] for the full image which *includes* the .war file).
