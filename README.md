@@ -113,9 +113,11 @@ Name 						| Purpose 	| Default
 JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be allocated from this pool at the same time. | `75`
 JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `3`
 JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `25`
-JDBC_MAX_WAIT 				| The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `30000`
-JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `4`
-JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | 
+JDBC_MAX_WAIT 				| The number of milliseconds that the database connection pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `10000`
+JDBC_INITIAL_SIZE 			| The initial number of database connections that are created when the pool is started. | `3`
+JDBC_CONNECTION_PROPERTIES 	| The database connection pool properties that deploying sends to the JDBC driver when creating new database connections. Format of the string must be `[propertyName=property;]*`  |
+JDBC_TIME_BETWEEN_EVICTIONS | The number of milliseconds to sleep between runs of the idle connection validation/cleaner thread. | `30000`
+JDBC_MIN_EVICTABLE_IDLE_TIME| The number of milliseconds that an object is allowed to sit idle in the database connection pool before it is eligible for eviction. | `60000`
 
 ### Pega customization
 
