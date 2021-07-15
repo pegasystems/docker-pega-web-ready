@@ -203,16 +203,6 @@ else
 fi
 
 #
-# Copying mounted server.xml file to conf
-#
-if [ -e "${server_xml}" ]; then
-  echo "Loading server.xml from ${server_xml}...";
-  cp "${server_xml}" "${CATALINA_HOME}/conf/"
-else
-  echo "No server.xml was specified in ${server_xml}. Using defaults."
-fi
-
-#
 # Copying mounted web.xml file to conf
 #
 if [ -e "${web_xml}" ]; then
@@ -252,6 +242,17 @@ else
     fi
   /bin/dockerize -template ${CATALINA_HOME}/conf/context.xml.tmpl:${CATALINA_HOME}/conf/context.xml
 fi
+
+#
+# Copying mounted server.xml file to conf
+#
+if [ -e "${server_xml}" ]; then
+  echo "Loading server.xml from ${server_xml}...";
+  cp "${server_xml}" "${CATALINA_HOME}/conf/"
+else
+  echo "No server.xml was specified in ${server_xml}. Using defaults."
+fi
+/bin/dockerize -template ${CATALINA_HOME}/conf/server.xml:${CATALINA_HOME}/conf/server.xml
 
 if [ -e "$tomcatusers_xml" ]; then
   echo "Loading tomcat-users.xml from ${tomcatusers_xml}...";
