@@ -3,16 +3,19 @@ Pega Docker Image
 
 Pega Platform is a distributed web application for customer engagement, customer service, and digital process automation. A Pega deployment consists of a number of containers connecting to a Database and any other required backing services.  The Pega database contains business rule logic that must be preloaded with an installer for the containers to successfully start.  For more information and instructions on how to get started with a container based deployment of Pega, see [Pega's Cloud Choice documentation](https://community.pega.com/knowledgebase/articles/cloud-choice).
 
-[![Build Status](https://travis-ci.org/pegasystems/docker-pega-web-ready.svg?branch=master)](https://travis-ci.org/pegasystems/docker-pega-web-ready) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
-
+[![Build Status](https://travis-ci.com/pegasystems/docker-pega-web-ready.svg?branch=master)](https://travis-ci.com/pegasystems/docker-pega-web-ready) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
 
 # Using this image
 
-This *ready* Docker image represents one component of a full image you can use to run a Pega node. It is built on top of Tomcat but does not contain the Pega .war file (hence it is *ready* for the .war file - see [pegasystems/pega on DockerHub][pegasystems/pega] for the full image which *includes* the .war file).
+This *ready* docker image contains required components that allow you to run a Pega Platform on your deployment nodes, but does not include the Pega Platform rules. This docker image is built on top of a customized Tomcat and is web-ready for clients to build a final image that includes the Pega .war file of your choice. Pega offers an alterative, full image which *includes* the .war file - for details, see [pegasystems/pega on DockerHub][pegasystems/pega].
 
-## Constructing your image from *pega-ready*
+##### User access and control considerations for this image
 
-The simplest way to build from this image is to create your own Dockerfile with contents similar to the example below, and specify the .war file from the Pega distribution kit.  You may also specify a database driver as shown in the example.  It's a best practice to build this image on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega Infinity software libraries and specify a valid JDBC driver for your target database to bake it in.
+Pega provides this *web-ready* Docker image with built-in user privileges - pegauser:pegauser (9001:9001) which allows you to set default, limited user access policies, so file system access can be controlled by non-root users who deploy the image. The image only provides required file access to pegauser:pegauser. When you build your pega deployment Docker image from this *web-ready*, you should consider adding any user access and control restrictions within the image such as required roles ot priveleges for file or directory access and ownership. 
+
+## Building a deployable Docker image using this *web-ready* image
+
+For clients who need to build their own deployment image, Pega recommends building your Pega image using your own Dockerfile with contents similar to the example below and specifying the .war file from the Pega distribution kit. You may also specify a database driver as shown in the example. It is a best practice to build this image on a Linux system to retain proper file permissions. Replace the source paths with the actual paths to the Pega Infinity software libraries and specify a valid JDBC driver for your target database to bake it in.
 
 ```Dockerfile
 FROM busybox AS builder
@@ -114,9 +117,11 @@ Name 						| Purpose 	| Default
 JDBC_MAX_ACTIVE 			| The maximum number of active connections that can be allocated from this pool at the same time. | `75`
 JDBC_MIN_IDLE 				| The minimum number of established connections that should be kept in the pool at all times. | `3`
 JDBC_MAX_IDLE 				| The maximum number of connections that should be kept in the pool at all times. | `25`
-JDBC_MAX_WAIT 				| The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `30000`
-JDBC_INITIAL_SIZE 			| The initial number of connections that are created when the pool is started. | `4`
-JDBC_CONNECTION_PROPERTIES 	| The connection properties that will be sent to our JDBC driver when establishing new connections. Format of the string must be `[propertyName=property;]*`  | 
+JDBC_MAX_WAIT 				| The number of milliseconds that the database connection pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. | `10000`
+JDBC_INITIAL_SIZE 			| The initial number of database connections that are created when the pool is started. | `3`
+JDBC_CONNECTION_PROPERTIES 	| The database connection pool properties that deploying sends to the JDBC driver when creating new database connections. Format of the string must be `[propertyName=property;]*`  |
+JDBC_TIME_BETWEEN_EVICTIONS | The number of milliseconds to sleep between runs of the idle connection validation/cleaner thread. | `30000`
+JDBC_MIN_EVICTABLE_IDLE_TIME| The number of milliseconds that an object is allowed to sit idle in the database connection pool before it is eligible for eviction. | `60000`
 
 ### Pega customization
 
