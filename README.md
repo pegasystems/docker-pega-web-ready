@@ -7,11 +7,15 @@ Pega Platform is a distributed web application for customer engagement, customer
 
 # Using this image
 
-This *ready* Docker image represents one component of a full image you can use to run a Pega node. It is built on top of Tomcat but does not contain the Pega .war file (hence it is *ready* for the .war file - see [pegasystems/pega on DockerHub][pegasystems/pega] for the full image which *includes* the .war file).
+This *ready* docker image contains required components that allow you to run a Pega Platform on your deployment nodes, but does not include the Pega Platform rules. This docker image is built on top of a customized Tomcat and is web-ready for clients to build a final image that includes the Pega .war file of your choice. Pega offers an alterative, full image which *includes* the .war file - for details, see [pegasystems/pega on DockerHub][pegasystems/pega].
 
-## Constructing your image from *pega-ready*
+##### User access and control considerations for this image
 
-The simplest way to build from this image is to create your own Dockerfile with contents similar to the example below, and specify the .war file from the Pega distribution kit.  You may also specify a database driver as shown in the example.  It's a best practice to build this image on a Linux system to retain proper file permissions.  Replace the source paths with the actual paths to the Pega Infinity software libraries and specify a valid JDBC driver for your target database to bake it in.
+Pega provides this *web-ready* Docker image with built-in user privileges - pegauser:pegauser (9001:9001) which allows you to set default, limited user access policies, so file system access can be controlled by non-root users who deploy the image. The image only provides required file access to pegauser:pegauser. When you build your pega deployment Docker image from this *web-ready*, you should consider adding any user access and control restrictions within the image such as required roles ot priveleges for file or directory access and ownership. 
+
+## Building a deployable Docker image using this *web-ready* image
+
+For clients who need to build their own deployment image, Pega recommends building your Pega image using your own Dockerfile with contents similar to the example below and specifying the .war file from the Pega distribution kit. You may also specify a database driver as shown in the example. It is a best practice to build this image on a Linux system to retain proper file permissions. Replace the source paths with the actual paths to the Pega Infinity software libraries and specify a valid JDBC driver for your target database to bake it in.
 
 ```Dockerfile
 FROM busybox AS builder
