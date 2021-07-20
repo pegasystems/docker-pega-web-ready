@@ -176,7 +176,8 @@
                errorCode.403="webapps/ROOT/error403.html"
                showReport="true"
                showServerInfo="false" />
-        <Context>
+
+        <Context path="/prweb">
           <!-- When including prconfig settings as JNDI environment entries, make sure that:
             1. JNDI names are unique.
             2. No JNDI names are wholely included as the prefix to another JNDI name.
