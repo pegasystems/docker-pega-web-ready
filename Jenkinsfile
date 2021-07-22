@@ -54,7 +54,7 @@ node("docker"){
 }
 
 def validateProviderLabel(String provider){
-    def validProviders = ["integ-all","integ-eks","integ-gke","integ-aks"]
+    def validProviders = ["integ-all","integ-eks","integ-gke","integ-aks","integ-openshift"]
     def failureMessage = "Invalid provider label - ${provider}. valid labels are ${validProviders}"
     if(!validProviders.contains(provider)){
         currentBuild.result = 'FAILURE'
