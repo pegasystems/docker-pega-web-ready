@@ -29,9 +29,6 @@ JAVA_OPTS="-Xms${INITIAL_HEAP} -Xmx${MAX_HEAP} ${JAVA_OPTS}"
 echo JAVA_OPTS: \"${JAVA_OPTS}\"
 export  JAVA_OPTS
 
-# Tomcat Listener Settings
-CATALINA_OPTS="${CATALINA_OPTS} -DmaxThreads=${MAX_THREADS}"
-
 # Node settings
 CATALINA_OPTS="${CATALINA_OPTS} -Didentification.nodeid=${HOSTNAME}"
 CATALINA_OPTS="${CATALINA_OPTS} -DNodeType=${NODE_TYPE}"
