@@ -10,8 +10,7 @@ on:
   pull_request:
     branches: [ master ]
 
-jobs:
-
+jobs:    
   build:
 
     runs-on: ubuntu-latest
