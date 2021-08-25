@@ -2,7 +2,7 @@ name: Docker Image CI
 
 env:
   IMAGE_NAME:"pegasystems/pega-ready"
-  VERSION:"2.1.0-${GITHUB_ACTOR%%/*}-$GITHUB_RUN_ID"
+  VERSION:"2.1.0-x"
 
 on:
   push:
@@ -16,6 +16,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: echo-default-env-variables
+        run: |
+          echo "Home: ${HOME}"
+          echo "GITHUB_WORKFLOW: ${GITHUB_WORKFLOW}"
+          echo "GITHUB_ACTIONS: ${GITHUB_ACTIONS}"
+          echo "GITHUB_ACTOR: ${GITHUB_ACTOR}"
+          echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
+          echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
+          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+          echo "GITHUB_SHA: ${GITHUB_SHA}"
+          echo "GITHUB_REF: ${GITHUB_REF}"
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
