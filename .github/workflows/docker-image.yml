@@ -37,6 +37,7 @@ jobs:
       uses: ISID/build-and-scan-image@main
       with:
         tag: "pegasystems/pega-ready:latest"  # Image name and optionally tag in "name:tag" format
+        hadolint-enable: false
         path: "."  # Path to base directory to run `docker build` command
 #    - name: Scan image
 #      uses: anchore/scan-action@v2
