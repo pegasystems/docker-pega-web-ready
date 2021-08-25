@@ -1,8 +1,8 @@
 name: Docker Image CI
 
 env:
-  IMAGE_NAME="pegasystems/pega-ready"
-  VERSION="2.1.0-${GITHUB_ACTOR%%/*}-$GITHUB_RUN_ID"
+  IMAGE_NAME:"pegasystems/pega-ready"
+  VERSION:"2.1.0-${GITHUB_ACTOR%%/*}-$GITHUB_RUN_ID"
 
 on:
   push:
