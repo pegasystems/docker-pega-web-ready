@@ -37,3 +37,5 @@ jobs:
       uses: anchore/scan-action@v2
       with:
         image: "pegasystems/pega-ready:latest"
+        fail-build: true;
+        severity-cutoff: "high"
