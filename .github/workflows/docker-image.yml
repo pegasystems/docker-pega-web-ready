@@ -27,8 +27,11 @@ jobs:
         echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
         echo "GITHUB_SHA: ${GITHUB_SHA}"
         echo "GITHUB_REF: ${GITHUB_REF}"
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Check out working repository
+      uses: actions/checkout@v2
+#    - name: Build the Docker image
+#      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
     - name: Build the Docker image via makefile
       run: make image
+    - name: CVE Scan
+      run: docker scan --severity high pegasystems/pega-ready:latest
