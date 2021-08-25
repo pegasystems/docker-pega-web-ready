@@ -33,5 +33,7 @@ jobs:
 #      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
     - name: Build the Docker image via makefile
       run: make image
-    - name: CVE Scan
-      run: docker scan --severity high pegasystems/pega-ready:latest
+    - name: Scan image
+      uses: anchore/scan-action@v2
+      with:
+        image: "pegasystems/pega-ready:latest"
