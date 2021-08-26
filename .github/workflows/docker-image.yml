@@ -33,15 +33,22 @@ jobs:
 #      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
     - name: Build the Docker image via makefile
       run: make image
-    - name: Build and scan image
-      uses: ISID/build-and-scan-image@main
-      with:
-        tag: "pegasystems/pega-ready:latest"  # Image name and optionally tag in "name:tag" format
-        hadolint-enable: false
-        path: "."  # Path to base directory to run `docker build` command
-#    - name: Scan image
-#      uses: anchore/scan-action@v2
+#    - name: Build and scan image
+#      uses: ISID/build-and-scan-image@main
 #      with:
-#        image: "pegasystems/pega-ready:latest"
-#        fail-build: true;
+#        tag: "pegasystems/pega-ready:latest"  # Image name and optionally tag in "name:tag" format
+#        hadolint-enable: false
+#        path: "."  # Path to base directory to run `docker build` command
+#        trivy-enable: false
+#        docker-scan-enable: true
+#        docker-scan-severity: low
+    - name: Scan image
+      id: scan
+      uses: anchore/scan-action@v2
+      with:
+        image: "pegasystems/pega-ready:latest"
+        fail-build: true;
 #        severity-cutoff: "high"
+        acs-report-enable: true
+    - name: Inspect action SARIF report
+      run: cat ${{ steps.scan.outputs.sarif }}
