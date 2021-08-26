@@ -7,9 +7,13 @@ Pega Platform is a distributed web application for customer engagement, customer
 
 # Using this image
 
-This *ready* docker image contains required components that allow you to run a Pega Platform on your deployment nodes, but does not include the Pega Platform rules. This docker image is built on top of a customized Tomcat and is web-ready for clients to build a final image that includes the Pega .war file of your choice. Pega offers an alterative, full image which *includes* the .war file - for details, see [pegasystems/pega on DockerHub][pegasystems/pega].
+This *ready* Docker image extends the base image `pegasystems/tomcat:9-jdk11` and contains required components that allow you to run a Pega Platform on your deployment nodes, but does not include the Pega Platform rules. This docker image is built on top of a customized Tomcat and is web-ready for clients to build a final image that includes the Pega .war file of your choice. Pega offers an alterative, full image which *includes* the .war file - for details, see [pegasystems/pega on DockerHub][pegasystems/pega].
 
-##### User access and control considerations for this image
+## Image customizations
+
+Docker images provided by Pegasystems are validated and supported by [Pega Support](https://community.pega.com/support). You may use this image as-is, or you can copy this repository and build your own image based on your preferred base image such as one enforced by a corporate standard. If you choose to build your own image, the Pega Platform will still be supported but any problems that arise from your custom image are not the responsibility of Pegasystems. 
+
+## User access and control considerations for this image
 
 Pega provides this *web-ready* Docker image with built-in user privileges - pegauser:pegauser (9001:9001) which allows you to set default, limited user access policies, so file system access can be controlled by non-root users who deploy the image. The image only provides required file access to pegauser:pegauser. When you build your pega deployment Docker image from this *web-ready*, you should consider adding any user access and control restrictions within the image such as required roles ot priveleges for file or directory access and ownership. 
 
@@ -173,10 +177,6 @@ HZ_CLUSTER_NAME| Hazelcast cluster name |
 HZ_SERVER_HOSTNAME| Hazelcast server hostname |
 HZ_CS_AUTH_USERNAME | Hazelcast username for authentication |
 HZ_CS_AUTH_PASSWORD | Hazelcast password for authentication |
-
-## Image customizations
-
-This Docker image extends the base image `pegasystems/tomcat:9-jdk11`. This has been thoroughly validated. You may choose change this to use your preferred Tomcat base image, however any change should be thoroughly tested and verified. Any problems that arise from changing the base of this image or customizing the contents of the ready image are not the responsibility of Pegasystems.
 
 # Contributing
 
