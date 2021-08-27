@@ -58,7 +58,7 @@ jobs:
         
     - name: Report Failures
       if: ${{ failure() }}
-      run: cat ${{ steps.scan.outputs.sarif }}
+      run: cat ${{ steps.scan.outputs.sarif }} | jq '.runs[0].tool.driver.rules[].shortDescription.text'
       
     - name: upload Anchore scan SARIF report
       uses: github/codeql-action/upload-sarif@v1
