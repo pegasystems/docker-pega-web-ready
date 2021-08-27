@@ -7,11 +7,13 @@ Pega Platform is a distributed web application for customer engagement, customer
 
 # Using this image
 
-This *ready* Docker image extends the base image `pegasystems/tomcat:9-jdk11` and contains required components that allow you to run a Pega Platform on your deployment nodes, but does not include the Pega Platform rules. This docker image is built on top of a customized Tomcat and is web-ready for clients to build a final image that includes the Pega .war file of your choice. Pega offers an alterative, full image which *includes* the .war file - for details, see [pegasystems/pega on DockerHub][pegasystems/pega].
+This *ready* Docker image extends a customized Tomcat base image `pegasystems/tomcat:9-jdk11` and contains required components that allow you to run a Pega Platform on your deployment nodes. It does not include Pega Platform rules. This image is web-ready for clients to build a final image that includes the Pega .war file of your choice.
+
+Pega offers an alterative, full image which *includes* the .war file - for details, see [pegasystems/pega on DockerHub][pegasystems/pega]. Docker images provided by Pegasystems are validated and supported by [Pega Support](https://community.pega.com/support).
 
 ## Image customizations
 
-Docker images provided by Pegasystems are validated and supported by [Pega Support](https://community.pega.com/support). You may use this image as-is, or you can copy this repository and build your own image based on your preferred base image such as one enforced by a corporate standard. If you choose to build your own image, the Pega Platform will still be supported but any problems that arise from your custom image are not the responsibility of Pegasystems. 
+If you do not want to use the Pega-provided Docker image, you can copy this repository and build your own image based on your preferred base image such as one enforced by a corporate standard. If you choose to build your own image, Pega will continue to offer support for Pega Platform, but problems that arise from your custom image are not the responsibility of Pegasystems.
 
 ## User access and control considerations for this image
 
