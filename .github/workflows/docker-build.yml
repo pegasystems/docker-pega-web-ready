@@ -56,7 +56,8 @@ jobs:
         severity-cutoff: "high"
         acs-report-enable: true
         
-    - name: Inspect action SARIF report
+    - name: Report Failures
+      if: ${{ failure() }}
       run: cat ${{ steps.scan.outputs.sarif }}
       
     - name: upload Anchore scan SARIF report
