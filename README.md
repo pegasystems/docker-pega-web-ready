@@ -13,7 +13,7 @@ Pega offers an alterative, full image which *includes* the .war file - for detai
 
 ## Image customizations
 
-If you do not want to use the Pega-provided Docker image, you can copy this repository and build your own image based on your preferred base image such as one enforced by a corporate standard. If you choose to build your own image, Pega will continue to offer support for Pega Platform, but problems that arise from your custom image are not the responsibility of Pegasystems.
+If you do not want to use the Pega-provided Docker image, you can copy this repository and build your own image based on your preferred base image such as one enforced by a corporate standard. When making customizations for your environment, check the [Pega Platform Support Guide Resources](https://community.pega.com/knowledgebase/articles/pega-platform-support-guide-resources) to verify that those changes are supported by your Pega Platform version. If you choose to build your own image, Pega will continue to offer support for Pega Platform, but problems that arise from your custom image are not the responsibility of Pegasystems.
 
 ## User access and control considerations for this image
 
