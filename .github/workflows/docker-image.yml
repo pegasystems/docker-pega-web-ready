@@ -10,11 +10,9 @@ on:
   pull_request:
     branches: [ master ]
 
-jobs:    
+jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: echo-default-env-variables
       run: |
@@ -29,19 +27,14 @@ jobs:
         echo "GITHUB_REF: ${GITHUB_REF}"
     - name: Check out working repository
       uses: actions/checkout@v2
-#    - name: Build the Docker image
-#      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
     - name: Build the Docker image via makefile
       run: make image
-#    - name: Build and scan image
-#      uses: ISID/build-and-scan-image@main
-#      with:
-#        tag: "pegasystems/pega-ready:latest"  # Image name and optionally tag in "name:tag" format
-#        hadolint-enable: false
-#        path: "."  # Path to base directory to run `docker build` command
-#        trivy-enable: false
-#        docker-scan-enable: true
-#        docker-scan-severity: low
+    - name: Run Container Tests
+      run: |
+        curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+        chmod +x container-structure-test-linux-amd64
+        sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+        make test
     - name: Scan image
       id: scan
       uses: anchore/scan-action@v2
