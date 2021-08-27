@@ -18,7 +18,7 @@ metadataTest:
    - key: JDBC_MAX_WAIT
      value: 10000
    - key: JDBC_INITIAL_SIZE
-     value: 3
+     value: 0
    - key: JDBC_CONNECTION_PROPERTIES
      value:
    - key: JDBC_TIME_BETWEEN_EVICTIONS
