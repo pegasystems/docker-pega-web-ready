@@ -53,7 +53,7 @@ jobs:
       with:
         image: "pegasystems/pega-ready:latest"
         fail-build: true
-        severity-cutoff: "low"
+        severity-cutoff: "medium"
         acs-report-enable: true
         
     - name: Inspect action SARIF report
