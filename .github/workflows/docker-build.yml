@@ -1,8 +1,8 @@
-name: Docker Image CI
+name: Docker Image Build
 
 env:
   IMAGE_NAME: pegasystems/pega-ready
-  VERSION: 2.1.0-${GITHUB_REPOSITORY%%/*}-${GITHUB_SHA}
+  VERSION: 2.1.0-${GITHUB_REPOSITORY}-${GITHUB_SHA}
 
 on:
   push:
@@ -63,3 +63,10 @@ jobs:
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{ steps.scan.outputs.sarif }}
+
+  push:
+    name: Push to DockerHub
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Simulated Push"
