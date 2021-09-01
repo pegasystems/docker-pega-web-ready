@@ -26,6 +26,9 @@ JAVA_OPTS="${JAVA_OPTS} -Dpega.logdir=${CATALINA_HOME}/logs/${HOSTNAME}"
 # Heap size settings (set before existing JAVA_OPTS so that duplicate settings in JAVA_OPTS will win)
 JAVA_OPTS="-Xms${INITIAL_HEAP} -Xmx${MAX_HEAP} ${JAVA_OPTS}"
 
+# Settings to run hazelcast in modular java (i.e. java 9 and newer)
+JAVA_OPTS="${JAVA_OPTS} --add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
+
 echo JAVA_OPTS: \"${JAVA_OPTS}\"
 export  JAVA_OPTS
 
