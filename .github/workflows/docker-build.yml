@@ -83,7 +83,13 @@ jobs:
         cat ${{ steps.scan.outputs.sarif }} | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -i "low" || true
         cat ${{ steps.scan.outputs.sarif }} | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -iv "critical\|high\|medium\|low" || true
       
-    - name: upload Anchore scan SARIF report
+    - name: Publish Scan Results as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: docker-scan-results
+        path: ${{ steps.scan.outputs.sarif }}
+        
+    - name: Upload Anchore Scan SARIF Report
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{ steps.scan.outputs.sarif }}
