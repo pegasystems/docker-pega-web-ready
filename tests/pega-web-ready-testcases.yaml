@@ -18,7 +18,7 @@ metadataTest:
    - key: JDBC_MAX_WAIT
      value: 10000
    - key: JDBC_INITIAL_SIZE
-     value: 3
+     value: 0
    - key: JDBC_CONNECTION_PROPERTIES
      value:
    - key: JDBC_TIME_BETWEEN_EVICTIONS
@@ -1100,3 +1100,15 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh'
     expectedOutput: ["No context.xml was specified"]
+  # Verify cmd line options to be passed for hazelcast starting in java 9+
+  - name: "Check settings required for starting hazelcast in java modular environment "
+    command: "bash"
+    args:
+      - -c
+      - |
+        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        sleep 5s
+    exitCode: 0
+    expectedOutput: ["--add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.ibm.lang.management.internal=ALL-UNNAMED \
+                      --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"]
