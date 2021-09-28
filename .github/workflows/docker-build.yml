@@ -84,6 +84,7 @@ jobs:
         cat ${{ steps.scan.outputs.sarif }} | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -iv "critical\|high\|medium\|low" || true
       
     - name: Publish Scan Results as Artifact
+      if: always()
       uses: actions/upload-artifact@v2
       with:
         name: docker-scan-results
