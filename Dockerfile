@@ -1,7 +1,7 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-FROM pegasystems/tomcat:9-jdk11 as release
+FROM public.ecr.aws/k5d0c5a7/tomcat-ubuntu2004:latest as release
 
 ARG VERSION
 
