@@ -166,8 +166,8 @@ commandTests:
     args:
     - -c
     - |
-        java -version  2>&1 | grep "OpenJDK 64-Bit Server VM AdoptOpenJDK"
-    expectedOutput: [".*OpenJDK 64-Bit Server VM AdoptOpenJDK.*"] 
+        java -version  2>&1 | grep -E "OpenJDK 64-Bit Server VM (AdoptOpenJDK|Temurin)"
+    expectedOutput: [".*OpenJDK 64-Bit Server VM (AdoptOpenJDK|Temurin).*"] 
 # Verify Cataline_home variable       
   - name: "Catalina Home check"
     command: "echo"
