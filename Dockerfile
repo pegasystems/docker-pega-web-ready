@@ -148,7 +148,17 @@ RUN mkdir -p /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
-    
+
+# Setup dir for cert files
+RUN  mkdir -p /opt/pega/certs  && \
+     chgrp -R 0 /opt/pega/certs && \
+     chmod -R g+rw /opt/pega/certs && \
+     chown -R pegauser /opt/pega/certs
+
+#give permissions and ownership to pegauser for lib/security
+RUN chmod -R g+rw ${JAVA_HOME}/lib/security && \
+    chown -R pegauser ${JAVA_HOME}/lib/security
+
 # Remove existing webapps
 RUN rm -rf ${CATALINA_HOME}/webapps/*
 
