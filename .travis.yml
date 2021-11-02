@@ -4,7 +4,7 @@ services:
 env:
   global:
     - IMAGE_NAME="pegasystems/pega-ready"
-    - VERSION="2.1.0-${TRAVIS_REPO_SLUG%%/*}-$TRAVIS_BUILD_NUMBER"
+    - VERSION="3.0.$TRAVIS_BUILD_NUMBER"
 
 install:
   - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" || true
