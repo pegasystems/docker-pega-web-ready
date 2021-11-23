@@ -97,7 +97,7 @@ do
     filename=$(basename "$certfile")
     ext="${filename##*.}"
     echo "$filename"
-    if [ "$ext" = "cer" ]; then
+    if [ "$ext" = "cer" ] || [ "$ext" = "pem" ] || [ "$ext" = "crt" ] || [ "$ext" = "der" ]; then
       echo "${filename%.*}"cert
       keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias "${filename%.*}"cert -file $certfile
     fi
