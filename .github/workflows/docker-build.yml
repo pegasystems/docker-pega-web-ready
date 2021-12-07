@@ -14,6 +14,16 @@ on:
     - cron:  '0 12 * * *'
 
 jobs:
+  debug:
+    name: Echo Variables
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo        
+        uses: actions/checkout@v2
+      - run: echo " Print a single environment variable (the commit SHA ) - ${{ github.sha }} "
+      - run: echo "Print all environment variables"
+      - run:  env
+      
   docker-login:
     name: Login to DockerHub
     if: ${{ github.ref == 'refs/heads/master' && github.repository == 'pegasystems/docker-pega-web-ready' }}
