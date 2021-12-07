@@ -2,7 +2,7 @@ name: Docker Image Build
 
 env:
   IMAGE_NAME: pegasystems/pega-ready
-  VERSION: 2.1.0-${GITHUB_REPOSITORY}-${GITHUB_SHA}
+  VERSION: 3.1.${GITHUB_RUN_NUMBER}-${GITHUB_REPOSITORY}
 
 on:
   push:
