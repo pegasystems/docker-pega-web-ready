@@ -1,0 +1,5 @@
+ignore:
+  # For grype configuration, see https://github.com/anchore/grype#specifying-matches-to-ignore
+
+  # We can make rules to match just by vulnerability ID:
+  - vulnerability: CVE-2015-8751
