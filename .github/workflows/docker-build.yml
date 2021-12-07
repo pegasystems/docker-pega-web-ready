@@ -2,7 +2,8 @@ name: Docker Image Build
 
 env:
   IMAGE_NAME: pegasystems/pega-ready
-  VERSION: 3.1
+  ROOT_VER: 3.1
+  VERSION: ${{ format('{0}.{1}', env.ROOT_VER, secrets.env.GITHUB_RUN_NUMBER) }}
 
 on:
   push:
@@ -19,10 +20,6 @@ jobs:
     steps:
       - name: Check out repo        
         uses: actions/checkout@v2
-      - name: Set env
-        run: echo ::set-env name=VERSION::${{ env.VERSION }}.${{ env.GITHUB_RUN_NUMBER }}
-      - name: Test
-        run: echo $STEPVAR
       - run: echo " Print a single environment variable (the commit SHA ) - ${{ github.sha }} "
       - run: echo "Print all environment variables"
       - run:  env
