@@ -2,8 +2,9 @@ name: Docker Image Build
 
 env:
   IMAGE_NAME: pegasystems/pega-ready
-  VERSION: 3.1.${GITHUB_RUN_NUMBER}
-  REPO: ${GITHUB_REPOSITORY}
+  MAJOR_MINOR: "3.1"
+  BUILD_NUMBER: $GITHUB_RUN_NUMBER
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
 on:
   push:
@@ -98,6 +99,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Check out working repository
         uses: actions/checkout@v2
+      - name: Set Version
+        run: echo ::set-env name=VERSION::${{ env.MAJOR_MINOR }}.${{ env.BUILD_NUMBER }}
       - name: Push image to dockerhub 
         run: |
           make image
