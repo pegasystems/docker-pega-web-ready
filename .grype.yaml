@@ -1,0 +1,12 @@
+ignore:
+  # For grype configuration, see https://github.com/anchore/grype#specifying-matches-to-ignore
+  
+  # Disputed scanner issue https://github.com/anchore/grype/issues/504
+  - vulnerability: CVE-2002-0493
+  - vulnerability: CVE-2013-2185
+  - vulnerability: CVE-2016-5425
+  - vulnerability: CVE-2016-6325
+  - vulnerability: CVE-2020-8022
+
+  # All binary instances are uploaded within the context of Pega by privileged users.
+  - vulnerability: CVE-2015-8751
