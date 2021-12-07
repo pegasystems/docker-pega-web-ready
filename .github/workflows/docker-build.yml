@@ -21,7 +21,7 @@ jobs:
       - name: Check out repo        
         uses: actions/checkout@v2
       - name: Set env
-        run: echo ::set-env name=VER2::${{ env.GITHUB_RUN_NUMBER }}-somestep
+        run: echo ::set-env name=VER2::${{ GITHUB_RUN_NUMBER }}-somestep
       - name: Test
         run: echo $VER2
       - run: echo " Print a single environment variable (the commit SHA ) - ${{ github.sha }} "
