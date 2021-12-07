@@ -2,8 +2,8 @@ name: Docker Image Build
 
 env:
   IMAGE_NAME: pegasystems/pega-ready
-  ROOT_VER: 3.1
-  VERSION: ${{ format('{0}.{1}', ROOT_VER, GITHUB_RUN_NUMBER) }}
+  VERSION: "3.1.$GITHUB_RUN_NUMBER"
+
 
 on:
   push:
