@@ -16,6 +16,7 @@ on:
 jobs:
   docker-login:
     name: Login to DockerHub
+    if: ${{ github.ref == 'refs/heads/master' && github.repository == 'pegasystems/docker-pega-web-ready' }}
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
