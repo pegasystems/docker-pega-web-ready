@@ -2,7 +2,8 @@ name: Docker Image Build
 
 env:
   IMAGE_NAME: pegasystems/pega-ready
-  VERSION: 3.1.${GITHUB_RUN_NUMBER}-${GITHUB_REPOSITORY}
+  VERSION: 3.1.${GITHUB_RUN_NUMBER}
+  REPO: ${GITHUB_REPOSITORY}
 
 on:
   push:
@@ -15,6 +16,7 @@ on:
 jobs:
   docker-login:
     name: Login to DockerHub
+    if: ${{ github.ref == 'refs/heads/master' && github.repository == 'pegasystems/docker-pega-web-ready' }}
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -97,4 +99,7 @@ jobs:
       - name: Check out working repository
         uses: actions/checkout@v2
       - name: Push image to dockerhub 
-        run: make push
+        run: |
+          make image
+          docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${VERSION}
+          make push
