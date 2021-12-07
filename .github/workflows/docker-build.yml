@@ -17,6 +17,8 @@ jobs:
   debug:
     name: Echo Variables
     runs-on: ubuntu-latest
+    env:
+      VERSION2: "3.1.$GITHUB_RUN_NUMBER"
     steps:
       - name: Check out repo        
         uses: actions/checkout@v2
