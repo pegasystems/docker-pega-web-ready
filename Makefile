@@ -1,4 +1,6 @@
 IMAGE_NAME := $(if $(IMAGE_NAME),$(IMAGE_NAME),"pega-ready")
+VERSION := $(if $(VERSION),$(VERSION),"CUSTOM")
+
 
 all: image
 
@@ -15,4 +17,6 @@ test: image
 	container-structure-test test --image $(IMAGE_NAME) --config tests/pega-web-ready-release-testcases.yaml
 
 push: image
-	docker push $(IMAGE_NAME)
+	docker tag $(IMAGE_NAME):latest $(IMAGE_NAME):$(VERSION)
+	docker push $(IMAGE_NAME):$(VERSION)
+	docker push $(IMAGE_NAME):latest

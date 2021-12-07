@@ -102,7 +102,4 @@ jobs:
       - name: Set Version
         run: echo ::set-env name=VERSION::${{ env.MAJOR_MINOR }}.${{ env.BUILD_NUMBER }}
       - name: Push image to dockerhub 
-        run: |
-          make image
-          docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${VERSION}
-          make push
+        run: make push
