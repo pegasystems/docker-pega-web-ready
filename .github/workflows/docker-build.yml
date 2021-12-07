@@ -2,7 +2,7 @@ name: Docker Image Build
 
 env:
   IMAGE_NAME: pegasystems/pega-ready
-  VERSION: "3.1"
+  MAJOR_MINOR: "3.1"
   BUILD_NUMBER: $GITHUB_RUN_NUMBER
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
@@ -21,10 +21,10 @@ jobs:
     steps:
       - name: Check out repo        
         uses: actions/checkout@v2
-      - name: Set env
-        run: echo ::set-env name=VER2::${{ env.VERSION }}.${{ env.BUILD_NUMBER }}
+      - name: Set Version
+        run: echo ::set-env name=VERSION::${{ env.MAJOR_MINOR }}.${{ env.BUILD_NUMBER }}
       - name: Test
-        run: echo $VER2
+        run: echo $VERSION
       - run: echo " Print a single environment variable (the commit SHA ) - ${{ github.sha }} "
       - run: echo "Print all environment variables"
       - run:  env
@@ -113,6 +113,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Check out working repository
         uses: actions/checkout@v2
+      - name: Set Version
+        run: echo ::set-env name=VERSION::${{ env.MAJOR_MINOR }}.${{ env.BUILD_NUMBER }}
       - name: Push image to dockerhub 
         run: |
           make image
