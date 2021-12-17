@@ -90,6 +90,19 @@ done
 
 echo "Using JDBC_URL: ${JDBC_URL}"
 
+# import certificates to jvm keystore
+for certfile in "${pega_root}/certs"/*
+do
+    echo "folder name: ${pega_root}/certs"
+    filename=$(basename "$certfile")
+    ext="${filename##*.}"
+    echo "$filename"
+    if [ "$ext" = "cer" ] || [ "$ext" = "pem" ] || [ "$ext" = "crt" ] || [ "$ext" = "der" ]; then
+      echo "${filename%.*}"cert
+      keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias "${filename%.*}"cert -file $certfile
+    fi
+done
+
 # Unset INDEX_DIRECTORY if set to NONE
 if [ "NONE" = "${INDEX_DIRECTORY}" ]; then
     export INDEX_DIRECTORY=

@@ -92,6 +92,20 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
+- name: 'Certs File Path'
+  path: '/opt/pega/certs'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'Permission for java /lib/security folder'
+  path: '$JAVA_HOME/lib/security'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
 - name: 'prometheus lib path'
   path: '/opt/pega/prometheus'
   shouldExist: true
@@ -1112,3 +1126,27 @@ commandTests:
     exitCode: 0
     expectedOutput: ["--add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.ibm.lang.management.internal=ALL-UNNAMED \
                       --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"]
+  # Verify certificate in keystore      
+  - name: "Certificate added in keystore check"
+    envVars:
+    - key: "JDBC_DRIVER_URI"
+      value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/certs/* /opt/pega/certs/ &&
+        bash -c './scripts/docker-entrypoint.sh run &'&&
+        sleep 15s &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias badsslcert  -storepass changeit &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias goodsslcert  -storepass changeit
+    exitCode: 0
+    expectedOutput: ["badsslcert(.*)trustedCertEntry,","goodsslcert(.*)trustedCertEntry,"]
