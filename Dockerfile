@@ -200,6 +200,10 @@ CMD ["run"]
 # HTTP is 8080, JMX is 9001, prometheus is 9090, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
 EXPOSE 8080 9001 9090 5701-5710 47100 7003
 
+# Used by Docker if this image is used outside of a Kubernetes context.
+# Kubernetes ignores this check and uses the liveness/readiness probes instead.
+HEALTHCHECK --interval=5m --timeout=3s CMD jcmd 0 VM.uptime || exit 1
+
 # *****Target for test environment*****
 
 FROM release as qualitytest
