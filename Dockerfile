@@ -127,7 +127,7 @@ ENV CASSANDRA_CLUSTER=false \
 # Configure search nodes. Empty string falls back to search being done on the nodes themselves.
 ENV PEGA_SEARCH_URL=
 
-# Configure hazelcast. By default, hazelcast runs in C/S mode.
+# Configure hazelcast.
 ENV HZ_CLIENT_MODE=true \
     HZ_DISCOVERY_K8S= \
     HZ_CLUSTER_NAME= \
