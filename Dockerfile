@@ -18,6 +18,7 @@ RUN groupadd -g 9001 pegauser && \
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
 COPY hashes/ /hashes/
+COPY keys/ /keys/
 
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
@@ -150,9 +151,10 @@ RUN apt-get update && \
     mkdir -p /opt/pega/prometheus && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar && \
     curl -sL -o /tmp/jmx_prometheus_javaagent-0.16.1.jar.asc https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar.asc && \
-    gpg --auto-key-locate keyserver --keyserver keyserver.ubuntu.com --keyserver-options auto-key-retrieve --verify /tmp/jmx_prometheus_javaagent-0.16.1.jar.asc /opt/pega/prometheus/jmx_prometheus_javaagent.jar && \
+    gpg --import /keys/prometheus.asc && \
+    gpg --verify /tmp/jmx_prometheus_javaagent-0.16.1.jar.asc /opt/pega/prometheus/jmx_prometheus_javaagent.jar && \
     rm /tmp/jmx_prometheus_javaagent-0.16.1.jar.asc && \
-    apt-get autoremove -y gpg && \
+    apt-get autoremove --purge -y gpg && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
