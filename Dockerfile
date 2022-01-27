@@ -17,6 +17,8 @@ RUN groupadd -g 9001 pegauser && \
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
+COPY hashes/ /hashes/
+
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
     chgrp -R 0 /heapdumps && \
@@ -169,7 +171,10 @@ COPY tomcat-conf ${CATALINA_HOME}/conf/
 COPY scripts /scripts
 
 #Installing dockerize for generating config files using templates
-RUN curl -sL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar zxf - -C /bin/
+RUN curl -sL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz > /tmp/dockerize.tar.gz && \
+    sha256sum -c /hashes/dockerize.sha256 && \
+    tar zxf /tmp/dockerize.tar.gz -C /bin/ && \
+    rm /tmp/dockerize.tar.gz
 
 # Update access of required directories to allow not running in root for openshift
 RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
