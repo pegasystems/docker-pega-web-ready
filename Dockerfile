@@ -17,6 +17,9 @@ RUN groupadd -g 9001 pegauser && \
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
+COPY hashes/ /hashes/
+COPY keys/ /keys/
+
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
     chgrp -R 0 /heapdumps && \
@@ -142,8 +145,16 @@ RUN  mkdir -p /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
 # Set up dir for prometheus lib
-RUN mkdir -p /opt/pega/prometheus && \
+RUN apt-get update && \
+    apt-get install -y gpg && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /opt/pega/prometheus && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar && \
+    curl -sL -o /tmp/jmx_prometheus_javaagent-0.16.1.jar.asc https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar.asc && \
+    gpg --import /keys/prometheus.asc && \
+    gpg --verify /tmp/jmx_prometheus_javaagent-0.16.1.jar.asc /opt/pega/prometheus/jmx_prometheus_javaagent.jar && \
+    rm /tmp/jmx_prometheus_javaagent-0.16.1.jar.asc && \
+    apt-get autoremove --purge -y gpg && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
@@ -169,7 +180,10 @@ COPY tomcat-conf ${CATALINA_HOME}/conf/
 COPY scripts /scripts
 
 #Installing dockerize for generating config files using templates
-RUN curl -sL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar zxf - -C /bin/
+RUN curl -sL -o /tmp/dockerize.tar.gz https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz  && \
+    sha256sum -c /hashes/dockerize.sha256 && \
+    tar zxf /tmp/dockerize.tar.gz -C /bin/ && \
+    rm /tmp/dockerize.tar.gz
 
 # Update access of required directories to allow not running in root for openshift
 RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
