@@ -123,7 +123,7 @@ shopt -u nocasematch
 # Various checks surrounding the use of our NodeTypes
 for i in ${NODE_TYPE//,/ }; do
   if [[ "$i" =~ ^(DDS|Universal)$ ]]; then
-    echo "NODE_TYPE ($1) IS NOT SUPPORTED BY THIS IMAGE."
+    echo "NODE_TYPE ($i) IS NOT SUPPORTED BY THIS IMAGE."
     exit 1
   elif [[ "$i" =~ ^Stream$ ]]; then
 
