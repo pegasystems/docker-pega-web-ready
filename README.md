@@ -91,6 +91,18 @@ RULES_SCHEMA 		| Specify the rules schema for your database. | `rules`
 DATA_SCHEMA 		| Specify the data schema for your database. | `data`
 CUSTOMERDATA_SCHEMA | If configured in your database, set the customer data schema for your database. If you do not provide a value, this setting defaults to `dataSchema`. |
 
+### Custom artifactory settings used for downloading JDBC driver
+
+You can specify custom artifactory authentication details if it is secured with Basic or APIKey Authentication which is used for downloading JDBC driver.
+
+Name 						                | Purpose 	                                                        | Default
+--- 						                | --- 		                                                        | ---
+CUSTOM_ARTIFACTORY_USERNAME                 | Custom artifactory basic authentication username.                 |
+CUSTOM_ARTIFACTORY_PASSWORD                 | Custom artifactory basic authentication password.                 |
+CUSTOM_ARTIFACTORY_APIKEY_HEADER            | Custom artifactory dedicated APIKey authentication header name.   |
+CUSTOM_ARTIFACTORY_APIKEY                   | Custom artifactory APIKey value for APIKey authentication.        |
+ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION  | Enables ssl verification when downloading JDBC driver using curl. | `false`
+
 ### JDBC connection examples
 See the following examples for specifying the database and type of driver used for your connection.
 
