@@ -29,6 +29,13 @@ mkdir -p $config_root
 secret_root="${pega_root}/secrets"
 mkdir -p $secret_root
 
+tls_cert_root="${pega_root}/tlscerts"
+mkdir -p $tls_cert_root
+
+tomcat_cert_root="${pega_root}/tomcatcerts"
+mkdir -p $tomcat_cert_root
+
+
 prlog4j2="${config_root}/prlog4j2.xml"
 prconfig="${config_root}/prconfig.xml"
 context_xml="${config_root}/context.xml"
@@ -54,6 +61,24 @@ custom_artifactory_username_file="${secret_root}/CUSTOM_ARTIFACTORY_USERNAME"
 custom_artifactory_password_file="${secret_root}/CUSTOM_ARTIFACTORY_PASSWORD"
 custom_artifactory_apikey_header_file="${secret_root}/CUSTOM_ARTIFACTORY_APIKEY_HEADER"
 custom_artifactory_apikey_file="${secret_root}/CUSTOM_ARTIFACTORY_APIKEY"
+
+#tomcat ssl certs
+tlscert_password_file="${tls_cert_root}/CERT_PASSWORD"
+tlscert_certificate_file="${tls_cert_root}/CERT_CONTENT"
+
+if [ -e "$tlscert_password_file" ]; then
+   export CERT_PASSWORD=$(<${tlscert_password_file})
+else
+   export CERT_PASSWORD=${CERT_PASSWORD}
+fi
+
+if [ -e "$tlscert_certificate_file" ]; then
+  echo "ssl certificate exists"
+  cat ${tlscert_certificate_file} | xargs printf '%b\n' | base64 --decode > "${tomcat_cert_root}/tlscertificate"
+  export CERT_DIR="${tomcat_cert_root}/tlscertificate"
+else
+  echo "ssl certificate does not exist"
+fi
 
 # Define the JDBC_URL variable based on inputs
 if [ "$JDBC_URL" == "" ]; then
@@ -305,6 +330,13 @@ fi
 if [ -e "${server_xml}" ]; then
   echo "Loading server.xml from ${server_xml}...";
   cp "${server_xml}" "${CATALINA_HOME}/conf/"
+elif [ -e "${config_root}/server.xml.tmpl" ]; then
+  #server.xml.tmpl
+  echo "No server.xml was specified in ${server_xml}.  Generating from templates."
+  if [ -e ${config_root}/server.xml.tmpl ] ; then
+    cp ${config_root}/server.xml.tmpl ${CATALINA_HOME}/conf/server.xml.tmpl
+  fi
+  /bin/dockerize -template ${CATALINA_HOME}/conf/server.xml.tmpl:${CATALINA_HOME}/conf/server.xml
 else
   echo "No server.xml was specified in ${server_xml}. Using defaults."
 fi
@@ -370,9 +402,10 @@ fi
 
 rm ${CATALINA_HOME}/conf/context.xml.tmpl
 rm ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl
+rm ${CATALINA_HOME}/conf/server.xml.tmpl
 
 
-unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT HZ_CS_AUTH_USERNAME SECRET_HZ_CS_AUTH_USERNAME HZ_CS_AUTH_PASSWORD SECRET_HZ_CS_AUTH_PASSWORD CASSANDRA_TRUSTSTORE_PASSWORD SECRET_CASSANDRA_TRUSTSTORE_PASSWORD CASSANDRA_KEYSTORE_PASSWORD SECRET_CASSANDRA_KEYSTORE_PASSWORD SECRET_CUSTOM_ARTIFACTORY_USERNAME SECRET_CUSTOM_ARTIFACTORY_PASSWORD CUSTOM_ARTIFACTORY_USERNAME CUSTOM_ARTIFACTORY_PASSWORD SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER SECRET_CUSTOM_ARTIFACTORY_APIKEY CUSTOM_ARTIFACTORY_APIKEY_HEADER CUSTOM_ARTIFACTORY_APIKEY ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION
+unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT HZ_CS_AUTH_USERNAME SECRET_HZ_CS_AUTH_USERNAME HZ_CS_AUTH_PASSWORD SECRET_HZ_CS_AUTH_PASSWORD CASSANDRA_TRUSTSTORE_PASSWORD SECRET_CASSANDRA_TRUSTSTORE_PASSWORD CASSANDRA_KEYSTORE_PASSWORD SECRET_CASSANDRA_KEYSTORE_PASSWORD SECRET_CUSTOM_ARTIFACTORY_USERNAME SECRET_CUSTOM_ARTIFACTORY_PASSWORD CUSTOM_ARTIFACTORY_USERNAME CUSTOM_ARTIFACTORY_PASSWORD SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER SECRET_CUSTOM_ARTIFACTORY_APIKEY CUSTOM_ARTIFACTORY_APIKEY_HEADER CUSTOM_ARTIFACTORY_APIKEY ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION CERT_PASSWORD
 
 unset pega_root lib_root config_root
 

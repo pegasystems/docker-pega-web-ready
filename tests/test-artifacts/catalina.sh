@@ -16,6 +16,16 @@ custom_artifactory_password_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_PASSWORD"
 custom_artifactory_apikey_header_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY_HEADER"
 custom_artifactory_apikey_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY"
 
+tlscert_password_file="/opt/pega/tlscerts/CERT_PASSWORD"
+
+if [ -e "$tlscert_password_file" ]; then
+   export CERT_PASSWORD=$(<${tlscert_password_file})
+else
+   export CERT_PASSWORD=${CERT_PASSWORD}
+fi
+echo "TLS certificate password is - $CERT_PASSWORD"
+echo "TLS certificate directory is - $CERT_DIR"
+
 echo "$NODE_TYPE"
 
 echo "Index Directory Value - $INDEX_DIRECTORY"
