@@ -106,6 +106,13 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
+- name: 'TLS Certs File Path'
+  path: '/opt/pega/tlscerts'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
 - name: 'prometheus lib path'
   path: '/opt/pega/prometheus'
   shouldExist: true
@@ -1150,3 +1157,72 @@ commandTests:
         keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias goodsslcert  -storepass changeit
     exitCode: 0
     expectedOutput: ["badsslcert(.*)trustedCertEntry,","goodsslcert(.*)trustedCertEntry,"]
+
+  # Tls certificate password as Environment variable
+  - name: "Tls certificate Password as Environment variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/CERT_PASSWORD /opt/pega/tlscerts/CERT_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: [ "TLS certificate password is - cert_password_from_file" ]
+
+  # Tls certificate Directory as Environment variable
+  - name: "Tls certificate Directory as Environment variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "CERT_CONTENT"
+        value: "pega_tls_cert_directory"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/CERT_CONTENT /opt/pega/tlscerts/CERT_CONTENT &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: [ "TLS certificate directory is - /opt/pega/tomcatcerts/tlscertificate" ]
+
+  # Dockerize server xml
+  - name: "Dockerize server.xml tmpl file"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "CERT_DIR"
+        value: "directory"
+      - key: "CERT_PASSWORD"
+        value: "password"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/templates/server.xml.tmpl /opt/pega/config/server.xml.tmpl &&
+        bash -c './scripts/docker-entrypoint.sh' &&
+        diff /usr/local/tomcat/conf/server.xml /tests/test-artifacts/templates/expected_server.xml -wB || echo "server.xml is not properly dockerized"
+    exitCode: 0
+    excludedOutput: ["server.xml is not properly dockerized"]

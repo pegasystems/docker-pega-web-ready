@@ -11,6 +11,16 @@ cassandra_password_file="/opt/pega/secrets/CASSANDRA_PASSWORD"
 hazelcast_username_file="/opt/pega/secrets/HZ_CS_AUTH_USERNAME"
 hazelcast_password_file="/opt/pega/secrets/HZ_CS_AUTH_PASSWORD"
 
+tlscert_password_file="/opt/pega/tlscerts/CERT_PASSWORD"
+
+if [ -e "$tlscert_password_file" ]; then
+   export CERT_PASSWORD=$(<${tlscert_password_file})
+else
+   export CERT_PASSWORD=${CERT_PASSWORD}
+fi
+echo "TLS certificate password is - $CERT_PASSWORD"
+echo "TLS certificate directory is - $CERT_DIR"
+
 echo "$NODE_TYPE"
 
 echo "Index Directory Value - $INDEX_DIRECTORY"

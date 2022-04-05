@@ -166,6 +166,12 @@ RUN  mkdir -p /opt/pega/certs  && \
      chmod -R g+rw /opt/pega/certs && \
      chown -R pegauser /opt/pega/certs
 
+# Setup dir for tlscert file
+RUN  mkdir -p /opt/pega/tlscerts  && \
+     chgrp -R 0 /opt/pega/tlscerts && \
+     chmod -R g+rw /opt/pega/tlscerts && \
+     chown -R pegauser /opt/pega/tlscerts
+
 #give permissions and ownership to pegauser for lib/security
 RUN chmod -R g+rw ${JAVA_HOME}/lib/security && \
     chown -R pegauser ${JAVA_HOME}/lib/security
