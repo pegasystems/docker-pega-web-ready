@@ -92,7 +92,7 @@ fi
 custom_artifactory_auth=""
 if [ "$SECRET_CUSTOM_ARTIFACTORY_USERNAME" != "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_PASSWORD" != "" ]; then
     if [ "$SECRET_CUSTOM_ARTIFACTORY_USERNAME" == "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_PASSWORD" == "" ]; then
-        echo "SECRET_CUSTOM_ARTIFACTORY_USERNAME & SECRET_CUSTOM_ARTIFACTORY_PASSWORD must be specified for basic authentication for custom artifactory.";
+        echo "SECRET_CUSTOM_ARTIFACTORY_USERNAME & SECRET_CUSTOM_ARTIFACTORY_PASSWORD must be specified for basic authentication for custom artifactory."
         exit 1
     else
         echo "Using basic authentication for custom artifactory to download JDBC driver."
@@ -102,7 +102,7 @@ fi
 
 if [[ "$custom_artifactory_auth" == "" && ( "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER" != "" || "$SECRET_CUSTOM_ARTIFACTORY_APIKEY" != "" ) ]]; then
     if [ "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER" == "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_APIKEY" == "" ]; then
-        echo "SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER & SECRET_CUSTOM_ARTIFACTORY_APIKEY must be specified for authentication using api key for custom artifactory.";
+        echo "SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER & SECRET_CUSTOM_ARTIFACTORY_APIKEY must be specified for authentication using api key for custom artifactory."
         exit 1
     else
         echo "Using API key for authentication of custom artifactory to download JDBC driver."
@@ -138,8 +138,10 @@ fi
 if [ "$JDBC_DRIVER_URI" != "" ]; then
   curl_cmd_options=''
   if [ "$ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION" == true ]; then
+    echo "Establishing a secure connection to download driver."
     curl_cmd_options="curl -sSL $custom_artifactory_auth $custom_artifactory_certificate"
   else
+    echo "Establishing an insecure connection to download driver."
     curl_cmd_options="curl -ksSL $custom_artifactory_auth"
   fi
 

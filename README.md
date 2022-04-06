@@ -78,7 +78,7 @@ $ docker run -e "var_1=foo" -e "var_2=bar" <image name>[:tags]
 
 ### Database connection
 
-Specify your required settings for your connection to the database wher Pega will be installed.
+Specify your required settings for your connection to the database where Pega will be installed.
 
 Name 				| Purpose 	| Default
 --- 				| --- 		| ---
@@ -91,9 +91,9 @@ RULES_SCHEMA 		| Specify the rules schema for your database. | `rules`
 DATA_SCHEMA 		| Specify the data schema for your database. | `data`
 CUSTOMERDATA_SCHEMA | If configured in your database, set the customer data schema for your database. If you do not provide a value, this setting defaults to `dataSchema`. |
 
-### Custom artifactory settings used for downloading JDBC driver
+### Secured Custom artifactory settings used for downloading JDBC driver
 
-You can specify custom artifactory authentication details if it is secured with Basic or APIKey Authentication which is used for downloading JDBC driver.
+If you use a secured custom artifactory to manager your JDBC driver, provide the basic authentication credentials or the API key authentication details to satisfy your custom artifactory authentication mechanism.
 
 Name 						                | Purpose 	                                                        | Default
 --- 						                | --- 		                                                        | ---

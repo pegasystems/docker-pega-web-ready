@@ -11,6 +11,11 @@ cassandra_password_file="/opt/pega/secrets/CASSANDRA_PASSWORD"
 hazelcast_username_file="/opt/pega/secrets/HZ_CS_AUTH_USERNAME"
 hazelcast_password_file="/opt/pega/secrets/HZ_CS_AUTH_PASSWORD"
 
+custom_artifactory_username_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_USERNAME"
+custom_artifactory_password_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_PASSWORD"
+custom_artifactory_apikey_header_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY_HEADER"
+custom_artifactory_apikey_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY"
+
 echo "$NODE_TYPE"
 
 echo "Index Directory Value - $INDEX_DIRECTORY"
@@ -81,6 +86,38 @@ fi
 echo "Pega Diagnostic User is - $SECRET_PEGA_DIAGNOSTIC_USER"
 
 echo "Pega Diagnostic Password is - $SECRET_PEGA_DIAGNOSTIC_PASSWORD"
+
+if [ -e "$custom_artifactory_username_file" ]; then
+   export SECRET_CUSTOM_ARTIFACTORY_USERNAME=$(<${custom_artifactory_username_file})
+else
+   export SECRET_CUSTOM_ARTIFACTORY_USERNAME=artifactory_basic_user
+fi
+
+if [ -e "$custom_artifactory_password_file" ]; then
+   export SECRET_CUSTOM_ARTIFACTORY_PASSWORD=$(<${custom_artifactory_password_file})
+else
+   export SECRET_CUSTOM_ARTIFACTORY_PASSWORD=artifactory_basic_auth_password
+fi
+
+echo "Artifactory basic authentication Username is - $SECRET_CUSTOM_ARTIFACTORY_USERNAME"
+
+echo "Artifactory basic authentication Password is - $SECRET_CUSTOM_ARTIFACTORY_PASSWORD"
+
+if [ -e "$custom_artifactory_apikey_header_file" ]; then
+   export SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER=$(<${custom_artifactory_apikey_header_file})
+else
+   export SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER=artifactory_apikey_header
+fi
+
+if [ -e "$custom_artifactory_apikey_file" ]; then
+   export SECRET_CUSTOM_ARTIFACTORY_APIKEY=$(<${custom_artifactory_apikey_file})
+else
+   export SECRET_CUSTOM_ARTIFACTORY_APIKEY=artifactory_apikey
+fi
+
+echo "Artifactory apikey authentication header is - $SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER"
+
+echo "Artifactory apikey authentication apikey value is - $SECRET_CUSTOM_ARTIFACTORY_APIKEY"
 
 echo "Starting -- Catalina.sh"
 
