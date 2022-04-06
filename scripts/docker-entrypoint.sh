@@ -68,11 +68,11 @@ else
 fi
 
 if [ -e "$tlscert_certificate_file" ]; then
-  echo "ssl certificate exists"
+  echo "TLS certificate for tomcat exists"
   cat ${tlscert_certificate_file} | xargs printf '%b\n' | base64 --decode > "${tomcat_cert_root}/tlscertificate"
   export CERT_DIR="${tomcat_cert_root}/tlscertificate"
 else
-  echo "ssl certificate does not exist"
+  echo "TLS certificate does not exist"
 fi
 
 # Define the JDBC_URL variable based on inputs
