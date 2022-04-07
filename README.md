@@ -95,13 +95,13 @@ CUSTOMERDATA_SCHEMA | If configured in your database, set the customer data sche
 
 If you use a secured custom artifactory to manager your JDBC driver, provide the basic authentication credentials or the API key authentication details to satisfy your custom artifactory authentication mechanism.
 
-Name 						                | Purpose 	                                                        | Default
---- 						                | --- 		                                                        | ---
-CUSTOM_ARTIFACTORY_USERNAME                 | Custom artifactory basic authentication username.                 |
-CUSTOM_ARTIFACTORY_PASSWORD                 | Custom artifactory basic authentication password.                 |
-CUSTOM_ARTIFACTORY_APIKEY_HEADER            | Custom artifactory dedicated APIKey authentication header name.   |
-CUSTOM_ARTIFACTORY_APIKEY                   | Custom artifactory APIKey value for APIKey authentication.        |
-ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION  | Enables ssl verification when downloading JDBC driver using curl. | `false`
+Name 						                | Purpose 	                                                                             | Default
+--- 						                | --- 		                                                                             | ---
+CUSTOM_ARTIFACTORY_USERNAME                 | Custom artifactory basic authentication username.                                      |
+CUSTOM_ARTIFACTORY_PASSWORD                 | Custom artifactory basic authentication password.                                      |
+CUSTOM_ARTIFACTORY_APIKEY_HEADER            | Custom artifactory dedicated APIKey authentication header name.                        |
+CUSTOM_ARTIFACTORY_APIKEY                   | Custom artifactory APIKey value for APIKey authentication.                             |
+ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION  | Sets ssl verification when downloading JDBC driver using curl from custom artifactory. | `false`
 
 ### JDBC connection examples
 See the following examples for specifying the database and type of driver used for your connection.
