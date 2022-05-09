@@ -78,7 +78,7 @@ $ docker run -e "var_1=foo" -e "var_2=bar" <image name>[:tags]
 
 ### Database connection
 
-Specify your required settings for your connection to the database wher Pega will be installed.
+Specify your required settings for your connection to the database where Pega will be installed.
 
 Name 				| Purpose 	| Default
 --- 				| --- 		| ---
@@ -90,6 +90,18 @@ DB_PASSWORD 		| Specify the password to connect to your database. |
 RULES_SCHEMA 		| Specify the rules schema for your database. | `rules`
 DATA_SCHEMA 		| Specify the data schema for your database. | `data`
 CUSTOMERDATA_SCHEMA | If configured in your database, set the customer data schema for your database. If you do not provide a value, this setting defaults to `dataSchema`. |
+
+### Secured Custom artifactory settings used for downloading JDBC driver
+
+If you use a secured custom artifactory to manager your JDBC driver, provide the basic authentication credentials or the API key authentication details to satisfy your custom artifactory authentication mechanism.
+
+Name 						                | Purpose 	                                                                             | Default
+--- 						                | --- 		                                                                             | ---
+CUSTOM_ARTIFACTORY_USERNAME                 | Custom artifactory basic authentication username.                                      |
+CUSTOM_ARTIFACTORY_PASSWORD                 | Custom artifactory basic authentication password.                                      |
+CUSTOM_ARTIFACTORY_APIKEY_HEADER            | Custom artifactory dedicated APIKey authentication header name.                        |
+CUSTOM_ARTIFACTORY_APIKEY                   | Custom artifactory APIKey value for APIKey authentication.                             |
+ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION  | Sets ssl verification when downloading JDBC driver using curl from custom artifactory. | `false`
 
 ### JDBC connection examples
 See the following examples for specifying the database and type of driver used for your connection.

@@ -138,6 +138,13 @@ ENV HZ_CLIENT_MODE=false \
     HZ_CS_AUTH_USERNAME= \
     HZ_CS_AUTH_PASSWORD=
 
+# Configure custom artifactory authentication details if it is secured with Basic or APIKey Authentication which is used for downloading JDBC driver.
+ENV CUSTOM_ARTIFACTORY_USERNAME= \
+    CUSTOM_ARTIFACTORY_PASSWORD= \
+    CUSTOM_ARTIFACTORY_APIKEY_HEADER= \
+    CUSTOM_ARTIFACTORY_APIKEY= \
+    ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION=false
+
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
      chgrp -R 0 /opt/pega/kafkadata && \
@@ -165,6 +172,12 @@ RUN  mkdir -p /opt/pega/certs  && \
      chgrp -R 0 /opt/pega/certs && \
      chmod -R g+rw /opt/pega/certs && \
      chown -R pegauser /opt/pega/certs
+
+#Set up dir for certificate of custom artifactory
+RUN  mkdir -p /opt/pega/artifactory/cert && \
+     chgrp -R 0 /opt/pega/artifactory/cert && \
+     chmod -R g+rw /opt/pega/artifactory/cert && \
+     chown -R pegauser /opt/pega/artifactory/cert
 
 #give permissions and ownership to pegauser for lib/security
 RUN chmod -R g+rw ${JAVA_HOME}/lib/security && \
