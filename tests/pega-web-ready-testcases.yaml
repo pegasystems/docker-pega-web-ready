@@ -643,7 +643,7 @@ commandTests:
       mv tests/test-artifacts/CUSTOM_ARTIFACTORY_APIKEY /opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY &&
       bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
-    expectedOutput: ["Artifactory apikey authentication apikey value is - artifactory_apikey_auth_value_from_file"]
+    expectedOutput: ["Artifactory apikey authentication apikey value is  - artifactory_apikey_auth_value_from_file"]
 
   # Artifactory APIKey authentication only apikey provided
   - name: "Artifactory APIKey authentication only apikey provided"
@@ -846,7 +846,7 @@ commandTests:
         mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
         bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
-    expectedOutput: ["Artifactory apikey authentication apikey value is - artifactory_apikey"]
+    expectedOutput: ["Artifactory apikey authentication apikey value is  - artifactory_apikey"]
 
 # Cassandra Username as Environment Variable   
   - name: "Cassandra Username as Environment Variable"

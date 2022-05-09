@@ -117,7 +117,7 @@ fi
 
 echo "Artifactory apikey authentication header is - $SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER"
 
-echo "Artifactory apikey authentication apikey value is - $SECRET_CUSTOM_ARTIFACTORY_APIKEY"
+echo "Artifactory apikey authentication apikey value is  - $SECRET_CUSTOM_ARTIFACTORY_APIKEY"
 
 echo "Starting -- Catalina.sh"
 
