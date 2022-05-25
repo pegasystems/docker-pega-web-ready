@@ -16,15 +16,15 @@ custom_artifactory_password_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_PASSWORD"
 custom_artifactory_apikey_header_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY_HEADER"
 custom_artifactory_apikey_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY"
 
-tlscert_password_file="/opt/pega/tlscerts/CERT_PASSWORD"
+tomcat_keystore_password_file="/opt/pega/tlscerts/TOMCAT_KEYSTORE_PASSWORD"
 
-if [ -e "$tlscert_password_file" ]; then
-   export CERT_PASSWORD=$(<${tlscert_password_file})
+if [ -e "$tomcat_keystore_password_file" ]; then
+   export TOMCAT_KEYSTORE_PASSWORD=$(<${tomcat_keystore_password_file})
 else
-   export CERT_PASSWORD=${CERT_PASSWORD}
+   export TOMCAT_KEYSTORE_PASSWORD=${TOMCAT_KEYSTORE_PASSWORD}
 fi
-echo "TLS certificate password is - $CERT_PASSWORD"
-echo "TLS certificate directory is - $CERT_DIR"
+echo "TLS certificate password is - $TOMCAT_KEYSTORE_PASSWORD"
+echo "TLS certificate directory is - $TOMCAT_KEYSTORE_DIR"
 
 echo "$NODE_TYPE"
 
