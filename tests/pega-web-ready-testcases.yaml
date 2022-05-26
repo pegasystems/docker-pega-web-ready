@@ -1582,7 +1582,7 @@ commandTests:
         mv tests/test-artifacts/TOMCAT_KEYSTORE_CONTENT /opt/pega/tlscerts/TOMCAT_KEYSTORE_CONTENT &&
         bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
-    expectedOutput: [ "TLS certificate directory is - /opt/pega/tomcatcerts/tlscertificate" ]
+    expectedOutput: [ "TLS certificate directory is - /opt/pega/tomcatcerts/tlskeystore.jks" ]
 
   # Dockerize server xml
   - name: "Dockerize server.xml tmpl file"
