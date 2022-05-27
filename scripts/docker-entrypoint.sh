@@ -333,9 +333,7 @@ if [ -e "${server_xml}" ]; then
 elif [ -e "${config_root}/server.xml.tmpl" ]; then
   #server.xml.tmpl
   echo "No server.xml was specified in ${server_xml}.  Generating from templates."
-  if [ -e ${config_root}/server.xml.tmpl ] ; then
-    cp ${config_root}/server.xml.tmpl ${CATALINA_HOME}/conf/server.xml.tmpl
-  fi
+  cp ${config_root}/server.xml.tmpl ${CATALINA_HOME}/conf/server.xml.tmpl
   /bin/dockerize -template ${CATALINA_HOME}/conf/server.xml.tmpl:${CATALINA_HOME}/conf/server.xml
 else
   echo "No server.xml was specified in ${server_xml}. Using defaults."
