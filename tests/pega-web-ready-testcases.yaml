@@ -109,7 +109,7 @@ fileExistenceTests:
   gid: 0
 
 - name: 'TLS Certs File Path'
-  path: '/opt/pega/tlscerts'
+  path: '/opt/pega/tomcatcertsmount'
   shouldExist: true
   permissions: 'drwxrwxr-x'
   uid: 9001
@@ -1556,7 +1556,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/TOMCAT_KEYSTORE_PASSWORD /opt/pega/tlscerts/TOMCAT_KEYSTORE_PASSWORD &&
+        mv tests/test-artifacts/TOMCAT_KEYSTORE_PASSWORD /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD &&
         bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: [ "TLS certificate password is - keystore_password_from_file" ]
@@ -1579,7 +1579,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/TOMCAT_KEYSTORE_CONTENT /opt/pega/tlscerts/TOMCAT_KEYSTORE_CONTENT &&
+        mv tests/test-artifacts/TOMCAT_KEYSTORE_CONTENT /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_CONTENT &&
         bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: [ "TLS certificate directory is - /opt/pega/tomcatcerts/tlskeystore.jks" ]

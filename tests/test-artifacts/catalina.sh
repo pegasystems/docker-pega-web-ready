@@ -16,7 +16,7 @@ custom_artifactory_password_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_PASSWORD"
 custom_artifactory_apikey_header_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY_HEADER"
 custom_artifactory_apikey_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY"
 
-tomcat_keystore_password_file="/opt/pega/tlscerts/TOMCAT_KEYSTORE_PASSWORD"
+tomcat_keystore_password_file="/opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD"
 
 if [ -e "$tomcat_keystore_password_file" ]; then
    export TOMCAT_KEYSTORE_PASSWORD=$(<${tomcat_keystore_password_file})

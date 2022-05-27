@@ -29,7 +29,7 @@ mkdir -p $config_root
 secret_root="${pega_root}/secrets"
 mkdir -p $secret_root
 
-tls_cert_root="${pega_root}/tlscerts"
+tls_cert_root="${pega_root}/tomcatcertsmount"
 mkdir -p $tls_cert_root
 
 tomcat_cert_root="${pega_root}/tomcatcerts"

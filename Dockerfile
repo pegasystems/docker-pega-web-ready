@@ -180,10 +180,10 @@ RUN  mkdir -p /opt/pega/artifactory/cert && \
      chown -R pegauser /opt/pega/artifactory/cert
 
 # Setup dir for tlscert file
-RUN  mkdir -p /opt/pega/tlscerts  && \
-     chgrp -R 0 /opt/pega/tlscerts && \
-     chmod -R g+rw /opt/pega/tlscerts && \
-     chown -R pegauser /opt/pega/tlscerts
+RUN  mkdir -p /opt/pega/tomcatcertsmount  && \
+     chgrp -R 0 /opt/pega/tomcatcertsmount && \
+     chmod -R g+rw /opt/pega/tomcatcertsmount && \
+     chown -R pegauser /opt/pega/tomcatcertsmount
 
 #give permissions and ownership to pegauser for lib/security
 RUN chmod -R g+rw ${JAVA_HOME}/lib/security && \
