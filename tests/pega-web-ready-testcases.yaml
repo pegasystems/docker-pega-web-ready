@@ -27,7 +27,7 @@ metadataTest:
      value: 60000
    - key: ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION
      value: false
-  exposedPorts: ["8080", "9001", "47100", "7003"]  
+  exposedPorts: ["8080", "9001", "47100", "7003"]
   # Add 5701-5710 ports                      
   entrypoint: [/scripts/docker-entrypoint.sh]
   cmd: ["run"] 
@@ -103,6 +103,13 @@ fileExistenceTests:
 
 - name: 'Permission for java /lib/security folder'
   path: '$JAVA_HOME/lib/security'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'TLS Certs File Path'
+  path: '/opt/pega/tomcatcertsmount'
   shouldExist: true
   permissions: 'drwxrwxr-x'
   uid: 9001
@@ -336,7 +343,7 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh'
     expectedOutput: ["Establishing an insecure connection to download driver."]
-# Verify JDBC_DRIVER_URI download   
+# Verify JDBC_DRIVER_URI download
   - name: "JDBC_DRIVER_URI Download check"
     envVars:
     - key: "JDBC_DRIVER_URI"
@@ -664,7 +671,7 @@ commandTests:
     exitCode: 1
     expectedOutput: ["SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER & SECRET_CUSTOM_ARTIFACTORY_APIKEY must be specified for authentication using api key for custom artifactory."]
 
-# Cassandra Username as file input   
+# Cassandra Username as file input
   - name: "Cassandra Username as file input"
     envVars:
     - key: "JDBC_URL"
@@ -848,7 +855,7 @@ commandTests:
     exitCode: 0
     expectedOutput: ["Artifactory apikey authentication apikey value is  - artifactory_apikey"]
 
-# Cassandra Username as Environment Variable   
+# Cassandra Username as Environment Variable
   - name: "Cassandra Username as Environment Variable"
     envVars:
     - key: "JDBC_URL"
@@ -1532,3 +1539,72 @@ commandTests:
         sleep 15s
     exitCode: 0
     expectedOutput: ["Certificate is provided for custom artifactory's domain ssl verification."]
+
+  # Tls certificate password as Environment variable
+  - name: "Tls certificate Password as Environment variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/TOMCAT_KEYSTORE_PASSWORD /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: [ "TLS certificate password is - keystore_password_from_file" ]
+
+  # Tls certificate Directory as Environment variable
+  - name: "Tls certificate Directory as Environment variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "TOMCAT_KEYSTORE_CONTENT"
+        value: "pega_tls_cert_directory"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/TOMCAT_KEYSTORE_CONTENT /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_CONTENT &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: [ "TLS certificate directory is - /opt/pega/tomcatcerts/tlskeystore.jks" ]
+
+  # Dockerize server xml
+  - name: "Dockerize server.xml tmpl file"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "TOMCAT_KEYSTORE_DIR"
+        value: "directory"
+      - key: "TOMCAT_KEYSTORE_PASSWORD"
+        value: "password"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/templates/server.xml.tmpl /opt/pega/config/server.xml.tmpl &&
+        bash -c './scripts/docker-entrypoint.sh' &&
+        diff /usr/local/tomcat/conf/server.xml /tests/test-artifacts/templates/expected_server.xml -wB || echo "server.xml is not properly dockerized"
+    exitCode: 0
+    excludedOutput: ["server.xml is not properly dockerized"]
