@@ -16,6 +16,10 @@ custom_artifactory_password_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_PASSWORD"
 custom_artifactory_apikey_header_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY_HEADER"
 custom_artifactory_apikey_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY"
 
+stream_truststore_password_file="/opt/pega/secrets/STREAM_TRUSTSTORE_PASSWORD"
+stream_keystore_password_file="/opt/pega/secrets/STREAM_KEYSTORE_PASSWORD"
+stream_jaas_config_file="/opt/pega/secrets/STREAM_JAAS_CONFIG"
+
 tomcat_keystore_password_file="/opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD"
 
 if [ -e "$tomcat_keystore_password_file" ]; then
@@ -65,6 +69,30 @@ fi
 echo "Hazelcast Username is - $SECRET_HAZELCAST_USERNAME"
 
 echo "Hazelcast Password is - $SECRET_HAZELCAST_PASSWORD"
+
+if [ -e "$stream_truststore_password_file" ]; then
+   export SECRET_STREAM_TRUSTSTORE_PASSWORD=$(<${stream_truststore_password_file})
+else
+   export SECRET_STREAM_TRUSTSTORE_PASSWORD=stream_truststore_password
+fi
+
+echo "Stream truststore password is - $SECRET_STREAM_TRUSTSTORE_PASSWORD"
+
+if [ -e "$stream_keystore_password_file" ]; then
+   export SECRET_KEY_TRUSTSTORE_PASSWORD=$(<${stream_keystore_password_file})
+else
+   export SECRET_KEY_TRUSTSTORE_PASSWORD=stream_keystore_password
+fi
+
+echo "Stream keystore password is - $SECRET_KEY_TRUSTSTORE_PASSWORD"
+
+if [ -e "$stream_jaas_config_file" ]; then
+   export SECRET_STREAM_JAAS_CONFIG=$(<${stream_jaas_config_file})
+else
+   export SECRET_STREAM_JAAS_CONFIG=stream_jaas_config
+fi
+
+echo "Stream jaas config is - $SECRET_STREAM_JAAS_CONFIG"
 
 if [ -e "$db_username_file" ]; then
    export SECRET_DB_USERNAME=$(<${db_username_file})

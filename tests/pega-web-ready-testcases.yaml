@@ -1119,6 +1119,12 @@ commandTests:
       value: "true"
     - key: "CASSANDRA_TRUSTSTORE"
       value: "/fake/path"
+    - key: "STREAM_TRUSTSTORE_PASSWORD"
+      value: "fake password"
+    - key: "STREAM_KEYSTORE_PASSWORD"
+      value: "fake password"
+    - key: "STREAM_JAAS_CONFIG"
+      value: "fake config"
     command: "bash"
     args:
     - -c
@@ -1608,3 +1614,66 @@ commandTests:
         diff /usr/local/tomcat/conf/server.xml /tests/test-artifacts/templates/expected_server.xml -wB || echo "server.xml is not properly dockerized"
     exitCode: 0
     excludedOutput: ["server.xml is not properly dockerized"]
+
+  # Stream truststore password as file input
+  - name: "Stream truststore password as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/STREAM_TRUSTSTORE_PASSWORD /opt/pega/secrets/STREAM_TRUSTSTORE_PASSWORD &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Stream truststore password is - stream_truststore_password_from_file"]
+
+  # Stream keystore password as file input
+  - name: "Stream keystore password as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/STREAM_KEYSTORE_PASSWORD /opt/pega/secrets/STREAM_KEYSTORE_PASSWORD &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Stream keystore password is - stream_keystore_password_from_file"]
+
+  # Stream jaas config as file input
+  - name: "Stream jaas config as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/STREAM_JAAS_CONFIG /opt/pega/secrets/STREAM_JAAS_CONFIG &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Stream jaas config is - stream_jaas_config"]
