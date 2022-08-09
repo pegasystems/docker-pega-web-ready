@@ -53,14 +53,14 @@
   <Environment name="prconfig/cluster/clientserver/authentication/username" value="{{ .Env.SECRET_HZ_CS_AUTH_USERNAME }}" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/authentication/password" value="{{ .Env.SECRET_HZ_CS_AUTH_PASSWORD }}" type="java.lang.String"/>
   {{ end }}
-  {{ if .Env.SECRET_STREAM_TRUSTSTORE_PASSWORD }}
+  {{- if .Env.SECRET_STREAM_TRUSTSTORE_PASSWORD -}}
   <Environment name="prconfig/services/stream/encryption/truststore/password" value="{{ .Env.SECRET_STREAM_TRUSTSTORE_PASSWORD }}" type="java.lang.String"/>
-  {{ end }}
-  {{ if .Env.SECRET_STREAM_KEYSTORE_PASSWORD }}
+  {{- end }}
+  {{- if .Env.SECRET_STREAM_KEYSTORE_PASSWORD }}
   <Environment name="prconfig/services/stream/encryption/keystore/password" value="{{ .Env.SECRET_STREAM_KEYSTORE_PASSWORD }}" type="java.lang.String"/>
-  {{ end }}
-  {{ if .Env.SECRET_STREAM_JAAS_CONFIG }}
+  {{- end }}
+  {{- if .Env.SECRET_STREAM_JAAS_CONFIG }}
   <Environment name="prconfig/services/stream/encryption/sasl/jaas/config" value="{{ .Env.SECRET_STREAM_JAAS_CONFIG }}" type="java.lang.String"/>
-  {{ end }}
+  {{- end }}
 
 </Context>
