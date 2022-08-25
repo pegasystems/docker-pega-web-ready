@@ -71,12 +71,13 @@
                relaxedPathChars="[ ]"
                maxHttpHeaderSize="16384"
                maxSavePostSize="65536"
-               connectionTimeout="20000" />
+               connectionTimeout="20000"
+               maxHeaderCount="50" />
 
     <!-- facilitates liveness check via separate port -->
     <Connector port="8081" protocol="org.apache.coyote.http11.Http11Nio2Protocol"
                connectionTimeout="20000"
-	       maxThreads="1"/>
+	           maxThreads="1"/>
 
     <!-- Define a SSL/TLS HTTPS Connector on port 8443 -->
     {{ if and .Env.TOMCAT_KEYSTORE_DIR .Env.TOMCAT_KEYSTORE_PASSWORD }}
@@ -89,7 +90,8 @@
                    relaxedPathChars="[ ]"
                    maxHttpHeaderSize="16384"
                    maxSavePostSize="65536"
-                   connectionTimeout="20000" />
+                   connectionTimeout="20000"
+                   maxHeaderCount="50" />
     {{ end }}
 
     <!-- A "Connector" using the shared thread pool-->
