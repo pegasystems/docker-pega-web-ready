@@ -51,12 +51,12 @@ do
   export "SECRET_${basename}"=$(<${temp_file})
 done
 
-for i in "${secrets_list[@]}"
+for secret in "${secrets_list[@]}"
 do
-   temp="SECRET_${i}"
+   temp="SECRET_${secret}"
    secret_value=${!temp}
    if [ "${secret_value}" == ""  ]; then
-     export "SECRET_${i}"=${!i}
+     export "SECRET_${secret}"=${!secret}
    fi
 done
 
@@ -320,10 +320,10 @@ rm ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl
 rm ${CATALINA_HOME}/conf/server.xml.tmpl
 
 
-for i in "${secrets_list[@]}"
+for secret in "${secrets_list[@]}"
 do
-   temp="SECRET_${i}"
-   unset $i $temp
+   temp="SECRET_${secret}"
+   unset $secret $temp
 done
 
 unset pega_root lib_root config_root
