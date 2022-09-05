@@ -43,24 +43,22 @@ server_xml="${config_root}/server.xml"
 web_xml="${config_root}/web.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
 
-db_username_file="${secret_root}/DB_USERNAME"
-db_password_file="${secret_root}/DB_PASSWORD"
+declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD")
+for secret in ${secret_root}/*
+do
+  basename=$(basename "$secret")
+  temp_file="${secret_root}/${basename}"
+  export "SECRET_${basename}"=$(<${temp_file})
+done
 
-cassandra_username_file="${secret_root}/CASSANDRA_USERNAME"
-cassandra_password_file="${secret_root}/CASSANDRA_PASSWORD"
-cassandra_truststore_password_file="${secret_root}/CASSANDRA_TRUSTSTORE_PASSWORD"
-cassandra_keystore_password_file="${secret_root}/CASSANDRA_KEYSTORE_PASSWORD"
-
-pega_diagnostic_username_file="${secret_root}/PEGA_DIAGNOSTIC_USER"
-pega_diagnostic_password_file="${secret_root}/PEGA_DIAGNOSTIC_PASSWORD"
-
-hazelcast_username_file="${secret_root}/HZ_CS_AUTH_USERNAME"
-hazelcast_password_file="${secret_root}/HZ_CS_AUTH_PASSWORD"
-
-custom_artifactory_username_file="${secret_root}/CUSTOM_ARTIFACTORY_USERNAME"
-custom_artifactory_password_file="${secret_root}/CUSTOM_ARTIFACTORY_PASSWORD"
-custom_artifactory_apikey_header_file="${secret_root}/CUSTOM_ARTIFACTORY_APIKEY_HEADER"
-custom_artifactory_apikey_file="${secret_root}/CUSTOM_ARTIFACTORY_APIKEY"
+for secret in "${secrets_list[@]}"
+do
+   temp="SECRET_${secret}"
+   secret_value=${!temp}
+   if [ "${secret_value}" == ""  ]; then
+     export "SECRET_${secret}"=${!secret}
+   fi
+done
 
 #tomcat ssl certs
 tomcat_keystore_password_file="${tls_cert_root}/TOMCAT_KEYSTORE_PASSWORD"
@@ -90,29 +88,6 @@ if [ "$JDBC_CLASS" == "" ]; then
   exit 1
 fi
 
-if [ -e "$custom_artifactory_username_file" ]; then
-   export SECRET_CUSTOM_ARTIFACTORY_USERNAME=$(<${custom_artifactory_username_file})
-else
-   export SECRET_CUSTOM_ARTIFACTORY_USERNAME=${CUSTOM_ARTIFACTORY_USERNAME}
-fi
-
-if [ -e "$custom_artifactory_password_file" ]; then
-   export SECRET_CUSTOM_ARTIFACTORY_PASSWORD=$(<${custom_artifactory_password_file})
-else
-   export SECRET_CUSTOM_ARTIFACTORY_PASSWORD=${CUSTOM_ARTIFACTORY_PASSWORD}
-fi
-
-if [ -e "$custom_artifactory_apikey_header_file" ]; then
-   export SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER=$(<${custom_artifactory_apikey_header_file})
-else
-   export SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER=${CUSTOM_ARTIFACTORY_APIKEY_HEADER}
-fi
-
-if [ -e "$custom_artifactory_apikey_file" ]; then
-   export SECRET_CUSTOM_ARTIFACTORY_APIKEY=$(<${custom_artifactory_apikey_file})
-else
-   export SECRET_CUSTOM_ARTIFACTORY_APIKEY=${CUSTOM_ARTIFACTORY_APIKEY}
-fi
 
 custom_artifactory_auth=""
 if [ "$SECRET_CUSTOM_ARTIFACTORY_USERNAME" != "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_PASSWORD" != "" ]; then
@@ -245,41 +220,6 @@ for i in ${NODE_TYPE//,/ }; do
   fi
 done
 
-if [ -e "$cassandra_username_file" ]; then
-   export SECRET_CASSANDRA_USERNAME=$(<${cassandra_username_file})
-else
-   export SECRET_CASSANDRA_USERNAME=${CASSANDRA_USERNAME}
-fi
-
-if [ -e "$cassandra_password_file" ]; then
-   export SECRET_CASSANDRA_PASSWORD=$(<${cassandra_password_file})
-else
-   export SECRET_CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
-fi
-
-if [ -e "$cassandra_truststore_password_file" ]; then
-   export SECRET_CASSANDRA_TRUSTSTORE_PASSWORD=$(<${cassandra_truststore_password_file})
-else
-   export SECRET_CASSANDRA_TRUSTSTORE_PASSWORD=${CASSANDRA_TRUSTSTORE_PASSWORD}
-fi
-
-if [ -e "$cassandra_keystore_password_file" ]; then
-   export SECRET_CASSANDRA_KEYSTORE_PASSWORD=$(<${cassandra_keystore_password_file})
-else
-   export SECRET_CASSANDRA_KEYSTORE_PASSWORD=${CASSANDRA_KEYSTORE_PASSWORD}
-fi
-
-if [ -e "$hazelcast_username_file" ]; then
-   export SECRET_HZ_CS_AUTH_USERNAME=$(<${hazelcast_username_file})
-else
-   export SECRET_HZ_CS_AUTH_USERNAME=${HZ_CS_AUTH_USERNAME}
-fi
-
-if [ -e "$hazelcast_password_file" ]; then
-   export SECRET_HZ_CS_AUTH_PASSWORD=$(<${hazelcast_password_file})
-else
-   export SECRET_HZ_CS_AUTH_PASSWORD=${HZ_CS_AUTH_PASSWORD}
-fi
 
 if [ "HZ_CLIENT_MODE" == true ]; then
     if [ "$SECRET_HZ_CS_AUTH_USERNAME" == "" ] || [ "$SECRET_HZ_CS_AUTH_PASSWORD" == "" ]; then
@@ -356,18 +296,6 @@ if [ -e "$context_xml" ]; then
   echo "Loading context.xml from ${context_xml}...";
   cp "$context_xml" ${CATALINA_HOME}/conf/
 else
-    if [ -e "$db_username_file" ]; then
-       export SECRET_DB_USERNAME=$(<${db_username_file})
-    else
-       export SECRET_DB_USERNAME=${DB_USERNAME}
-    fi
-
-    if [ -e "$db_password_file" ]; then
-       export SECRET_DB_PASSWORD=$(<${db_password_file})
-    else
-       export SECRET_DB_PASSWORD=${DB_PASSWORD}
-    fi
-
     if [ "$SECRET_DB_USERNAME" == "" ] ; then
       echo "DB_USERNAME must be specified.";
       exit 1
@@ -384,17 +312,6 @@ if [ -e "$tomcatusers_xml" ]; then
   echo "Loading tomcat-users.xml from ${tomcatusers_xml}...";
   cp "$tomcatusers_xml" ${CATALINA_HOME}/conf/
 else
-    if [ -e "$pega_diagnostic_username_file" ]; then
-       export SECRET_PEGA_DIAGNOSTIC_USER=$(<${pega_diagnostic_username_file})
-    else
-       export SECRET_PEGA_DIAGNOSTIC_USER=${PEGA_DIAGNOSTIC_USER}
-    fi
-
-    if [ -e "$pega_diagnostic_password_file" ]; then
-       export SECRET_PEGA_DIAGNOSTIC_PASSWORD=$(<${pega_diagnostic_password_file})
-    else
-       export SECRET_PEGA_DIAGNOSTIC_PASSWORD=${PEGA_DIAGNOSTIC_PASSWORD}
-    fi
     /bin/dockerize -template ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl:${CATALINA_HOME}/conf/tomcat-users.xml
 fi
 
@@ -403,8 +320,11 @@ rm ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl
 rm ${CATALINA_HOME}/conf/server.xml.tmpl
 
 
-unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT HZ_CS_AUTH_USERNAME SECRET_HZ_CS_AUTH_USERNAME HZ_CS_AUTH_PASSWORD SECRET_HZ_CS_AUTH_PASSWORD CASSANDRA_TRUSTSTORE_PASSWORD SECRET_CASSANDRA_TRUSTSTORE_PASSWORD CASSANDRA_KEYSTORE_PASSWORD SECRET_CASSANDRA_KEYSTORE_PASSWORD SECRET_CUSTOM_ARTIFACTORY_USERNAME SECRET_CUSTOM_ARTIFACTORY_PASSWORD CUSTOM_ARTIFACTORY_USERNAME CUSTOM_ARTIFACTORY_PASSWORD SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER SECRET_CUSTOM_ARTIFACTORY_APIKEY CUSTOM_ARTIFACTORY_APIKEY_HEADER CUSTOM_ARTIFACTORY_APIKEY ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION TOMCAT_KEYSTORE_PASSWORD
-
+for secret in "${secrets_list[@]}"
+do
+   temp="SECRET_${secret}"
+   unset $secret $temp
+done
 
 unset pega_root lib_root config_root
 
