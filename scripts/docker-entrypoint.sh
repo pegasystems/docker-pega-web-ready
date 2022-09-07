@@ -48,7 +48,7 @@ for secret in ${secret_root}/*
 do
   basename=$(basename "$secret")
   temp_file="${secret_root}/${basename}"
-  export "SECRET_${basename}"=$(<${temp_file})
+  export "SECRET_${basename}"="$(<${temp_file})"
 done
 
 for secret in "${secrets_list[@]}"
