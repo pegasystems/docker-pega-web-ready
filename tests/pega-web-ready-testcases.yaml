@@ -1697,4 +1697,4 @@ commandTests:
         mv tests/test-artifacts/STREAM_JAAS_CONFIG /opt/pega/secrets/STREAM_JAAS_CONFIG &&
         bash -c './scripts/docker-entrypoint.sh run'
     exitCode: 0
-    expectedOutput: ["Stream jaas config is - stream_jaas_config"]
+    expectedOutput: ["Stream jaas config is - stream_jaas_config username password"]
