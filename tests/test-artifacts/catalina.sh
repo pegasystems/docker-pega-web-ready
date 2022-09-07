@@ -45,7 +45,8 @@ else
 fi
 
 if [ -e "$cassandra_password_file" ]; then
-   export SECRET_CASSANDRA_PASSWORD=$(<${cassandra_password_file})
+   basename=CASSANDRA_PASSWORD
+   export "SECRET_${basename}"="$(<${cassandra_password_file})"
 else
    export SECRET_CASSANDRA_PASSWORD=cassandra_password
 fi
