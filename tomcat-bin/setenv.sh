@@ -42,7 +42,7 @@ CATALINA_OPTS="${CATALINA_OPTS} -DNodeSettings=\"Pega-IntegrationEngine/EnableRe
 #  When left blank, disable indexing.
 CATALINA_OPTS="${CATALINA_OPTS} -Dindex.directory=${INDEX_DIRECTORY}"
 
-if [ -z "${MAX_RETRIES}" ] && [ -z "${RETRY_TIMEOUT}" ]; then
+if [ -n "${MAX_RETRIES}" ] && [ -n "${RETRY_TIMEOUT}" ]; then
   # Classloader Timeout settings
   CATALINA_OPTS="${CATALINA_OPTS} -Dcom.pega.pegarules.bootstrap.maxretries=${MAX_RETRIES}"
   CATALINA_OPTS="${CATALINA_OPTS} -Dcom.pega.classloader.retrytimeout=${RETRY_TIMEOUT}"
