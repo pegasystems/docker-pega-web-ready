@@ -2,10 +2,10 @@
 <Context docBase="/usr/local/tomcat/webapps/prweb">
   <!-- When including prconfig settings as JNDI environment entries, make sure that:
     1. JNDI names are unique.
-    2. No JNDI names are wholely included as the prefix to another JNDI name. 
+    2. No JNDI names are wholely included as the prefix to another JNDI name.
        Ie, 'abc/feature1' and 'abc/feature1/threshold' can't be bound to objects.
   -->
-  
+
   
   <Environment name="prconfig/database/databases/pegasearch/searchDeploymentType" value="external" type="java.lang.String" />
   
@@ -47,6 +47,19 @@
   <Environment name="prconfig/cluster/clientserver/server/hostname" value="" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/authentication/username" value="" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/authentication/password" value="" type="java.lang.String"/>
-  
-  
+  <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/provider" value="ExternalKafka" type="java.lang.String" />
+  <Environment name="prconfig/services/stream/broker/url" value="host:9092" type="java.lang.String" />
+  <Environment name="prconfig/services/stream/encryption/security/protocol" value="PLAIN" type="java.lang.String" />
+  <Environment name="prconfig/services/stream/encryption/sasl/mechanism" value="PLAIN" type="java.lang.String" />
+  <Environment name="prconfig/services/stream/encryption/truststore/path" value="truststore.jks" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/encryption/truststore/type" value="jks" type="java.lang.String" />
+  <Environment name="prconfig/services/stream/encryption/truststore/password" value="fake password" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/encryption/keystore/path" value="keystore.jks" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/encryption/keystore/type" value="jks" type="java.lang.String" />
+  <Environment name="prconfig/services/stream/encryption/keystore/password" value="fake password" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/encryption/sasl/jaas/config" value="fake config" type="java.lang.String"/>
+  <Environment name="prconfig/services/stream/name/pattern" value="pega-{stream.name}" type="java.lang.String" />
+  <Environment name="prconfig/services/stream/external/replication/factor" value="1" type="java.lang.String" />
+
 </Context>

@@ -43,7 +43,7 @@ server_xml="${config_root}/server.xml"
 web_xml="${config_root}/web.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
 
-declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD")
+declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG")
 for secret in ${secret_root}/*
 do
   basename=$(basename "$secret")
@@ -56,7 +56,7 @@ do
    temp="SECRET_${secret}"
    secret_value=${!temp}
    if [ "${secret_value}" == ""  ]; then
-     export "SECRET_${secret}"=${!secret}
+     export "SECRET_${secret}"="${!secret}"
    fi
 done
 
@@ -234,11 +234,11 @@ appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
 
 if [ ${PEGA_APP_CONTEXT_PATH} != "prweb" ]; then
     # Move pega deployment out of webapps to avoid double deployment
-    if [ ! -d "/opt/pega/prweb/WEB-INF" ]; then 
+    if [ ! -d "/opt/pega/prweb/WEB-INF" ]; then
        cp -r ${PEGA_DEPLOYMENT_DIR}/* /opt/pega/prweb
        rm -rf ${PEGA_DEPLOYMENT_DIR}
        mv ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
-    fi   
+    fi
     export PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
 fi
 
