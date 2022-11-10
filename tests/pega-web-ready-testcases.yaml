@@ -4,7 +4,7 @@ schemaVersion: "2.0.0"
 # Verify metadata of the docker file
 
 metadataTest:
-  env:
+  envVars:
    - key: CATALINA_HOME
      value: /usr/local/tomcat
    - key: PATH
