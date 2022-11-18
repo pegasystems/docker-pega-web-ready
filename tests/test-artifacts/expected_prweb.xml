@@ -34,6 +34,15 @@
   <Environment name="prconfig/dnode/cassandra_client_encryption/truststore_password" value=""  type="java.lang.String"/>
   
   
+  <Environment name="prconfig/dnode/save_dds_async_processing_enabled" value="true"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/keyspaces_prefix" value="fake_prefix"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_use_extended_token_aware_policy" value="true"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_latency_aware_policy" value="true"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_custom_retry_policy" value="true"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_speculative_execution_policy" value="true"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/ddsclient/metrics/jmx_enabled" value="true"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/ddsclient/metrics/csv_enabled" value="true"  type="java.lang.String"/>
+  <Environment name="prconfig/dnode/ddsclient/metrics/log_enabled" value="true"  type="java.lang.String"/>
 
   <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
   <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
