@@ -40,6 +40,34 @@
   {{- end }}
   {{ end }}
 
+  {{- if isTrue .Env.CASSANDRA_ASYNC_PROCESSING_ENABLED }}
+  <Environment name="prconfig/dnode/save_dds_async_processing_enabled" value="{{ .Env.CASSANDRA_ASYNC_PROCESSING_ENABLED }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- if .Env.CASSANDRA_KEYSPACES_PREFIX }}
+  <Environment name="prconfig/dnode/keyspaces_prefix" value="{{ .Env.CASSANDRA_KEYSPACES_PREFIX }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- if isTrue .Env.CASSANDRA_EXTENDED_TOKEN_AWARE_POLICY }}
+  <Environment name="prconfig/dnode/cassandra_use_extended_token_aware_policy" value="{{ .Env.CASSANDRA_EXTENDED_TOKEN_AWARE_POLICY }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- if isTrue .Env.CASSANDRA_LATENCY_AWARE_POLICY }}
+  <Environment name="prconfig/dnode/cassandra_latency_aware_policy" value="{{ .Env.CASSANDRA_LATENCY_AWARE_POLICY }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- if isTrue .Env.CASSANDRA_CUSTOM_RETRY_POLICY }}
+  <Environment name="prconfig/dnode/cassandra_custom_retry_policy" value="{{ .Env.CASSANDRA_CUSTOM_RETRY_POLICY }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- if isTrue .Env.CASSANDRA_SPECULATIVE_EXECUTION_POLICY }}
+  <Environment name="prconfig/dnode/cassandra_speculative_execution_policy" value="{{ .Env.CASSANDRA_SPECULATIVE_EXECUTION_POLICY }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- if .Env.CASSANDRA_JMX_METRICS_ENABLED }}
+  <Environment name="prconfig/dnode/ddsclient/metrics/jmx_enabled" value="{{ .Env.CASSANDRA_JMX_METRICS_ENABLED }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- if isTrue .Env.CASSANDRA_CSV_METRICS_ENABLED }}
+  <Environment name="prconfig/dnode/ddsclient/metrics/csv_enabled" value="{{ .Env.CASSANDRA_CSV_METRICS_ENABLED }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- if isTrue .Env.CASSANDRA_LOG_METRICS_ENABLED }}
+  <Environment name="prconfig/dnode/ddsclient/metrics/log_enabled" value="{{ .Env.CASSANDRA_LOG_METRICS_ENABLED }}"  type="java.lang.String"/>
+  {{- end }}
+
   <Environment name="prconfig/session/ha/quiesce/strategy/shutdownquiesce" value="true" type="java.lang.String"/>
   <Environment name="prconfig/session/ha/enabled" value="true" type="java.lang.String"/>
   <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata/data" type="java.lang.String" />
