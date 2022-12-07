@@ -18,22 +18,22 @@ export NODE_TYPE=${NODE_TYPE:="WebUser,BackgroundProcessing,Search,Stream"}
 # create directory properties and create the directories they point
 # to if they don't already exist.
 pega_root="/opt/pega"
-mkdir -p "$pega_root"
+mkdir -p $pega_root
 
 lib_root="${pega_root}/lib"
-mkdir -p "$lib_root"
+mkdir -p $lib_root
 
 config_root="${pega_root}/config"
-mkdir -p "$config_root"
+mkdir -p $config_root
 
 secret_root="${pega_root}/secrets"
-mkdir -p "$secret_root"
+mkdir -p $secret_root
 
 tls_cert_root="${pega_root}/tomcatcertsmount"
-mkdir -p "$tls_cert_root"
+mkdir -p $tls_cert_root
 
 tomcat_cert_root="${pega_root}/tomcatcerts"
-mkdir -p "$tomcat_cert_root"
+mkdir -p $tomcat_cert_root
 
 
 prlog4j2="${config_root}/prlog4j2.xml"
@@ -68,13 +68,12 @@ if [ -e "$tomcat_keystore_password_file" ]; then
    TOMCAT_KEYSTORE_PASSWORD=$(<${tomcat_keystore_password_file})
    export TOMCAT_KEYSTORE_PASSWORD
 else
-   TOMCAT_KEYSTORE_PASSWORD=${TOMCAT_KEYSTORE_PASSWORD}
-   export TOMCAT_KEYSTORE_PASSWORD
+   export TOMCAT_KEYSTORE_PASSWORD=${TOMCAT_KEYSTORE_PASSWORD}
 fi
 
 if [ -e "$tomcat_keystore_file" ]; then
   echo "TLS certificate for tomcat exists"
-  cat "${tomcat_keystore_file}" | xargs printf '%b\n' | base64 --decode > "${tomcat_cert_root}/tlskeystore.jks"
+  cat ${tomcat_keystore_file} | xargs printf '%b\n' | base64 --decode > "${tomcat_cert_root}/tlskeystore.jks"
   export TOMCAT_KEYSTORE_DIR="${tomcat_cert_root}/tlskeystore.jks"
 else
   echo "TLS certificate does not exist"
@@ -98,7 +97,7 @@ if [ "$SECRET_CUSTOM_ARTIFACTORY_USERNAME" != "" ] || [ "$SECRET_CUSTOM_ARTIFACT
         exit 1
     else
         echo "Using basic authentication for custom artifactory to download JDBC driver."
-        custom_artifactory_auth="-u ${SECRET_CUSTOM_ARTIFACTORY_USERNAME}:${SECRET_CUSTOM_ARTIFACTORY_PASSWORD}"
+        custom_artifactory_auth="-u \"${SECRET_CUSTOM_ARTIFACTORY_USERNAME}:${SECRET_CUSTOM_ARTIFACTORY_PASSWORD}\""
     fi
 fi
 
@@ -108,7 +107,7 @@ if [[ "$custom_artifactory_auth" == "" && ( "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_H
         exit 1
     else
         echo "Using API key for authentication of custom artifactory to download JDBC driver."
-        custom_artifactory_auth="-H ${SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER}:${SECRET_CUSTOM_ARTIFACTORY_APIKEY}"
+        custom_artifactory_auth="-H \"${SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER}:${SECRET_CUSTOM_ARTIFACTORY_APIKEY}\""
     fi
 fi
 
@@ -154,9 +153,9 @@ if [ "$JDBC_DRIVER_URI" != "" ]; then
      jarabsurl="$(cut -d'?' -f1 <<<"$url")"
      echo "$jarabsurl"
      filename=$(basename "$jarabsurl")
-     if $curl_cmd_options --output /dev/null --silent --fail -r 0-0 "$url"
+     if "$curl_cmd_options" --output /dev/null --silent --fail -r 0-0 "$url"
      then
-       $curl_cmd_options -o "${lib_root}/$filename" "${url}"
+       "$curl_cmd_options" -o ${lib_root}/"$filename" "${url}"
      else
        echo "Could not download jar from ${url}"
        exit 1
@@ -237,9 +236,9 @@ appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
 if [ "${PEGA_APP_CONTEXT_PATH}" != "prweb" ]; then
     # Move pega deployment out of webapps to avoid double deployment
     if [ ! -d "/opt/pega/prweb/WEB-INF" ]; then
-       cp -r "${PEGA_DEPLOYMENT_DIR}/*" "/opt/pega/prweb"
+       cp -r "${PEGA_DEPLOYMENT_DIR}"/* /opt/pega/prweb
        rm -rf "${PEGA_DEPLOYMENT_DIR}"
-       mv "${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml" "${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml"
+       mv "${CATALINA_HOME}"/conf/Catalina/localhost/prweb.xml "${CATALINA_HOME}"/conf/Catalina/localhost/"${appContextFileName}".xml
     fi
     export PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
 fi
@@ -251,7 +250,7 @@ fi
 #
 if [ -e "$prlog4j2" ]; then
   echo "Loading prlog4j2 from ${prlog4j2}...";
-  cp "$prlog4j2" "${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/"
+  cp "$prlog4j2" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prlog4j2 was specified in ${prlog4j2}.  Using defaults."
 fi
@@ -261,7 +260,7 @@ fi
 #
 if [ -e "$prconfig" ]; then
   echo "Loading prconfig from ${prconfig}...";
-  cp "${prconfig}" "${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/"
+  cp "$prconfig" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prconfig was specified in ${prconfig}.  Using defaults."
 fi
@@ -275,7 +274,7 @@ if [ -e "${server_xml}" ]; then
 elif [ -e "${config_root}/server.xml.tmpl" ]; then
   #server.xml.tmpl
   echo "No server.xml was specified in ${server_xml}.  Generating from templates."
-  cp "${config_root}/server.xml.tmpl" "${CATALINA_HOME}/conf/server.xml.tmpl"
+  cp ${config_root}/server.xml.tmpl "${CATALINA_HOME}"/conf/server.xml.tmpl
   /bin/dockerize -template "${CATALINA_HOME}"/conf/server.xml.tmpl:"${CATALINA_HOME}"/conf/server.xml
 else
   echo "No server.xml was specified in ${server_xml}. Using defaults."
@@ -296,7 +295,7 @@ fi
 #
 if [ -e "$context_xml" ]; then
   echo "Loading context.xml from ${context_xml}...";
-  cp "$context_xml" "${CATALINA_HOME}/conf/"
+  cp "$context_xml" "${CATALINA_HOME}"/conf/
 else
     if [ "$SECRET_DB_USERNAME" == "" ] ; then
       echo "DB_USERNAME must be specified.";
@@ -304,22 +303,22 @@ else
     fi
 
   echo "No context.xml was specified in ${context_xml}.  Generating from templates."
-    if [ -e "${config_root}/context.xml.tmpl" ] ; then
-      cp "${config_root}/context.xml.tmpl" "${CATALINA_HOME}/conf/context.xml.tmpl"
+    if [ -e ${config_root}/context.xml.tmpl ] ; then
+      cp ${config_root}/context.xml.tmpl "${CATALINA_HOME}"/conf/context.xml.tmpl
     fi
   /bin/dockerize -template "${CATALINA_HOME}"/conf/context.xml.tmpl:"${CATALINA_HOME}"/conf/context.xml
 fi
 
 if [ -e "$tomcatusers_xml" ]; then
   echo "Loading tomcat-users.xml from ${tomcatusers_xml}...";
-  cp "$tomcatusers_xml" "${CATALINA_HOME}/conf/"
+  cp "$tomcatusers_xml" "${CATALINA_HOME}"/conf/
 else
     /bin/dockerize -template "${CATALINA_HOME}"/conf/tomcat-users.xml.tmpl:"${CATALINA_HOME}"/conf/tomcat-users.xml
 fi
 
-rm "${CATALINA_HOME}/conf/context.xml.tmpl"
-rm "${CATALINA_HOME}/conf/tomcat-users.xml.tmpl"
-rm "${CATALINA_HOME}/conf/server.xml.tmpl"
+rm "${CATALINA_HOME}"/conf/context.xml.tmpl
+rm "${CATALINA_HOME}"/conf/tomcat-users.xml.tmpl
+rm "${CATALINA_HOME}"/conf/server.xml.tmpl
 
 
 for secret in "${secrets_list[@]}"
