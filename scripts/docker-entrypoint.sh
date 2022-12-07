@@ -44,7 +44,7 @@ web_xml="${config_root}/web.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
 
 declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG")
-for secret in "${secret_root}"/*
+for secret in ${secret_root}/*
 do
   basename=$(basename "$secret")
   temp_file="${secret_root}/${basename}"
