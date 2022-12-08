@@ -153,9 +153,9 @@ if [ "$JDBC_DRIVER_URI" != "" ]; then
      jarabsurl="$(cut -d'?' -f1 <<<"$url")"
      echo "$jarabsurl"
      filename=$(basename "$jarabsurl")
-     if curl "$curl_cmd_options" --output /dev/null --silent --fail -r 0-0 "$url"
+     if curl $curl_cmd_options --output /dev/null --silent --fail -r 0-0 $url
      then
-       curl "$curl_cmd_options" -o ${lib_root}/"$filename" "${url}"
+       curl $curl_cmd_options -o ${lib_root}/$filename ${url}
      else
        echo "Could not download jar from ${url}"
        exit 1
