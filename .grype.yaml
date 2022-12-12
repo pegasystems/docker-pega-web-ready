@@ -7,6 +7,8 @@ ignore:
   - vulnerability: CVE-2016-5425
   - vulnerability: CVE-2016-6325
   - vulnerability: CVE-2020-8022
+  - vulnerability: CVE-2022-42800
+
   # https://nvd.nist.gov/vuln/detail/CVE-2020-35527  https://ubuntu.com/security/CVE-2020-35527
   # In SQLite 3.31.1, there is an out of bounds access problem through ALTER TABLE for views that have a nested FROM clause.
   # SQLite is not leverage by this image. A fix appears to be in progress.
