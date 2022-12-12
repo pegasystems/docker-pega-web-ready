@@ -54,8 +54,8 @@
   <Environment name="prconfig/cluster/clientserver/hzOnK8s" value="" type="java.lang.String"/>
   <Environment name="prconfig/identification/cluster/name" value="" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/server/hostname" value="" type="java.lang.String"/>
-  <Environment name="prconfig/cluster/clientserver/authentication/username" value="" type="java.lang.String"/>
-  <Environment name="prconfig/cluster/clientserver/authentication/password" value="" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/authentication/username" value="hzusername" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/clientserver/authentication/password" value="hzpassword" type="java.lang.String"/>
   <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
   <Environment name="prconfig/services/stream/provider" value="ExternalKafka" type="java.lang.String" />
   <Environment name="prconfig/services/stream/broker/url" value="host:9092" type="java.lang.String" />
