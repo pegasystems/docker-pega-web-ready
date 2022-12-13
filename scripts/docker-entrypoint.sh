@@ -97,7 +97,7 @@ if [ "$SECRET_CUSTOM_ARTIFACTORY_USERNAME" != "" ] || [ "$SECRET_CUSTOM_ARTIFACT
         exit 1
     else
         echo "Using basic authentication for custom artifactory to download JDBC driver."
-        custom_artifactory_auth="-u \"${SECRET_CUSTOM_ARTIFACTORY_USERNAME}:${SECRET_CUSTOM_ARTIFACTORY_PASSWORD}\""
+        custom_artifactory_auth="-u "$SECRET_CUSTOM_ARTIFACTORY_USERNAME":"$SECRET_CUSTOM_ARTIFACTORY_PASSWORD
     fi
 fi
 
@@ -107,7 +107,7 @@ if [[ "$custom_artifactory_auth" == "" && ( "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_H
         exit 1
     else
         echo "Using API key for authentication of custom artifactory to download JDBC driver."
-        custom_artifactory_auth="-H \"${SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER}:${SECRET_CUSTOM_ARTIFACTORY_APIKEY}\""
+        custom_artifactory_auth="-H "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER":"$SECRET_CUSTOM_ARTIFACTORY_APIKEY
     fi
 fi
 
