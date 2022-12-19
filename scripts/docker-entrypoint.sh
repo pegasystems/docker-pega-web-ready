@@ -229,7 +229,7 @@ if [ "$HZ_CLIENT_MODE" == true ]; then
     fi
 fi
 
-/bin/dockerize -template "${CATALINA_HOME}"/webapps/ROOT/index.html:"${CATALINA_HOME}"/webapps/ROOT/index.html
+detemplatize -template "${CATALINA_HOME}"/webapps/ROOT/index.html:"${CATALINA_HOME}"/webapps/ROOT/index.html
 
 appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
 
