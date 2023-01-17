@@ -214,7 +214,7 @@ COPY scripts /scripts
 RUN curl -sL -o /tmp/dockerize.tar.gz https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz  && \
     sha256sum -c /hashes/dockerize.sha256 && \
     tar zxf /tmp/dockerize.tar.gz -C /bin/ && \
-    rm /tmp/dockerize.tar.gz \
+    rm /tmp/dockerize.tar.gz
 
 # Update access of required directories to allow not running in root for openshift
 RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
