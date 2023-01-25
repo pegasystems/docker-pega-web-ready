@@ -35,6 +35,6 @@ commandTests:
   args:
     - -c
     - |
-      bash -c ' echo "action={{.Env.ACTION }} lang={{.Env.LANG1}}" > test.tmpl && /bin/detemplatize -template test.tmpl:test.txt  &&  cat test.txt | grep  "action=pre-upgrade lang=en_US.UTF-8" '
+      bash -c ' echo "action={{.Env.ACTION }} lang={{.Env.LANG1}}" > /tmp/test.tmpl && /bin/detemplatize -template /tmp/test.tmpl:/tmp/test.txt  &&  cat /tmp/test.txt | grep  "action=pre-upgrade lang=en_US.UTF-8" '
   exitCode: 0
   expectedOutput: [ ".*action=pre-upgrade lang=en_US.UTF-8.*" ]
