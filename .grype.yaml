@@ -23,7 +23,7 @@ ignore:
   # the ignore list it is embedded the JMX exporter java agent library which takes in a yaml
   # config file as a JVM argument -- there is no practical way for a malicious party to 
   # leverage this vulnerability. Additionally this library is not leveraged by default. 
-  - vulnerability: CVE-2022-1471
-    fix-state: "not-fixed"
-  - vulnerability: GHSA-mjmj-j48q-9wg2
-    fix-state: "not-fixed"
+  # - vulnerability: CVE-2022-1471
+  #   fix-state: "not-fixed"
+  # - vulnerability: GHSA-mjmj-j48q-9wg2
+  #   fix-state: "not-fixed"
