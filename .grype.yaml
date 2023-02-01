@@ -15,15 +15,10 @@ ignore:
   - vulnerability: CVE-2020-35527
     fix-state: "not-fixed"
 
-
-  # https://nvd.nist.gov/vuln/detail/CVE-2022-1471 
-  # https://bitbucket.org/snakeyaml/snakeyaml/issues/561/cve-2022-1471-vulnerability-in
   # https://github.com/advisories/GHSA-mjmj-j48q-9wg2
-  # snakeyaml devs seem to be stating that they "won't fix" this issue. Adding this to 
+  # A proposed fix is planned for snakeyaml 1.34. For the time being, adding this to
   # the ignore list it is embedded the JMX exporter java agent library which takes in a yaml
   # config file as a JVM argument -- there is no practical way for a malicious party to 
   # leverage this vulnerability. Additionally this library is not leveraged by default. 
-  # - vulnerability: CVE-2022-1471
-  #   fix-state: "not-fixed"
-  # - vulnerability: GHSA-mjmj-j48q-9wg2
-  #   fix-state: "not-fixed"
+  - vulnerability: GHSA-mjmj-j48q-9wg2
+    fix-state: "not-fixed"
