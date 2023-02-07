@@ -229,7 +229,7 @@ if [ "$HZ_CLIENT_MODE" == true ]; then
     fi
 fi
 
-/bin/dockerize -template "${CATALINA_HOME}"/webapps/ROOT/index.html:"${CATALINA_HOME}"/webapps/ROOT/index.html
+/bin/detemplatize -template "${CATALINA_HOME}"/webapps/ROOT/index.html:"${CATALINA_HOME}"/webapps/ROOT/index.html
 
 appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
 
@@ -243,7 +243,7 @@ if [ "${PEGA_APP_CONTEXT_PATH}" != "prweb" ]; then
     export PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
 fi
 
-/bin/dockerize -template "${CATALINA_HOME}"/conf/Catalina/localhost/"${appContextFileName}".xml:"${CATALINA_HOME}"/conf/Catalina/localhost/"${appContextFileName}".xml
+/bin/detemplatize -template "${CATALINA_HOME}"/conf/Catalina/localhost/"${appContextFileName}".xml:"${CATALINA_HOME}"/conf/Catalina/localhost/"${appContextFileName}".xml
 
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
@@ -275,7 +275,7 @@ elif [ -e "${config_root}/server.xml.tmpl" ]; then
   #server.xml.tmpl
   echo "No server.xml was specified in ${server_xml}.  Generating from templates."
   cp ${config_root}/server.xml.tmpl "${CATALINA_HOME}"/conf/server.xml.tmpl
-  /bin/dockerize -template "${CATALINA_HOME}"/conf/server.xml.tmpl:"${CATALINA_HOME}"/conf/server.xml
+  /bin/detemplatize -template "${CATALINA_HOME}"/conf/server.xml.tmpl:"${CATALINA_HOME}"/conf/server.xml
 else
   echo "No server.xml was specified in ${server_xml}. Using defaults."
 fi
@@ -306,14 +306,14 @@ else
     if [ -e ${config_root}/context.xml.tmpl ] ; then
       cp ${config_root}/context.xml.tmpl "${CATALINA_HOME}"/conf/context.xml.tmpl
     fi
-  /bin/dockerize -template "${CATALINA_HOME}"/conf/context.xml.tmpl:"${CATALINA_HOME}"/conf/context.xml
+  /bin/detemplatize -template "${CATALINA_HOME}"/conf/context.xml.tmpl:"${CATALINA_HOME}"/conf/context.xml
 fi
 
 if [ -e "$tomcatusers_xml" ]; then
   echo "Loading tomcat-users.xml from ${tomcatusers_xml}...";
   cp "$tomcatusers_xml" "${CATALINA_HOME}"/conf/
 else
-    /bin/dockerize -template "${CATALINA_HOME}"/conf/tomcat-users.xml.tmpl:"${CATALINA_HOME}"/conf/tomcat-users.xml
+    /bin/detemplatize -template "${CATALINA_HOME}"/conf/tomcat-users.xml.tmpl:"${CATALINA_HOME}"/conf/tomcat-users.xml
 fi
 
 rm "${CATALINA_HOME}"/conf/context.xml.tmpl
