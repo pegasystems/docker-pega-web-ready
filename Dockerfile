@@ -42,7 +42,13 @@ RUN  mkdir -p /opt/pega/filerepo  && \
 RUN  mkdir -p /opt/pega/config  && \
      chgrp -R 0 /opt/pega/config && \
      chmod -R g+rw /opt/pega/config && \
-     chown -R pegauser /opt/pega/config
+     chown -R pegauser /opt/pega/config \
+
+# Create directory for mounting kerberos files(krb5.conf)
+RUN  mkdir -p /opt/pega/kerberos  && \
+     chgrp -R 0 /opt/pega/kerberos && \
+     chmod -R g+rw /opt/pega/kerberos && \
+     chown -R pegauser /opt/pega/kerberos \
 
 # Create directory for mounting libraries
 RUN  mkdir -p /opt/pega/lib  && \

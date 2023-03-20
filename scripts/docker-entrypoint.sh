@@ -35,6 +35,8 @@ mkdir -p $tls_cert_root
 tomcat_cert_root="${pega_root}/tomcatcerts"
 mkdir -p $tomcat_cert_root
 
+kerberos_root="${pega_root}/kerberos"
+mkdir -p kerberos_root
 
 prlog4j2="${config_root}/prlog4j2.xml"
 prconfig="${config_root}/prconfig.xml"
@@ -42,6 +44,8 @@ context_xml="${config_root}/context.xml"
 server_xml="${config_root}/server.xml"
 web_xml="${config_root}/web.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
+
+krb5_conf="${kerberos_root}/krb5.conf"
 
 declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG")
 for secret in "${secret_root}"/*
@@ -326,6 +330,16 @@ do
    temp="SECRET_${secret}"
    unset "$secret" "$temp"
 done
+
+#
+# Copying mounted krb5 conf file to /etc
+#
+if [ -e "$krb5_conf" ]; then
+  echo "Loading krb5.conf from ${krb5_conf}...";
+  cp "$krb5_conf" /etc/
+else
+  echo "No prlog4j2 was specified in ${prlog4j2}.  Using defaults."
+fi
 
 unset pega_root lib_root config_root
 
