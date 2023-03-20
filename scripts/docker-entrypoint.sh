@@ -338,7 +338,7 @@ if [ -e "$krb5_conf" ]; then
   echo "Loading krb5.conf from ${krb5_conf}...";
   cp "$krb5_conf" /etc/
 else
-  echo "No prlog4j2 was specified in ${prlog4j2}.  Using defaults."
+  echo "No krb5.conf was specified in ${krb5_conf}."
 fi
 
 unset pega_root lib_root config_root
