@@ -1414,9 +1414,11 @@ commandTests:
     - -c
     - |
       mv /tests/test-artifacts/krb5.conf /opt/pega/kerberos/krb5.conf &&
-      bash -c './scripts/docker-entrypoint.sh'
+      rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+      bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+      sleep 5s
     exitCode: 0
-    expectedOutput: [ "Loading krb5.conf from /opt/pega/kerberos/krb5.conf" ]
+    expectedOutput: [ "-Djava.security.krb5.conf=/opt/pega/kerberos/krb5.conf" ]
 
   # Hazelcast Username as file input
   - name: "Hazelcast Username as file input"
