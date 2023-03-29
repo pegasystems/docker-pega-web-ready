@@ -35,7 +35,6 @@ mkdir -p $tls_cert_root
 tomcat_cert_root="${pega_root}/tomcatcerts"
 mkdir -p $tomcat_cert_root
 
-
 prlog4j2="${config_root}/prlog4j2.xml"
 prconfig="${config_root}/prconfig.xml"
 context_xml="${config_root}/context.xml"

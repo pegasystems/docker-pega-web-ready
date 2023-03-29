@@ -30,6 +30,17 @@ JAVA_OPTS="-Xms${INITIAL_HEAP} -Xmx${MAX_HEAP} ${JAVA_OPTS}"
 JAVA_OPTS="${JAVA_OPTS} --add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.ibm.lang.management.internal=ALL-UNNAMED \
 --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
 
+krb5_conf="/opt/pega/kerberos/krb5.conf"
+#
+# Adding krb5.conf location to JAVA_OPTS
+#
+if [ -e "$krb5_conf" ]; then
+  echo "Adding ${krb5_conf} to JAVA_OPTS";
+  JAVA_OPTS="${JAVA_OPTS} -Djava.security.krb5.conf=${krb5_conf}"
+else
+  echo "No krb5.conf was specified in ${krb5_conf}."
+fi
+
 echo "JAVA_OPTS: \"${JAVA_OPTS}\""
 export  JAVA_OPTS
 
