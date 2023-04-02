@@ -164,6 +164,7 @@ JAVA_OPTS 		| Specify any additional parameters that should be appended to the `
 INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`
 MAX_HEAP 		| Specify the maximum size (`Xmx`) of the java heap. | `4096m`
 HEAP_DUMP_PATH 	| Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps`
+ACCESS_LOG_MAX_DAYS | Specify the maximum number of days rotated access logs will be retained for before being deleted. | `-1`
 
 
 ### Cassandra settings

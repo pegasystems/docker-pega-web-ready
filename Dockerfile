@@ -113,6 +113,7 @@ ENV JAVA_OPTS="" \
     MAX_HEAP="4096m" \
     INITIAL_HEAP="2048m" \
     INDEX_DIRECTORY="NONE" \
+    ACCESS_LOG_MAX_DAYS="-1" \
     HEAP_DUMP_PATH="/heapdumps" \
     NODE_TYPE="" \
     NODE_TIER="" \
