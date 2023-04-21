@@ -60,7 +60,7 @@ jobs:
         image-ref: "pegasystems/pega-ready:latest"
         format: 'sarif'
         exit-code: '1'
-        ignore-unfixed: true
+        #ignore-unfixed: true
         #severity: 'CRITICAL,HIGH'
         output: 'trivy-results.sarif'
         
