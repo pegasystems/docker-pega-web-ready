@@ -61,7 +61,7 @@ jobs:
         format: 'sarif'
         exit-code: '1'
         ignore-unfixed: true
-        severity: 'CRITICAL,HIGH'
+        #severity: 'CRITICAL,HIGH'
         output: 'trivy-results.sarif'
         
     - name: Log Scan Results
