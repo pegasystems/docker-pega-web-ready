@@ -55,12 +55,13 @@ jobs:
 
     - name: Scan image
       id: scan
-      uses: anchore/scan-action@v3
+      uses: aquasecurity/trivy-action@0.10.0
       with:
-        image: "pegasystems/pega-ready:latest"
-        fail-build: true
-        severity-cutoff: "high"
-        acs-report-enable: true
+        image-ref: "pegasystems/pega-ready:latest"
+        format: 'sarif'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH'
         
     - name: Log Scan Results
       if: always()
