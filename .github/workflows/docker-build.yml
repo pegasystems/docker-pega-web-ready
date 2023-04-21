@@ -68,12 +68,12 @@ jobs:
       if: always()
       run: |
         echo "Failures:"
-        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -i "critical" || true
-        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -i "high" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -i "critical" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -i "high" || true
         echo "Warnings:"
-        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -i "medium" || true
-        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -i "low" || true
-        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -iv "critical\|high\|medium\|low" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -i "medium" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -i "low" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -iv "critical\|high\|medium\|low" || true
       
     - name: Publish Scan Results as Artifact
       if: always()
