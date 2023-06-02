@@ -49,11 +49,11 @@
   <Environment name="prconfig/dsm/services/stream/pyBaseLogPath" value="/opt/pega/kafkadata/data" type="java.lang.String" />
   <Environment name="prconfig/cloud/isNodeAgnosticAdminStudio" value="true" type="java.lang.String"/>
 
-
+  
   <Environment name="prconfig/cluster/hazelcast/v4/enabled" value="true" type="java.lang.String"/>
+  
 
-
-
+  
   <Environment name="prconfig/cluster/clientserver/clientmode" value="true" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/hzOnK8s" value="" type="java.lang.String"/>
   <Environment name="prconfig/identification/cluster/name" value="" type="java.lang.String"/>
