@@ -195,6 +195,7 @@ The clustering used in a Pega environment is powered by a technology called `Haz
 Name 				| Purpose 		| Default
 --- 				| --- 			| ---
 HZ_CLIENT_MODE | Enables client mode for infinity  | `false`
+HZ_VERSION | Hazelcast service version.  |
 HZ_DISCOVERY_K8S | Indicates infinity client will use K8s discovery plugin to look for hazelcast nodes |
 HZ_CLUSTER_NAME| Hazelcast cluster name |
 HZ_SERVER_HOSTNAME| Hazelcast server hostname |
