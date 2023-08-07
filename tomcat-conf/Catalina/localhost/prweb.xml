@@ -78,6 +78,14 @@
   {{ end }}
 
   {{ if isTrue .Env.HZ_CLIENT_MODE }}
+  {{- if (eq .Env.HZ_VERSION "v5") }}
+  <Environment name="prconfig/cluster/v5/encryption/enabled" value="false" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/v5/clientserver/authentication/username" value="{{ .Env.SECRET_HZ_CS_AUTH_USERNAME }}" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/v5/clientserver/authentication/password" value="{{ .Env.SECRET_HZ_CS_AUTH_PASSWORD }}" type="java.lang.String"/>
+  <Environment name="prconfig/identification/cluster/v5/name" value="{{ .Env.HZ_CLUSTER_NAME }}" type="java.lang.String"/>
+  {{ end }}
+
+  <Environment name="prconfig/cluster/encryption/enabled" value="false" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/clientmode" value="{{ .Env.HZ_CLIENT_MODE }}" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/hzOnK8s" value="{{ .Env.HZ_DISCOVERY_K8S }}" type="java.lang.String"/>
   <Environment name="prconfig/identification/cluster/name" value="{{ .Env.HZ_CLUSTER_NAME }}" type="java.lang.String"/>
@@ -85,6 +93,7 @@
   <Environment name="prconfig/cluster/clientserver/authentication/username" value="{{ .Env.SECRET_HZ_CS_AUTH_USERNAME }}" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/authentication/password" value="{{ .Env.SECRET_HZ_CS_AUTH_PASSWORD }}" type="java.lang.String"/>
   {{ end }}
+
   {{- if .Env.EXTERNAL_STREAM -}}
   <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
   <Environment name="prconfig/services/stream/provider" value="ExternalKafka" type="java.lang.String" />
