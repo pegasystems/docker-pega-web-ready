@@ -297,7 +297,7 @@ if [ -e "$context_xml" ]; then
   cp "$context_xml" "${CATALINA_HOME}"/conf/
 else
     if [ "$SECRET_DB_USERNAME" == "" ] ; then
-      echo "DB_USERNAME must be specified. Assuming this as a passwordless connection.";
+      echo "As DB_USERNAME is not specified, trying password less connection.";
       #exit 1
     fi
 
