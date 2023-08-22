@@ -297,7 +297,7 @@ if [ -e "$context_xml" ]; then
   cp "$context_xml" "${CATALINA_HOME}"/conf/
 else
     if [ "$SECRET_DB_USERNAME" == "" ] ; then
-      echo "No DB_USERNAME specified; trying connection without a password, which is not recommended.";
+      echo "No DB_USERNAME specified; trying alternative, passwordless authentication.";
     fi
 
   echo "No context.xml was specified in ${context_xml}.  Generating from templates."

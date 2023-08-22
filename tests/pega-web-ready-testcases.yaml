@@ -1518,7 +1518,7 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: ["No DB_USERNAME specified; trying connection without a password, which is not recommended."]
+    expectedOutput: ["No DB_USERNAME specified; trying alternative, passwordless authentication."]
   # Verify empty DB_PASSWORD as DB_PASSWORD is no longer mandatory with AWS Secrets
   - name: "Empty DB_PASSWORD check passes"
     envVars:
