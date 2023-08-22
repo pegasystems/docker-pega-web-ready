@@ -298,7 +298,6 @@ if [ -e "$context_xml" ]; then
 else
     if [ "$SECRET_DB_USERNAME" == "" ] ; then
       echo "No DB_USERNAME specified; trying connection without a password, which is not recommended.";
-      #exit 1
     fi
 
   echo "No context.xml was specified in ${context_xml}.  Generating from templates."
