@@ -39,10 +39,8 @@
   <Environment name="prconfig/dnode/cassandra_use_extended_token_aware_policy" value="true"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_latency_aware_policy" value="true"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_custom_retry_policy" value="true"  type="java.lang.String"/>
-  <Environment name="prconfig/dnode/cassandra_custom_retry_policy/enabled" value="false"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_custom_retry_policy/retryCount" value="2"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_speculative_execution_policy" value="true"  type="java.lang.String"/>
-  <Environment name="prconfig/dnode/cassandra_speculative_execution_policy/enabled" value="false"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_speculative_execution_policy/delay" value="50"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_speculative_execution_policy/max_executions" value="2"  type="java.lang.String"/>
   <Environment name="prconfig/dnode/ddsclient/metrics/jmx_enabled" value="true"  type="java.lang.String"/>
