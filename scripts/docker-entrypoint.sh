@@ -41,6 +41,10 @@ context_xml="${config_root}/context.xml"
 server_xml="${config_root}/server.xml"
 web_xml="${config_root}/web.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
+catalina_properties="${config_root}/catalina.properties"
+prbootstrap_properties="${config_root}/prbootstrap.properties"
+java_security_overwrite="${config_root}/java.security.overwrite"
+tomcat_web_xml="${config_root}/tomcat-web.xml"
 
 declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG")
 for secret in "${secret_root}"/*
@@ -287,6 +291,46 @@ if [ -e "${web_xml}" ]; then
   cp "${web_xml}" "${PEGA_DEPLOYMENT_DIR}/WEB-INF/"
 else
   echo "No web.xml was specified in ${web_xml}. Using defaults."
+fi
+
+#
+# Copying mounted catalina.properties file to conf
+#
+if [ -e "${catalina_properties}" ]; then
+  echo "Loading catalina.properties from ${catalina_properties}...";
+  cp "${catalina_properties}" "${CATALINA_HOME}/conf/"
+else
+  echo "No catalina.properties was specified in ${catalina_properties}. Using defaults."
+fi
+
+#
+# Copying mounted prbootstrap properties file to webapps/prweb/WEB-INF/classes
+#
+if [ -e "$prbootstrap_properties" ]; then
+  echo "Loading prbootstrap.properties from ${prbootstrap_properties}...";
+  cp "$prbootstrap_properties" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
+else
+  echo "No prbootstrap.properties was specified in ${prbootstrap_properties}.  Using defaults."
+fi
+
+#
+# Copying mounted java.security.overwrite file to conf
+#
+if [ -e "${java_security_overwrite}" ]; then
+  echo "Loading java.security.overwrite from ${java_security_overwrite}...";
+  cp "${java_security_overwrite}" "${CATALINA_HOME}/conf/"
+else
+  echo "No java.security.overwrite was specified in ${java_security_overwrite}. Using defaults."
+fi
+
+#
+# Copying mounted tomcat web.xml file to conf
+#
+if [ -e "${tomcat_web_xml}" ]; then
+  echo "Loading tomcat web.xml from ${tomcat_web_xml}...";
+  cp "${tomcat_web_xml}" "${CATALINA_HOME}/conf/web.xml"
+else
+  echo "No tomcat web.xml was specified in ${tomcat_web_xml}. Using defaults."
 fi
 
 #
