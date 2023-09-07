@@ -54,9 +54,33 @@
   {{- end }}
   {{- if isTrue .Env.CASSANDRA_CUSTOM_RETRY_POLICY }}
   <Environment name="prconfig/dnode/cassandra_custom_retry_policy" value="{{ .Env.CASSANDRA_CUSTOM_RETRY_POLICY }}"  type="java.lang.String"/>
+  {{ if .Env.CASSANDRA_CUSTOM_RETRY_POLICY_COUNT -}}
+  <Environment name="prconfig/dnode/cassandra_custom_retry_policy/retryCount" value="{{ .Env.CASSANDRA_CUSTOM_RETRY_POLICY_COUNT }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- end }}
+  {{- if isTrue .Env.CASSANDRA_CUSTOM_RETRY_POLICY_ENABLED }}
+  <Environment name="prconfig/dnode/cassandra_custom_retry_policy/enabled" value="{{ .Env.CASSANDRA_CUSTOM_RETRY_POLICY_ENABLED }}"  type="java.lang.String"/>
+  {{ if .Env.CASSANDRA_CUSTOM_RETRY_POLICY_COUNT -}}
+  <Environment name="prconfig/dnode/cassandra_custom_retry_policy/retryCount" value="{{ .Env.CASSANDRA_CUSTOM_RETRY_POLICY_COUNT }}"  type="java.lang.String"/>
+  {{- end }}
   {{- end }}
   {{- if isTrue .Env.CASSANDRA_SPECULATIVE_EXECUTION_POLICY }}
   <Environment name="prconfig/dnode/cassandra_speculative_execution_policy" value="{{ .Env.CASSANDRA_SPECULATIVE_EXECUTION_POLICY }}"  type="java.lang.String"/>
+  {{ if .Env.CASSANDRA_SPECULATIVE_EXECUTION_DELAY -}}
+  <Environment name="prconfig/dnode/cassandra_speculative_execution_policy/delay" value="{{ .Env.CASSANDRA_SPECULATIVE_EXECUTION_DELAY }}"  type="java.lang.String"/>
+  {{- end }}
+  {{ if .Env.CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS -}}
+  <Environment name="prconfig/dnode/cassandra_speculative_execution_policy/max_executions" value="{{ .Env.CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS }}"  type="java.lang.String"/>
+  {{- end }}
+  {{- end }}
+  {{- if isTrue .Env.CASSANDRA_SPECULATIVE_EXECUTION_POLICY_ENABLED }}
+  <Environment name="prconfig/dnode/cassandra_speculative_execution_policy/enabled" value="{{ .Env.CASSANDRA_SPECULATIVE_EXECUTION_POLICY_ENABLED }}"  type="java.lang.String"/>
+  {{ if .Env.CASSANDRA_SPECULATIVE_EXECUTION_DELAY -}}
+  <Environment name="prconfig/dnode/cassandra_speculative_execution_policy/delay" value="{{ .Env.CASSANDRA_SPECULATIVE_EXECUTION_DELAY }}"  type="java.lang.String"/>
+  {{- end }}
+  {{ if .Env.CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS -}}
+  <Environment name="prconfig/dnode/cassandra_speculative_execution_policy/max_executions" value="{{ .Env.CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS }}"  type="java.lang.String"/>
+  {{- end }}
   {{- end }}
   {{- if .Env.CASSANDRA_JMX_METRICS_ENABLED }}
   <Environment name="prconfig/dnode/ddsclient/metrics/jmx_enabled" value="{{ .Env.CASSANDRA_JMX_METRICS_ENABLED }}"  type="java.lang.String"/>
