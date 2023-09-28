@@ -1179,8 +1179,6 @@ commandTests:
       value: "true"
     - key: "EXTERNAL_STREAM"
       value: "true"
-    - key: "SERVICES_STREAM_PROVIDER"
-      value: "KafkaService"
     - key: "STREAM_BOOTSTRAP_SERVERS"
       value: "host:9092"
     - key: "STREAM_SECURITY_PROTOCOL"
