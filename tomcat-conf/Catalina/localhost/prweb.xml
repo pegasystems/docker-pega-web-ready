@@ -119,6 +119,9 @@
   <Environment name="prconfig/services/stream/broker/url" value="{{ .Env.STREAM_BOOTSTRAP_SERVERS }}" type="java.lang.String" />
   <Environment name="prconfig/services/stream/encryption/security/protocol" value="{{ .Env.STREAM_SECURITY_PROTOCOL }}" type="java.lang.String" />
   <Environment name="prconfig/services/stream/encryption/sasl/mechanism" value="{{ .Env.STREAM_SASL_MECHANISM }}" type="java.lang.String" />
+  {{- if .Env.KAFKA_CLUSTER_NAME }}
+  <Environment name="prconfig/dsm/services/stream/clustername" value="{{ .Env.KAFKA_CLUSTER_NAME }}" type="java.lang.String"/>
+  {{- end }}
   {{- if .Env.STREAM_TRUSTSTORE }}
   <Environment name="prconfig/services/stream/encryption/truststore/path" value="{{ .Env.STREAM_TRUSTSTORE }}" type="java.lang.String"/>
   {{- end }}
