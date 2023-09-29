@@ -111,7 +111,7 @@
   {{ end }}
   {{- if .Env.EXTERNAL_STREAM -}}
   <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
-  {{ if .Env.SERVICES_STREAM_PROVIDER }}
+  {{- if .Env.SERVICES_STREAM_PROVIDER }}
   <Environment name="prconfig/services/stream/provider" value="{{ .Env.SERVICES_STREAM_PROVIDER }}" type="java.lang.String" />
   {{- else -}}
   <Environment name="prconfig/services/stream/provider" value="ExternalKafka" type="java.lang.String" />
