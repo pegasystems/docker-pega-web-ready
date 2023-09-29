@@ -64,7 +64,7 @@
   <Environment name="prconfig/cluster/clientserver/authentication/username" value="hzusername" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/authentication/password" value="hzpassword" type="java.lang.String"/>
   <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
-  <Environment name="prconfig/services/stream/provider" value="KafkaService" type="java.lang.String" />
+  <Environment name="prconfig/services/stream/provider" value="ExternalKafka" type="java.lang.String" />
   <Environment name="prconfig/services/stream/broker/url" value="host:9092" type="java.lang.String" />
   <Environment name="prconfig/services/stream/encryption/security/protocol" value="PLAIN" type="java.lang.String" />
   <Environment name="prconfig/services/stream/encryption/sasl/mechanism" value="PLAIN" type="java.lang.String" />

@@ -113,9 +113,8 @@
   <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
   {{- if .ENV.SERVICES_STREAM_PROVIDER -}}
   <Environment name="prconfig/services/stream/provider" value="{{ .Env.SERVICES_STREAM_PROVIDER }}" type="java.lang.String" />
-  {{ else }}
-  <Environment name="prconfig/services/stream/provider" value="ExternalKafka" type="java.lang.String" />
   {{- end }}
+  <Environment name="prconfig/services/stream/provider" value="ExternalKafka" type="java.lang.String" />
   <Environment name="prconfig/services/stream/broker/url" value="{{ .Env.STREAM_BOOTSTRAP_SERVERS }}" type="java.lang.String" />
   <Environment name="prconfig/services/stream/encryption/security/protocol" value="{{ .Env.STREAM_SECURITY_PROTOCOL }}" type="java.lang.String" />
   <Environment name="prconfig/services/stream/encryption/sasl/mechanism" value="{{ .Env.STREAM_SASL_MECHANISM }}" type="java.lang.String" />
