@@ -1240,7 +1240,7 @@ commandTests:
     - -c
     - |
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly"
+        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_withDefaultStreamProvider.xml || echo "prweb.xml is not dockerized properly"
     exitCode: 0
     expectedOutput: ["prweb.xml is not dockerized properly"]
 
