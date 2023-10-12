@@ -1,4 +1,7 @@
-IMAGE_NAME := $(if $(IMAGE_NAME),$(IMAGE_NAME),"pega-ready")
+IMAGE_NAME := $(if $(IMAGE_NAME),$(IMAGE_NAME),pega-ready)
+MAJOR_MINOR := $(if $(MAJOR_MINOR),$(MAJOR_MINOR),CUSTOM)
+BUILD_NUMBER := $(if $(GITHUB_RUN_NUMBER),$(GITHUB_RUN_NUMBER),BUILD)
+VERSION := $(if $(VERSION),$(VERSION),$(MAJOR_MINOR).$(BUILD_NUMBER))
 
 all: image
 
@@ -15,4 +18,6 @@ test: image
 	container-structure-test test --image $(IMAGE_NAME) --config tests/pega-web-ready-release-testcases.yaml
 
 push: image
-	docker push $(IMAGE_NAME)
+	docker tag $(IMAGE_NAME):latest $(IMAGE_NAME):$(VERSION)
+	docker push $(IMAGE_NAME):$(VERSION)
+	docker push $(IMAGE_NAME):latest

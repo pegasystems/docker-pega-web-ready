@@ -29,26 +29,58 @@ mkdir -p $config_root
 secret_root="${pega_root}/secrets"
 mkdir -p $secret_root
 
+tls_cert_root="${pega_root}/tomcatcertsmount"
+mkdir -p $tls_cert_root
+
+tomcat_cert_root="${pega_root}/tomcatcerts"
+mkdir -p $tomcat_cert_root
+
 prlog4j2="${config_root}/prlog4j2.xml"
 prconfig="${config_root}/prconfig.xml"
 context_xml="${config_root}/context.xml"
 server_xml="${config_root}/server.xml"
 web_xml="${config_root}/web.xml"
 tomcatusers_xml="${config_root}/tomcat-users.xml"
+catalina_properties="${config_root}/catalina.properties"
+prbootstrap_properties="${config_root}/prbootstrap.properties"
+java_security_overwrite="${config_root}/java.security.overwrite"
+tomcat_web_xml="${config_root}/tomcat-web.xml"
 
-db_username_file="${secret_root}/DB_USERNAME"
-db_password_file="${secret_root}/DB_PASSWORD"
+declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG")
+for secret in "${secret_root}"/*
+do
+  basename=$(basename "$secret")
+  temp_file="${secret_root}/${basename}"
+  export SECRET_"${basename}"="$(<"${temp_file}")"
+done
 
-cassandra_username_file="${secret_root}/CASSANDRA_USERNAME"
-cassandra_password_file="${secret_root}/CASSANDRA_PASSWORD"
-cassandra_truststore_password_file="${secret_root}/CASSANDRA_TRUSTSTORE_PASSWORD"
-cassandra_keystore_password_file="${secret_root}/CASSANDRA_KEYSTORE_PASSWORD"
+for secret in "${secrets_list[@]}"
+do
+   temp="SECRET_${secret}"
+   secret_value=${!temp}
+   if [ "${secret_value}" == ""  ]; then
+     export SECRET_"${secret}"="${!secret}"
+   fi
+done
 
-pega_diagnostic_username_file="${secret_root}/PEGA_DIAGNOSTIC_USER"
-pega_diagnostic_password_file="${secret_root}/PEGA_DIAGNOSTIC_PASSWORD"
+#tomcat ssl certs
+tomcat_keystore_password_file="${tls_cert_root}/TOMCAT_KEYSTORE_PASSWORD"
+tomcat_keystore_file="${tls_cert_root}/TOMCAT_KEYSTORE_CONTENT"
 
-hazelcast_username_file="${secret_root}/HZ_CS_AUTH_USERNAME"
-hazelcast_password_file="${secret_root}/HZ_CS_AUTH_PASSWORD"
+if [ -e "$tomcat_keystore_password_file" ]; then
+   TOMCAT_KEYSTORE_PASSWORD=$(<${tomcat_keystore_password_file})
+   export TOMCAT_KEYSTORE_PASSWORD
+else
+   export TOMCAT_KEYSTORE_PASSWORD=${TOMCAT_KEYSTORE_PASSWORD}
+fi
+
+if [ -e "$tomcat_keystore_file" ]; then
+  echo "TLS certificate for tomcat exists"
+  cat ${tomcat_keystore_file} | xargs printf '%b\n' | base64 --decode > "${tomcat_cert_root}/tlskeystore.jks"
+  export TOMCAT_KEYSTORE_DIR="${tomcat_cert_root}/tlskeystore.jks"
+else
+  echo "TLS certificate does not exist"
+fi
 
 # Define the JDBC_URL variable based on inputs
 if [ "$JDBC_URL" == "" ]; then
@@ -60,17 +92,73 @@ if [ "$JDBC_CLASS" == "" ]; then
   exit 1
 fi
 
+
+custom_artifactory_auth=""
+if [ "$SECRET_CUSTOM_ARTIFACTORY_USERNAME" != "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_PASSWORD" != "" ]; then
+    if [ "$SECRET_CUSTOM_ARTIFACTORY_USERNAME" == "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_PASSWORD" == "" ]; then
+        echo "SECRET_CUSTOM_ARTIFACTORY_USERNAME & SECRET_CUSTOM_ARTIFACTORY_PASSWORD must be specified for basic authentication for custom artifactory."
+        exit 1
+    else
+        echo "Using basic authentication for custom artifactory to download JDBC driver."
+        custom_artifactory_auth="-u "$SECRET_CUSTOM_ARTIFACTORY_USERNAME":"$SECRET_CUSTOM_ARTIFACTORY_PASSWORD
+    fi
+fi
+
+if [[ "$custom_artifactory_auth" == "" && ( "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER" != "" || "$SECRET_CUSTOM_ARTIFACTORY_APIKEY" != "" ) ]]; then
+    if [ "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER" == "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_APIKEY" == "" ]; then
+        echo "SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER & SECRET_CUSTOM_ARTIFACTORY_APIKEY must be specified for authentication using api key for custom artifactory."
+        exit 1
+    else
+        echo "Using API key for authentication of custom artifactory to download JDBC driver."
+        custom_artifactory_auth="-H "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER":"$SECRET_CUSTOM_ARTIFACTORY_APIKEY
+    fi
+fi
+
+custom_artifactory_certificate=''
+if [ "$(ls -A "${pega_root}/artifactory/cert"/*)" ]; then
+     if [ "$(ls "${pega_root}/artifactory/cert"/* | wc -l)" == 1 ]; then
+       echo "Certificate is provided for custom artifactory's domain ssl verification."
+       # get certificate name
+       for certfile in "${pega_root}/artifactory/cert"/*
+        do
+           echo "folder name: ${pega_root}/artifactory/cert"
+           filename=$(basename "$certfile")
+           ext="${filename##*.}"
+           echo "$filename"
+           if [ "$ext" = "cer" ] || [ "$ext" = "pem" ] || [ "$ext" = "crt" ] || [ "$ext" = "der" ]; then
+              echo "$certfile"
+              custom_artifactory_certificate="--cacert "$certfile
+           else
+              echo "curl needs valid format certificate file for ssl verification."
+              exit 1
+           fi
+        done
+     else
+       echo "Provide one certificate file. The file may contain multiple CA certificates."
+       exit 1
+     fi
+fi
+
 if [ "$JDBC_DRIVER_URI" != "" ]; then
-  urls=$(echo $JDBC_DRIVER_URI | tr "," "\n")
+  curl_cmd_options=''
+  if [ "$ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION" == true ]; then
+    echo "Establishing a secure connection to download driver."
+    curl_cmd_options="-sSL $custom_artifactory_auth $custom_artifactory_certificate"
+  else
+    echo "Establishing an insecure connection to download driver."
+    curl_cmd_options="-ksSL $custom_artifactory_auth"
+  fi
+
+  urls=$(echo "$JDBC_DRIVER_URI" | tr "," "\n")
   for url in $urls
     do
      echo "Downloading database driver: ${url}";
      jarabsurl="$(cut -d'?' -f1 <<<"$url")"
      echo "$jarabsurl"
-     filename=$(basename $jarabsurl)
-     if curl -ksSL --output /dev/null --silent --fail -r 0-0 $url
+     filename=$(basename "$jarabsurl")
+     if curl $curl_cmd_options --output /dev/null --silent --fail -r 0-0 "$url"
      then
-       curl -ksSL -o ${lib_root}/$filename ${url}
+       curl $curl_cmd_options -o ${lib_root}/$filename "${url}"
      else
        echo "Could not download jar from ${url}"
        exit 1
@@ -79,16 +167,29 @@ if [ "$JDBC_DRIVER_URI" != "" ]; then
 fi
 
 # copy jars mounted in the /opt/pega/lib directory of container to ${CATALINA_HOME}/lib
-for srcfile in ${lib_root}/*
+for srcfile in "${lib_root}"/*
 do
     filename=$(basename "$srcfile")
     ext="${filename##*.}"
     if [ "$ext" = "jar" ]; then
-      \cp $srcfile "${CATALINA_HOME}/lib/"
+      \cp "$srcfile" "${CATALINA_HOME}/lib/"
     fi
 done
 
 echo "Using JDBC_URL: ${JDBC_URL}"
+
+# import certificates to jvm keystore
+for certfile in "${pega_root}/certs"/*
+do
+    echo "folder name: ${pega_root}/certs"
+    filename=$(basename "$certfile")
+    ext="${filename##*.}"
+    echo "$filename"
+    if [ "$ext" = "cer" ] || [ "$ext" = "pem" ] || [ "$ext" = "crt" ] || [ "$ext" = "der" ]; then
+      echo "${filename%.*}"cert
+      keytool -keystore "$JAVA_HOME"/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias "${filename%.*}"cert -file "$certfile"
+    fi
+done
 
 # Unset INDEX_DIRECTORY if set to NONE
 if [ "NONE" = "${INDEX_DIRECTORY}" ]; then
@@ -110,7 +211,7 @@ shopt -u nocasematch
 # Various checks surrounding the use of our NodeTypes
 for i in ${NODE_TYPE//,/ }; do
   if [[ "$i" =~ ^(DDS|Universal)$ ]]; then
-    echo "NODE_TYPE ($1) IS NOT SUPPORTED BY THIS IMAGE."
+    echo "NODE_TYPE ($i) IS NOT SUPPORTED BY THIS IMAGE."
     exit 1
   elif [[ "$i" =~ ^Stream$ ]]; then
 
@@ -123,64 +224,29 @@ for i in ${NODE_TYPE//,/ }; do
   fi
 done
 
-if [ -e "$cassandra_username_file" ]; then
-   export SECRET_CASSANDRA_USERNAME=$(<${cassandra_username_file})
-else
-   export SECRET_CASSANDRA_USERNAME=${CASSANDRA_USERNAME}
-fi
 
-if [ -e "$cassandra_password_file" ]; then
-   export SECRET_CASSANDRA_PASSWORD=$(<${cassandra_password_file})
-else
-   export SECRET_CASSANDRA_PASSWORD=${CASSANDRA_PASSWORD}
-fi
-
-if [ -e "$cassandra_truststore_password_file" ]; then
-   export SECRET_CASSANDRA_TRUSTSTORE_PASSWORD=$(<${cassandra_truststore_password_file})
-else
-   export SECRET_CASSANDRA_TRUSTSTORE_PASSWORD=${CASSANDRA_TRUSTSTORE_PASSWORD}
-fi
-
-if [ -e "$cassandra_keystore_password_file" ]; then
-   export SECRET_CASSANDRA_KEYSTORE_PASSWORD=$(<${cassandra_keystore_password_file})
-else
-   export SECRET_CASSANDRA_KEYSTORE_PASSWORD=${CASSANDRA_KEYSTORE_PASSWORD}
-fi
-
-if [ -e "$hazelcast_username_file" ]; then
-   export SECRET_HZ_CS_AUTH_USERNAME=$(<${hazelcast_username_file})
-else
-   export SECRET_HZ_CS_AUTH_USERNAME=${HZ_CS_AUTH_USERNAME}
-fi
-
-if [ -e "$hazelcast_password_file" ]; then
-   export SECRET_HZ_CS_AUTH_PASSWORD=$(<${hazelcast_password_file})
-else
-   export SECRET_HZ_CS_AUTH_PASSWORD=${HZ_CS_AUTH_PASSWORD}
-fi
-
-if [ "HZ_CLIENT_MODE" == true ]; then
+if [ "$HZ_CLIENT_MODE" == true ]; then
     if [ "$SECRET_HZ_CS_AUTH_USERNAME" == "" ] || [ "$SECRET_HZ_CS_AUTH_PASSWORD" == "" ]; then
         echo "HZ_CS_AUTH_USERNAME & HZ_CS_AUTH_PASSWORD must be specified in hazelcast client server mode deployments.";
         exit 1
     fi
 fi
 
-/bin/dockerize -template ${CATALINA_HOME}/webapps/ROOT/index.html:${CATALINA_HOME}/webapps/ROOT/index.html
+/bin/detemplatize -template "${CATALINA_HOME}"/webapps/ROOT/index.html:"${CATALINA_HOME}"/webapps/ROOT/index.html
 
 appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
 
-if [ ${PEGA_APP_CONTEXT_PATH} != "prweb" ]; then
+if [ "${PEGA_APP_CONTEXT_PATH}" != "prweb" ]; then
     # Move pega deployment out of webapps to avoid double deployment
-    if [ ! -d "/opt/pega/prweb/WEB-INF" ]; then 
-       cp -r ${PEGA_DEPLOYMENT_DIR}/* /opt/pega/prweb
-       rm -rf ${PEGA_DEPLOYMENT_DIR}
-       mv ${CATALINA_HOME}/conf/Catalina/localhost/prweb.xml ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
-    fi   
+    if [ ! -d "/opt/pega/prweb/WEB-INF" ]; then
+       cp -r "${PEGA_DEPLOYMENT_DIR}"/* /opt/pega/prweb
+       rm -rf "${PEGA_DEPLOYMENT_DIR}"
+       mv "${CATALINA_HOME}"/conf/Catalina/localhost/prweb.xml "${CATALINA_HOME}"/conf/Catalina/localhost/"${appContextFileName}".xml
+    fi
     export PEGA_DEPLOYMENT_DIR=/opt/pega/prweb
 fi
 
-/bin/dockerize -template ${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml:${CATALINA_HOME}/conf/Catalina/localhost/${appContextFileName}.xml
+/bin/detemplatize -template "${CATALINA_HOME}"/conf/Catalina/localhost/"${appContextFileName}".xml:"${CATALINA_HOME}"/conf/Catalina/localhost/"${appContextFileName}".xml
 
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
@@ -208,6 +274,11 @@ fi
 if [ -e "${server_xml}" ]; then
   echo "Loading server.xml from ${server_xml}...";
   cp "${server_xml}" "${CATALINA_HOME}/conf/"
+elif [ -e "${config_root}/server.xml.tmpl" ]; then
+  #server.xml.tmpl
+  echo "No server.xml was specified in ${server_xml}.  Generating from templates."
+  cp ${config_root}/server.xml.tmpl "${CATALINA_HOME}"/conf/server.xml.tmpl
+  /bin/detemplatize -template "${CATALINA_HOME}"/conf/server.xml.tmpl:"${CATALINA_HOME}"/conf/server.xml
 else
   echo "No server.xml was specified in ${server_xml}. Using defaults."
 fi
@@ -223,59 +294,80 @@ else
 fi
 
 #
+# Copying mounted catalina.properties file to conf
+#
+if [ -e "${catalina_properties}" ]; then
+  echo "Loading catalina.properties from ${catalina_properties}...";
+  cp "${catalina_properties}" "${CATALINA_HOME}/conf/"
+else
+  echo "No catalina.properties was specified in ${catalina_properties}. Using defaults."
+fi
+
+#
+# Copying mounted prbootstrap properties file to webapps/prweb/WEB-INF/classes
+#
+if [ -e "$prbootstrap_properties" ]; then
+  echo "Loading prbootstrap.properties from ${prbootstrap_properties}...";
+  cp "$prbootstrap_properties" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
+else
+  echo "No prbootstrap.properties was specified in ${prbootstrap_properties}.  Using defaults."
+fi
+
+#
+# Copying mounted java.security.overwrite file to conf
+#
+if [ -e "${java_security_overwrite}" ]; then
+  echo "Loading java.security.overwrite from ${java_security_overwrite}...";
+  cp "${java_security_overwrite}" "${CATALINA_HOME}/conf/"
+else
+  echo "No java.security.overwrite was specified in ${java_security_overwrite}. Using defaults."
+fi
+
+#
+# Copying mounted tomcat web.xml file to conf
+#
+if [ -e "${tomcat_web_xml}" ]; then
+  echo "Loading tomcat web.xml from ${tomcat_web_xml}...";
+  cp "${tomcat_web_xml}" "${CATALINA_HOME}/conf/web.xml"
+else
+  echo "No tomcat web.xml was specified in ${tomcat_web_xml}. Using defaults."
+fi
+
+#
 # Write config files from templates using dockerize ...
 #
 if [ -e "$context_xml" ]; then
   echo "Loading context.xml from ${context_xml}...";
-  cp "$context_xml" ${CATALINA_HOME}/conf/
+  cp "$context_xml" "${CATALINA_HOME}"/conf/
 else
-    if [ -e "$db_username_file" ]; then
-       export SECRET_DB_USERNAME=$(<${db_username_file})
-    else
-       export SECRET_DB_USERNAME=${DB_USERNAME}
-    fi
-
-    if [ -e "$db_password_file" ]; then
-       export SECRET_DB_PASSWORD=$(<${db_password_file})
-    else
-       export SECRET_DB_PASSWORD=${DB_PASSWORD}
-    fi
-
     if [ "$SECRET_DB_USERNAME" == "" ] ; then
-      echo "DB_USERNAME must be specified.";
-      exit 1
+      echo "No DB_USERNAME specified; trying alternative, passwordless authentication.";
     fi
 
   echo "No context.xml was specified in ${context_xml}.  Generating from templates."
     if [ -e ${config_root}/context.xml.tmpl ] ; then
-      cp ${config_root}/context.xml.tmpl ${CATALINA_HOME}/conf/context.xml.tmpl
+      cp ${config_root}/context.xml.tmpl "${CATALINA_HOME}"/conf/context.xml.tmpl
     fi
-  /bin/dockerize -template ${CATALINA_HOME}/conf/context.xml.tmpl:${CATALINA_HOME}/conf/context.xml
+  /bin/detemplatize -template "${CATALINA_HOME}"/conf/context.xml.tmpl:"${CATALINA_HOME}"/conf/context.xml
 fi
 
 if [ -e "$tomcatusers_xml" ]; then
   echo "Loading tomcat-users.xml from ${tomcatusers_xml}...";
-  cp "$tomcatusers_xml" ${CATALINA_HOME}/conf/
+  cp "$tomcatusers_xml" "${CATALINA_HOME}"/conf/
 else
-    if [ -e "$pega_diagnostic_username_file" ]; then
-       export SECRET_PEGA_DIAGNOSTIC_USER=$(<${pega_diagnostic_username_file})
-    else
-       export SECRET_PEGA_DIAGNOSTIC_USER=${PEGA_DIAGNOSTIC_USER}
-    fi
-
-    if [ -e "$pega_diagnostic_password_file" ]; then
-       export SECRET_PEGA_DIAGNOSTIC_PASSWORD=$(<${pega_diagnostic_password_file})
-    else
-       export SECRET_PEGA_DIAGNOSTIC_PASSWORD=${PEGA_DIAGNOSTIC_PASSWORD}
-    fi
-    /bin/dockerize -template ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl:${CATALINA_HOME}/conf/tomcat-users.xml
+    /bin/detemplatize -template "${CATALINA_HOME}"/conf/tomcat-users.xml.tmpl:"${CATALINA_HOME}"/conf/tomcat-users.xml
 fi
 
-rm ${CATALINA_HOME}/conf/context.xml.tmpl
-rm ${CATALINA_HOME}/conf/tomcat-users.xml.tmpl
+rm "${CATALINA_HOME}"/conf/context.xml.tmpl
+rm "${CATALINA_HOME}"/conf/tomcat-users.xml.tmpl
+rm "${CATALINA_HOME}"/conf/server.xml.tmpl
 
 
-unset DB_USERNAME DB_PASSWORD SECRET_DB_USERNAME SECRET_DB_PASSWORD CASSANDRA_USERNAME CASSANDRA_PASSWORD SECRET_CASSANDRA_USERNAME SECRET_CASSANDRA_PASSWORD PEGA_DIAGNOSTIC_USER PEGA_DIAGNOSTIC_PASSWORD SECRET_PEGA_DIAGNOSTIC_USER SECRET_PEGA_DIAGNOSTIC_PASSWORD PEGA_APP_CONTEXT_ROOT HZ_CS_AUTH_USERNAME SECRET_HZ_CS_AUTH_USERNAME HZ_CS_AUTH_PASSWORD SECRET_HZ_CS_AUTH_PASSWORD CASSANDRA_TRUSTSTORE_PASSWORD SECRET_CASSANDRA_TRUSTSTORE_PASSWORD CASSANDRA_KEYSTORE_PASSWORD SECRET_CASSANDRA_KEYSTORE_PASSWORD
+for secret in "${secrets_list[@]}"
+do
+   temp="SECRET_${secret}"
+   unset "$secret" "$temp"
+done
 
 unset pega_root lib_root config_root
 

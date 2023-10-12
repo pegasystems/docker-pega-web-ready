@@ -17,6 +17,9 @@ RUN groupadd -g 9001 pegauser && \
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 
+COPY hashes/ /hashes/
+COPY keys/ /keys/
+
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
     chgrp -R 0 /heapdumps && \
@@ -40,6 +43,12 @@ RUN  mkdir -p /opt/pega/config  && \
      chgrp -R 0 /opt/pega/config && \
      chmod -R g+rw /opt/pega/config && \
      chown -R pegauser /opt/pega/config
+
+# Create directory for mounting kerberos files(krb5.conf)
+RUN  mkdir -p /opt/pega/kerberos  && \
+     chgrp -R 0 /opt/pega/kerberos && \
+     chmod -R g+rw /opt/pega/kerberos && \
+     chown -R pegauser /opt/pega/kerberos
 
 # Create directory for mounting libraries
 RUN  mkdir -p /opt/pega/lib  && \
@@ -82,8 +91,11 @@ ENV JDBC_MAX_ACTIVE=75 \
     JDBC_MIN_IDLE=3 \
     JDBC_MAX_IDLE=25 \
     JDBC_MAX_WAIT=10000 \
-    JDBC_INITIAL_SIZE=3 \
+    JDBC_INITIAL_SIZE=0 \
     JDBC_CONNECTION_PROPERTIES='' \
+    JDBC_TIMEOUT_PROPERTIES='' \
+    JDBC_TIMEOUT_PROPERTIES_RW='' \
+    JDBC_TIMEOUT_PROPERTIES_RO='' \
     JDBC_TIME_BETWEEN_EVICTIONS=30000 \
     JDBC_MIN_EVICTABLE_IDLE_TIME=60000
 
@@ -122,18 +134,40 @@ ENV CASSANDRA_CLUSTER=false \
     CASSANDRA_TRUSTSTORE= \
     CASSANDRA_TRUSTSTORE_PASSWORD= \
     CASSANDRA_KEYSTORE= \
-    CASSANDRA_KEYSTORE_PASSWORD=
+    CASSANDRA_KEYSTORE_PASSWORD= \
+    CASSANDRA_ASYNC_PROCESSING_ENABLED=false \
+    CASSANDRA_KEYSPACES_PREFIX= \
+    CASSANDRA_EXTENDED_TOKEN_AWARE_POLICY=false \
+    CASSANDRA_LATENCY_AWARE_POLICY=false \
+    CASSANDRA_CUSTOM_RETRY_POLICY=false \
+    CASSANDRA_CUSTOM_RETRY_POLICY_ENABLED=false \
+    CASSANDRA_CUSTOM_RETRY_POLICY_COUNT= \
+    CASSANDRA_SPECULATIVE_EXECUTION_POLICY=false \
+    CASSANDRA_SPECULATIVE_EXECUTION_POLICY_ENABLED=false \
+    CASSANDRA_SPECULATIVE_EXECUTION_DELAY= \
+    CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS= \
+    CASSANDRA_JMX_METRICS_ENABLED=true \
+    CASSANDRA_CSV_METRICS_ENABLED=false \
+    CASSANDRA_LOG_METRICS_ENABLED=false
 
 # Configure search nodes. Empty string falls back to search being done on the nodes themselves.
 ENV PEGA_SEARCH_URL=
 
 # Configure hazelcast. By default, hazelcast runs in embedded mode.
 ENV HZ_CLIENT_MODE=false \
+    HZ_VERSION=v4 \
     HZ_DISCOVERY_K8S= \
     HZ_CLUSTER_NAME= \
     HZ_SERVER_HOSTNAME= \
     HZ_CS_AUTH_USERNAME= \
     HZ_CS_AUTH_PASSWORD=
+
+# Configure custom artifactory authentication details if it is secured with Basic or APIKey Authentication which is used for downloading JDBC driver.
+ENV CUSTOM_ARTIFACTORY_USERNAME= \
+    CUSTOM_ARTIFACTORY_PASSWORD= \
+    CUSTOM_ARTIFACTORY_APIKEY_HEADER= \
+    CUSTOM_ARTIFACTORY_APIKEY= \
+    ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION=false
 
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
@@ -142,13 +176,43 @@ RUN  mkdir -p /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
 # Set up dir for prometheus lib
-RUN mkdir -p /opt/pega/prometheus && \
-    curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar && \
+RUN apt-get update && \
+    apt-get install -y gpg && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /opt/pega/prometheus && \
+    curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
+    curl -sL -o /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar.asc && \
+    gpg --import /keys/prometheus.asc && \
+    gpg --verify /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc /opt/pega/prometheus/jmx_prometheus_javaagent.jar && \
+    rm /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc && \
+    apt-get autoremove --purge -y gpg && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
-    
+
+# Setup dir for cert files
+RUN  mkdir -p /opt/pega/certs  && \
+     chgrp -R 0 /opt/pega/certs && \
+     chmod -R g+rw /opt/pega/certs && \
+     chown -R pegauser /opt/pega/certs
+
+#Set up dir for certificate of custom artifactory
+RUN  mkdir -p /opt/pega/artifactory/cert && \
+     chgrp -R 0 /opt/pega/artifactory/cert && \
+     chmod -R g+rw /opt/pega/artifactory/cert && \
+     chown -R pegauser /opt/pega/artifactory/cert
+
+# Setup dir for tlscert file
+RUN  mkdir -p /opt/pega/tomcatcertsmount  && \
+     chgrp -R 0 /opt/pega/tomcatcertsmount && \
+     chmod -R g+rw /opt/pega/tomcatcertsmount && \
+     chown -R pegauser /opt/pega/tomcatcertsmount
+
+#give permissions and ownership to pegauser for lib/security
+RUN chmod -R g+rw ${JAVA_HOME}/lib/security && \
+    chown -R pegauser ${JAVA_HOME}/lib/security
+
 # Remove existing webapps
 RUN rm -rf ${CATALINA_HOME}/webapps/*
 
@@ -158,8 +222,6 @@ COPY tomcat-bin ${CATALINA_HOME}/bin/
 COPY tomcat-conf ${CATALINA_HOME}/conf/
 COPY scripts /scripts
 
-#Installing dockerize for generating config files using templates
-RUN curl -sL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar zxf - -C /bin/
 
 # Update access of required directories to allow not running in root for openshift
 RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
@@ -189,6 +251,10 @@ CMD ["run"]
 
 # HTTP is 8080, JMX is 9001, prometheus is 9090, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
 EXPOSE 8080 9001 9090 5701-5710 47100 7003
+
+# Used by Docker if this image is used outside of a Kubernetes context.
+# Kubernetes ignores this check and uses the liveness/readiness probes instead.
+HEALTHCHECK --interval=5m --timeout=3s CMD jcmd 0 VM.uptime || exit 1
 
 # *****Target for test environment*****
 

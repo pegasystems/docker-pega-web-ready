@@ -66,8 +66,32 @@
          APR (HTTP/AJP) Connector: /docs/apr.html
          Define a non-SSL/TLS HTTP/1.1 Connector on port 8080
     -->
-    <Connector port="8080" protocol="HTTP/1.1"
+    <Connector port="8080" protocol="org.apache.coyote.http11.Http11Nio2Protocol"
+               relaxedQueryChars="[ ]"
+               relaxedPathChars="[ ]"
+               maxHttpHeaderSize="16384"
+               maxSavePostSize="65536"
                connectionTimeout="20000" />
+
+    <!-- facilitates liveness check via separate port -->
+    <Connector port="8081" protocol="org.apache.coyote.http11.Http11Nio2Protocol"
+               connectionTimeout="20000"
+	       maxThreads="1"/>
+
+    <!-- Define a SSL/TLS HTTPS Connector on port 8443 -->
+    {{ if and .Env.TOMCAT_KEYSTORE_DIR .Env.TOMCAT_KEYSTORE_PASSWORD }}
+
+	<Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+	               maxThreads="150" scheme="https" secure="true" SSLEnabled="true"
+                   keystoreFile="{{ .Env.TOMCAT_KEYSTORE_DIR }}"
+                   keystorePass="{{ .Env.TOMCAT_KEYSTORE_PASSWORD }}"
+                   clientAuth="false" sslProtocol="TLS" relaxedQueryChars="[ ]"
+                   relaxedPathChars="[ ]"
+                   maxHttpHeaderSize="16384"
+                   maxSavePostSize="65536"
+                   connectionTimeout="20000" />
+    {{ end }}
+
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
@@ -165,15 +189,11 @@
              Note: The pattern used is equivalent to using pattern="common" -->
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
                prefix="localhost_access_log" suffix=".txt"
-               pattern="%{X-Forwarded-For}i %h %l %u %t &quot;%r&quot; %s %b" 
+               pattern="%{X-Forwarded-For}i %h %l %u %t &quot;%r&quot; %s %b"
                resolveHosts="false" />
 
         <Valve className="org.apache.catalina.valves.ErrorReportValve"
-               errorCode.404="webapps/ROOT/error404.html"
-               errorCode.405="webapps/ROOT/error405.html"
-               errorCode.400="webapps/ROOT/error400.html"
-               errorCode.403="webapps/ROOT/error403.html"
-               showReport="true"
+               showReport="false"
                showServerInfo="false" />
 
       </Host>

@@ -4,7 +4,7 @@ schemaVersion: "2.0.0"
 # Verify metadata of the docker file
 
 metadataTest:
-  env:
+  envVars:
    - key: CATALINA_HOME
      value: /usr/local/tomcat
    - key: PATH
@@ -18,14 +18,16 @@ metadataTest:
    - key: JDBC_MAX_WAIT
      value: 10000
    - key: JDBC_INITIAL_SIZE
-     value: 3
+     value: 0
    - key: JDBC_CONNECTION_PROPERTIES
      value:
    - key: JDBC_TIME_BETWEEN_EVICTIONS
      value: 30000
    - key: JDBC_MIN_EVICTABLE_IDLE_TIME
      value: 60000
-  exposedPorts: ["8080", "9001", "47100", "7003"]  
+   - key: ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION
+     value: false
+  exposedPorts: ["8080", "9001", "47100", "7003"]
   # Add 5701-5710 ports                      
   entrypoint: [/scripts/docker-entrypoint.sh]
   cmd: ["run"] 
@@ -85,8 +87,36 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
+- name: 'Kerberos File Path'
+  path: '/opt/pega/kerberos'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
 - name: 'LIB File Path'
   path: '/opt/pega/lib'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'Certs File Path'
+  path: '/opt/pega/certs'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'Permission for java /lib/security folder'
+  path: '$JAVA_HOME/lib/security'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
+- name: 'TLS Certs File Path'
+  path: '/opt/pega/tomcatcertsmount'
   shouldExist: true
   permissions: 'drwxrwxr-x'
   uid: 9001
@@ -135,6 +165,13 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
+- name: 'Custom artifactory Certs File Path'
+  path: '/opt/pega/artifactory/cert'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
  # Simulate the functional use case for testing
 
 commandTests:
@@ -166,8 +203,8 @@ commandTests:
     args:
     - -c
     - |
-        java -version  2>&1 | grep "OpenJDK 64-Bit Server VM AdoptOpenJDK"
-    expectedOutput: [".*OpenJDK 64-Bit Server VM AdoptOpenJDK.*"] 
+        java -version  2>&1 | grep -E "OpenJDK 64-Bit Server VM (AdoptOpenJDK|Temurin)"
+    expectedOutput: [".*OpenJDK 64-Bit Server VM (AdoptOpenJDK|Temurin).*"] 
 # Verify Cataline_home variable       
   - name: "Catalina Home check"
     command: "echo"
@@ -273,7 +310,47 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 1       
     expectedOutput: ["JDBC_CLASS must be specified"]
-# Verify JDBC_DRIVER_URI download   
+# Verify JDBC_DRIVER_URI download with secure connection
+  - name: "JDBC_DRIVER_URI Download check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION"
+        value: true
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    expectedOutput: ["Establishing a secure connection to download driver."]
+# Verify JDBC_DRIVER_URI download with an insecure connection
+  - name: "JDBC_DRIVER_URI Download check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    expectedOutput: ["Establishing an insecure connection to download driver."]
+# Verify JDBC_DRIVER_URI download
   - name: "JDBC_DRIVER_URI Download check"
     envVars:
     - key: "JDBC_DRIVER_URI"
@@ -441,7 +518,167 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh run'
     expectedOutput: ["Index Directory for Search - /search_index"]
 
-# Cassandra Username as file input   
+  # Artifactory basic authentication Username as file input
+  - name: "Artifactory basic authentication Username as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "CUSTOM_ARTIFACTORY_PASSWORD"
+      value: "artifactory_basic_auth_password"
+    - key: "DB_USERNAME"
+      value: "db_user"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      mv tests/test-artifacts/CUSTOM_ARTIFACTORY_USERNAME /opt/pega/secrets/CUSTOM_ARTIFACTORY_USERNAME &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Artifactory basic authentication Username is - artifactory_basic_auth_username_from_file"]
+
+  # Artifactory basic authentication only Username provided
+  - name: "Artifactory basic authentication only Username provided"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "db_user"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      mv tests/test-artifacts/CUSTOM_ARTIFACTORY_USERNAME /opt/pega/secrets/CUSTOM_ARTIFACTORY_USERNAME &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 1
+    expectedOutput: ["SECRET_CUSTOM_ARTIFACTORY_USERNAME & SECRET_CUSTOM_ARTIFACTORY_PASSWORD must be specified for basic authentication for custom artifactory."]
+
+  # Artifactory basic authentication Password as file input
+  - name: "Artifactory basic authentication Password as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "db_user"
+    - key: "CUSTOM_ARTIFACTORY_USERNAME"
+      value: "artifactory_basic_user"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      mv tests/test-artifacts/CUSTOM_ARTIFACTORY_PASSWORD /opt/pega/secrets/CUSTOM_ARTIFACTORY_PASSWORD &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Artifactory basic authentication Password is - artifactory_basic_auth_password_from_file"]
+
+  # Artifactory basic authentication only Password provided
+  - name: "Artifactory basic authentication only Password provided"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "db_user"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      mv tests/test-artifacts/CUSTOM_ARTIFACTORY_PASSWORD /opt/pega/secrets/CUSTOM_ARTIFACTORY_PASSWORD &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 1
+    expectedOutput: ["SECRET_CUSTOM_ARTIFACTORY_USERNAME & SECRET_CUSTOM_ARTIFACTORY_PASSWORD must be specified for basic authentication for custom artifactory."]
+
+  # Artifactory APIKey authentication header as file input
+  - name: "Artifactory APIKey authentication header as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "db_user"
+    - key: "CUSTOM_ARTIFACTORY_APIKEY"
+      value: "artifactory_apikey"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      mv tests/test-artifacts/CUSTOM_ARTIFACTORY_APIKEY_HEADER /opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY_HEADER &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Artifactory apikey authentication header is - artifactory_apikey_auth_header_from_file"]
+
+  # Artifactory APIKey authentication only header provided
+  - name: "Artifactory APIKey authentication only header provided"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "db_user"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      mv tests/test-artifacts/CUSTOM_ARTIFACTORY_APIKEY_HEADER /opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY_HEADER &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 1
+    expectedOutput: ["SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER & SECRET_CUSTOM_ARTIFACTORY_APIKEY must be specified for authentication using api key for custom artifactory."]
+
+  # Artifactory APIKey authentication apikey as file input
+  - name: "Artifactory APIKey authentication apikey as file input"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "db_user"
+    - key: "CUSTOM_ARTIFACTORY_APIKEY_HEADER"
+      value: "test_user"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      mv tests/test-artifacts/CUSTOM_ARTIFACTORY_APIKEY /opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Artifactory apikey authentication apikey value is  - artifactory_apikey_auth_value_from_file"]
+
+  # Artifactory APIKey authentication only apikey provided
+  - name: "Artifactory APIKey authentication only apikey provided"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "db_user"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+      mv tests/test-artifacts/CUSTOM_ARTIFACTORY_APIKEY /opt/pega/secrets/CUSTOM_ARTIFACTORY_APIKEY &&
+      bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 1
+    expectedOutput: ["SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER & SECRET_CUSTOM_ARTIFACTORY_APIKEY must be specified for authentication using api key for custom artifactory."]
+
+# Cassandra Username as file input
   - name: "Cassandra Username as file input"
     envVars:
     - key: "JDBC_URL"
@@ -483,7 +720,28 @@ commandTests:
     exitCode: 0
     expectedOutput: ["Cassandra Password is - cassandra_password_from_file"] 
 
-# Database Username as file input   
+# Cassandra Password with spaces as file input
+  - name: "Cassandra Password as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
+        mv tests/test-artifacts/CASSANDRA_PASSWORD_WITH_SPACES /opt/pega/secrets/CASSANDRA_PASSWORD &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Cassandra Password is - cassandra password from file with spaces"]
+
+  # Database Username as file input
   - name: "Database Username as file input"
     envVars:
     - key: "JDBC_URL"
@@ -521,7 +779,111 @@ commandTests:
     exitCode: 0
     expectedOutput: ["Database Password is - db_password_from_file"]
 
-# Cassandra Username as Environment Variable   
+  # Artifactory basic authentication Username as Environment Variable
+  - name: "Artifactory basic authentication Username as Environment Variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "CASSANDRA_USERNAME"
+        value: "cassandra_username"
+      - key: "CUSTOM_ARTIFACTORY_USERNAME"
+        value: "artifactory_basic_user"
+      - key: "CUSTOM_ARTIFACTORY_PASSWORD"
+        value: "artifactory_basic_auth_password"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Artifactory basic authentication Username is - artifactory_basic_user"]
+
+  # Artifactory basic authentication Password as Environment Variable
+  - name: "Artifactory basic authentication Password as Environment Variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "CASSANDRA_USERNAME"
+        value: "cassandra_username"
+      - key: "CUSTOM_ARTIFACTORY_USERNAME"
+        value: "artifactory_basic_user"
+      - key: "CUSTOM_ARTIFACTORY_PASSWORD"
+        value: "artifactory_basic_auth_password"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Artifactory basic authentication Password is - artifactory_basic_auth_password"]
+
+  # Artifactory APIKey authentication header as Environment Variable
+  - name: "Artifactory APIKey authentication header as Environment Variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "CASSANDRA_USERNAME"
+        value: "cassandra_username"
+      - key: "CUSTOM_ARTIFACTORY_APIKEY_HEADER"
+        value: "artifactory_apikey_header"
+      - key: "CUSTOM_ARTIFACTORY_APIKEY"
+        value: "artifactory_apikey"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Artifactory apikey authentication header is - artifactory_apikey_header"]
+
+  # Artifactory APIKey authentication apikey as Environment Variable
+  - name: "Artifactory APIKey authentication apikey as Environment Variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "CASSANDRA_USERNAME"
+        value: "cassandra_username"
+      - key: "CUSTOM_ARTIFACTORY_APIKEY_HEADER"
+        value: "artifactory_apikey_header"
+      - key: "CUSTOM_ARTIFACTORY_APIKEY"
+        value: "artifactory_apikey"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Artifactory apikey authentication apikey value is  - artifactory_apikey"]
+
+# Cassandra Username as Environment Variable
   - name: "Cassandra Username as Environment Variable"
     envVars:
     - key: "JDBC_URL"
@@ -780,11 +1142,69 @@ commandTests:
     - key: "CASSANDRA_CLUSTER"
       value: "true"
     - key: "HZ_CLIENT_MODE"
-      value: "true"      
+      value: "true"
+    - key: "HZ_CS_AUTH_USERNAME"
+      value: "hzusername"
+    - key: "HZ_CS_AUTH_PASSWORD"
+      value: "hzpassword"
     - key: "CASSANDRA_CLIENT_ENCRYPTION"
       value: "true"
     - key: "CASSANDRA_TRUSTSTORE"
       value: "/fake/path"
+    - key: "CASSANDRA_ASYNC_PROCESSING_ENABLED"
+      value: "true"
+    - key: "CASSANDRA_KEYSPACES_PREFIX"
+      value: "fake_prefix"
+    - key: "CASSANDRA_EXTENDED_TOKEN_AWARE_POLICY"
+      value: "true"
+    - key: "CASSANDRA_LATENCY_AWARE_POLICY"
+      value: "true"
+    - key: "CASSANDRA_CUSTOM_RETRY_POLICY"
+      value: "true"
+    - key: "CASSANDRA_CUSTOM_RETRY_POLICY_ENABLED"
+      value: "false"
+    - key: "CASSANDRA_CUSTOM_RETRY_POLICY_COUNT"
+      value: "2"
+    - key: "CASSANDRA_SPECULATIVE_EXECUTION_POLICY"
+      value: "true"
+    - key: "CASSANDRA_SPECULATIVE_EXECUTION_POLICY_ENABLED"
+      value: "false"
+    - key: "CASSANDRA_SPECULATIVE_EXECUTION_DELAY"
+      value: "50"
+    - key: "CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS"
+      value: "2"
+    - key: "CASSANDRA_CSV_METRICS_ENABLED"
+      value: "true"
+    - key: "CASSANDRA_LOG_METRICS_ENABLED"
+      value: "true"
+    - key: "EXTERNAL_STREAM"
+      value: "true"
+    - key: "SERVICES_STREAM_PROVIDER"
+      value: "KafkaService"
+    - key: "STREAM_BOOTSTRAP_SERVERS"
+      value: "host:9092"
+    - key: "STREAM_SECURITY_PROTOCOL"
+      value: "PLAIN"
+    - key: "STREAM_SASL_MECHANISM"
+      value: "PLAIN"
+    - key: "STREAM_TRUSTSTORE"
+      value: "truststore.jks"
+    - key: "STREAM_TRUSTSTORE_TYPE"
+      value: "jks"
+    - key: "STREAM_KEYSTORE"
+      value: "keystore.jks"
+    - key: "STREAM_KEYSTORE_TYPE"
+      value: "jks"
+    - key: "STREAM_TRUSTSTORE_PASSWORD"
+      value: "fake password"
+    - key: "STREAM_KEYSTORE_PASSWORD"
+      value: "fake password"
+    - key: "STREAM_JAAS_CONFIG"
+      value: "fake config"
+    - key: "STREAM_NAME_PATTERN"
+      value: "pega-{stream.name}"
+    - key: "STREAM_REPLICATION_FACTOR"
+      value: "1"
     command: "bash"
     args:
     - -c
@@ -820,7 +1240,7 @@ commandTests:
     - -c
     - |
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly"
+        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_withDefaultStreamProvider.xml || echo "prweb.xml is not dockerized properly"
     exitCode: 0
     expectedOutput: ["prweb.xml is not dockerized properly"]
 
@@ -986,7 +1406,33 @@ commandTests:
     exitCode: 0
     expectedOutput: ["Loading web.xml from /opt/pega/config/web.xml"]
 
-    # Hazelcast Username as file input
+  # Verify test case for mounted krb5.conf file
+  - name: "Mounted krb5.conf"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "RULES_SCHEMA"
+      value: "rules"
+    - key: "DATA_SCHEMA"
+      value: "data"
+    command: "bash"
+    args:
+    - -c
+    - |
+      mv /tests/test-artifacts/krb5.conf /opt/pega/kerberos/krb5.conf &&
+      rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+      bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+      sleep 5s
+    exitCode: 0
+    expectedOutput: [ "-Djava.security.krb5.conf=/opt/pega/kerberos/krb5.conf" ]
+
+  # Hazelcast Username as file input
   - name: "Hazelcast Username as file input"
     envVars:
     - key: "JDBC_URL"
@@ -1083,8 +1529,8 @@ commandTests:
       - -c
       - |
         bash -c './scripts/docker-entrypoint.sh'
-    exitCode: 1
-    expectedOutput: ["DB_USERNAME must be specified."]
+    exitCode: 0
+    expectedOutput: ["No DB_USERNAME specified; trying alternative, passwordless authentication."]
   # Verify empty DB_PASSWORD as DB_PASSWORD is no longer mandatory with AWS Secrets
   - name: "Empty DB_PASSWORD check passes"
     envVars:
@@ -1100,3 +1546,339 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh'
     expectedOutput: ["No context.xml was specified"]
+  # Verify cmd line options to be passed for hazelcast starting in java 9+
+  - name: "Check settings required for starting hazelcast in java modular environment "
+    command: "bash"
+    args:
+      - -c
+      - |
+        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        sleep 5s
+    exitCode: 0
+    expectedOutput: ["--add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.ibm.lang.management.internal=ALL-UNNAMED \
+                      --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"]
+  # Verify certificate in keystore      
+  - name: "Certificate added in keystore check"
+    envVars:
+    - key: "JDBC_DRIVER_URI"
+      value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"      
+    command: "bash"
+    args:
+    - -c
+    - |
+        mv /tests/test-artifacts/certs/* /opt/pega/certs/ &&
+        bash -c './scripts/docker-entrypoint.sh run &'&&
+        sleep 15s &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias badsslcert  -storepass changeit &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias goodsslcert  -storepass changeit
+    exitCode: 0
+    expectedOutput: ["badsslcert(.*)trustedCertEntry,","goodsslcert(.*)trustedCertEntry,"]
+
+  # Verify custom artifactory invalid certificate
+  - name: "Custom artifactory invalid certificate check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/web.xml /opt/pega/artifactory/cert/ &&
+        bash -c './scripts/docker-entrypoint.sh run &'&&
+        sleep 15s
+    exitCode: 0
+    expectedOutput: ["curl needs valid format certificate file for ssl verification."]
+
+  # Verify custom artifactory invalid number of certificates
+  - name: "Custom artifactory invalid number of certificates check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/certs/* /opt/pega/artifactory/cert/ &&
+        bash -c './scripts/docker-entrypoint.sh run &'&&
+        sleep 15s
+    exitCode: 0
+    expectedOutput: ["Provide one certificate file. The file may contain multiple CA certificates."]
+
+  # Verify custom artifactory certificate
+  - name: "Custom artifactory certificate check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/certs/goodssl.cer /opt/pega/artifactory/cert/ &&
+        bash -c './scripts/docker-entrypoint.sh run &'&&
+        sleep 15s
+    exitCode: 0
+    expectedOutput: ["Certificate is provided for custom artifactory's domain ssl verification."]
+
+  # Tls certificate password as Environment variable
+  - name: "Tls certificate Password as Environment variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/TOMCAT_KEYSTORE_PASSWORD /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: [ "TLS certificate password is - keystore_password_from_file" ]
+
+  # Tls certificate Directory as Environment variable
+  - name: "Tls certificate Directory as Environment variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "TOMCAT_KEYSTORE_CONTENT"
+        value: "pega_tls_cert_directory"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/TOMCAT_KEYSTORE_CONTENT /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_CONTENT &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: [ "TLS certificate directory is - /opt/pega/tomcatcerts/tlskeystore.jks" ]
+
+  # Dockerize server xml
+  - name: "Dockerize server.xml tmpl file"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "TOMCAT_KEYSTORE_DIR"
+        value: "directory"
+      - key: "TOMCAT_KEYSTORE_PASSWORD"
+        value: "password"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/templates/server.xml.tmpl /opt/pega/config/server.xml.tmpl &&
+        bash -c './scripts/docker-entrypoint.sh' &&
+        diff /usr/local/tomcat/conf/server.xml /tests/test-artifacts/templates/expected_server.xml -wB || echo "server.xml is not properly dockerized"
+    exitCode: 0
+    excludedOutput: ["server.xml is not properly dockerized"]
+
+  # Stream truststore password as file input
+  - name: "Stream truststore password as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/STREAM_TRUSTSTORE_PASSWORD /opt/pega/secrets/STREAM_TRUSTSTORE_PASSWORD &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Stream truststore password is - stream_truststore_password_from_file"]
+
+  # Stream keystore password as file input
+  - name: "Stream keystore password as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/STREAM_KEYSTORE_PASSWORD /opt/pega/secrets/STREAM_KEYSTORE_PASSWORD &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Stream keystore password is - stream_keystore_password_from_file"]
+
+  # Stream jaas config as file input
+  - name: "Stream jaas config as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/STREAM_JAAS_CONFIG /opt/pega/secrets/STREAM_JAAS_CONFIG &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Stream jaas config is - stream_jaas_config username password"]
+
+  # Verify test case for mounted catalina.properties
+  - name: "Mounted catalina.properties"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.properties /opt/pega/config/catalina.properties &&
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 0
+    expectedOutput: [ "Loading catalina.properties from /opt/pega/config/catalina.properties..." ]
+
+
+  # Verify test case for mounted prbootstrap.properties
+  - name: "Mounted prbootstrap.properties"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/prbootstrap.properties /opt/pega/config/prbootstrap.properties &&
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 0
+    expectedOutput: [ "Loading prbootstrap.properties from /opt/pega/config/prbootstrap.properties..." ]
+
+
+  # Verify test case for mounted java.security.overwrite
+  - name: "Mounted java.security.overwrite"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/java.security.overwrite /opt/pega/config/java.security.overwrite &&
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 0
+    expectedOutput: [ "Loading java.security.overwrite from /opt/pega/config/java.security.overwrite..." ]
+
+
+  # Verify test case for mounted tomcat-web.xml
+  - name: "Mounted tomcat-web.xml"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/tomcat-web.xml /opt/pega/config/tomcat-web.xml &&
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 0
+    expectedOutput: [ "Loading tomcat web.xml from /opt/pega/config/tomcat-web.xml..." ]
