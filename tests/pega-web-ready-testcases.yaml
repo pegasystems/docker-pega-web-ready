@@ -1579,7 +1579,8 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh run &'&&
         sleep 15s &&
         keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias badsslcert  -storepass changeit &&
-        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias goodsslcert  -storepass changeit
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias goodsslcert  -storepass changeit &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias testcert  -storepass changeit
     exitCode: 0
     expectedOutput: ["badsslcert(.*)trustedCertEntry,","goodsslcert(.*)trustedCertEntry,","testcert(.*)trustedCertEntry,"]
 
