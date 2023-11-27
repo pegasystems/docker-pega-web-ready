@@ -75,6 +75,12 @@ RUN mkdir -p /opt/pega/streamvol && \
     chmod -R g+rw /opt/pega/streamvol && \
     chown -R pegauser /opt/pega/streamvol
 
+# Create directory for decompressed configurations
+RUN  mkdir -p /opt/pega/decompressedconfig  && \
+     chgrp -R 0 /opt/pega/decompressedconfig && \
+     chmod -R g+rw /opt/pega/decompressedconfig && \
+     chown -R pegauser /opt/pega/decompressedconfig
+
 
 # Set up an empty JDBC URL which will, if set to a non-empty value, be used in preference
 # to the "constructed" JDBC URL
