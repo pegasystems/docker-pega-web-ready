@@ -172,6 +172,13 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
+- name: 'Decompressed Config File Path'
+  path: '/opt/pega/decompressedconfig'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
+
  # Simulate the functional use case for testing
 
 commandTests:
