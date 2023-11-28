@@ -36,11 +36,10 @@ tomcat_cert_root="${pega_root}/tomcatcerts"
 mkdir -p $tomcat_cert_root
 
 decompressed_root="${pega_root}/decompressedconfig"
-mkdir -p $decompressed_root
 
 final_config_root=$config_root
 
-if [ "$IS_COMPRESSED" == true ]; then
+if [ "$IS_PEGA_CONFIG_COMPRESSED" == true ]; then
     final_config_root=$decompressed_root
     file_list=("prlog4j2.xml" "prconfig.xml" "context.xml" "server.xml" "web.xml" "tomcat-users.xml" "catalina.properties" "prbootstrap.properties" "java.security.overwrite" "tomcat-web.xml" "server.xml.tmpl" "context.xml.tmpl")
     # decompressing the files if exists
