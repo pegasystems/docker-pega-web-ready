@@ -185,7 +185,7 @@ do
     fi
 done
 
-echo "Using JDBC_URL: ${c}"
+echo "Using JDBC_URL: ${JDBC_URL}"
 
 # import certificates to jvm keystore
 for certfile in "${pega_root}/certs"/*
