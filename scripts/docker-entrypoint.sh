@@ -36,6 +36,7 @@ tomcat_cert_root="${pega_root}/tomcatcerts"
 mkdir -p $tomcat_cert_root
 
 decompressed_root="${pega_root}/decompressedconfig"
+mkdir -p decompressed_root
 
 final_config_root=$config_root
 
