@@ -1905,7 +1905,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -1931,7 +1931,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -1957,7 +1957,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -1983,7 +1983,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2010,7 +2010,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2036,7 +2036,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2063,7 +2063,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2089,7 +2089,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2115,7 +2115,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2142,7 +2142,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2168,7 +2168,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2194,7 +2194,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2220,7 +2220,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2246,7 +2246,7 @@ commandTests:
         value: "directory"
       - key: "TOMCAT_KEYSTORE_PASSWORD"
         value: "password"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2273,7 +2273,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2300,7 +2300,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
@@ -2327,7 +2327,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: false
     command: "bash"
     args:
@@ -2354,7 +2354,7 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
-      - key: "$IS_PEGA_CONFIG_COMPRESSED"
+      - key: "IS_PEGA_CONFIG_COMPRESSED"
         value: true
     command: "bash"
     args:
