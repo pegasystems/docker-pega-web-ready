@@ -36,6 +36,7 @@ tomcat_cert_root="${pega_root}/tomcatcerts"
 mkdir -p $tomcat_cert_root
 
 decompressed_root="${pega_root}/decompressedconfig"
+mkdir -p decompressed_root
 
 final_config_root=$config_root
 
@@ -62,6 +63,7 @@ catalina_properties="${final_config_root}/catalina.properties"
 prbootstrap_properties="${final_config_root}/prbootstrap.properties"
 java_security_overwrite="${final_config_root}/java.security.overwrite"
 tomcat_web_xml="${final_config_root}/tomcat-web.xml"
+file_setting_download_script="${lib_root}/filesettingdownload.sh"
 
 declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG")
 for secret in "${secret_root}"/*
