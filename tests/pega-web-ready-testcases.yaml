@@ -1991,7 +1991,7 @@ commandTests:
       - |
         mv /tests/test-artifacts/prlog4j2_compressed.xml /opt/pega/config/context.xml &&
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/context.xml || echo "context.xml is not properly decompressed"
+        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/context.xml || echo "context.xml is not properly decompressed"
     exitCode: 0
     excludedOutput: [ "context.xml is not properly decompressed" ]
 
@@ -2019,7 +2019,7 @@ commandTests:
         mv /tests/test-artifacts/server_compressed.xml /opt/pega/config/server.xml &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: [ "Loading server.xml from /opt/pega/decomrpessedconfig/server.xml..." ]
+    expectedOutput: [ "Loading server.xml from /opt/pega/decompressedconfig/server.xml..." ]
 
   # Dockerize compressed server xml
   - name: "Decompressed server.xml"
@@ -2044,7 +2044,7 @@ commandTests:
       - |
         mv /tests/test-artifacts/server_compressed.xml /opt/pega/config/server.xml &&
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/server.xml /tests/test-artifacts/templates/server.xml || echo "server.xml is not properly decompressed"
+        diff /usr/local/tomcat/conf/server.xml /tests/test-artifacts/server.xml || echo "server.xml is not properly decompressed"
     exitCode: 0
     excludedOutput: [ "server.xml is not properly decompressed" ]
 
@@ -2072,7 +2072,7 @@ commandTests:
         mv /tests/test-artifacts/web_compressed.xml /opt/pega/config/web.xml &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: [ "Loading web.xml from /opt/pega/decomrpessedconfig/web.xml..." ]
+    expectedOutput: [ "Loading web.xml from /opt/pega/decompressedconfig/web.xml..." ]
 
   # Verify test case for mounted compressed tomcat-users.xml
   - name: "Mounted compressed tomcat-users.xml"
@@ -2098,7 +2098,7 @@ commandTests:
         mv /tests/test-artifacts/tomcat-users_compressed.xml /opt/pega/config/tomcat-users.xml &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: [ "Loading tomcat-users.xml from /opt/pega/decomrpessedconfig/tomcat-users.xml..." ]
+    expectedOutput: [ "Loading tomcat-users.xml from /opt/pega/decompressedconfig/tomcat-users.xml..." ]
 
   # Dockerize compressed tomcat-users xml
   - name: "Decompressed tomcat-users.xml"
@@ -2123,7 +2123,7 @@ commandTests:
       - |
         mv /tests/test-artifacts/tomcat-users_compressed.xml /opt/pega/config/tomcat-users.xml &&
         bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/tomcat-users.xml || echo "tomcat-users.xml is not properly decompressed"
+        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/tomcat-users.xml || echo "tomcat-users.xml is not properly decompressed"
     exitCode: 0
     excludedOutput: [ "tomcat-users.xml is not properly decompressed" ]
 
@@ -2151,7 +2151,7 @@ commandTests:
         mv /tests/test-artifacts/catalina_compressed.properties /opt/pega/config/catalina.properties &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: [ "Loading catalina.properties from /opt/pega/decomrpessedconfig/catalina.properties..." ]
+    expectedOutput: [ "Loading catalina.properties from /opt/pega/decompressedconfig/catalina.properties..." ]
 
   # Verify test case for mounted compressed prbootstrap.properties
   - name: "Mounted compressed prbootstrap.properties"
@@ -2177,7 +2177,7 @@ commandTests:
         mv /tests/test-artifacts/prbootstrap_compressed.properties /opt/pega/config/prbootstrap.properties &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: [ "Loading prbootstrap.properties from /opt/pega/decomrpessedconfig/prbootstrap.properties..." ]
+    expectedOutput: [ "Loading prbootstrap.properties from /opt/pega/decompressedconfig/prbootstrap.properties..." ]
 
   # Verify test case for mounted compressed java.security.overwrite
   - name: "Mounted compressed java.security.overwrite"
@@ -2203,7 +2203,7 @@ commandTests:
         mv /tests/test-artifacts/java_compressed.security.overwrite /opt/pega/config/java.security.overwrite &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: [ "Loading java.security.overwrite from /opt/pega/decomrpessedconfig/java.security.overwrite..." ]
+    expectedOutput: [ "Loading java.security.overwrite from /opt/pega/decompressedconfig/java.security.overwrite..." ]
 
   # Verify test case for mounted compressed tomcat-web.xml
   - name: "Mounted compressed tomcat-web.xml"
@@ -2229,7 +2229,7 @@ commandTests:
         mv /tests/test-artifacts/tomcat-web_compressed.xml /opt/pega/config/tomcat-web.xml &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: [ "Loading tomcat web.xml from /opt/pega/decomrpessedconfig/tomcat-web.xml..." ]
+    expectedOutput: [ "Loading tomcat web.xml from /opt/pega/decompressedconfig/tomcat-web.xml..." ]
 
   # Dockerize compressed server xml tmpl
   - name: "Dockerize compressed server.xml tmpl file"
@@ -2285,33 +2285,6 @@ commandTests:
     exitCode: 0
     excludedOutput: [ "decompressed context.xml is not properly dockerized" ]
 
-  # Dockerize compressed context.xml tmpl
-  - name: "Decompressed context.xml.tmpl"
-    envVars:
-      - key: "JDBC_URL"
-        value: "jdbc:postgresql://localhost:5432/pegadb"
-      - key: "JDBC_CLASS"
-        value: "org.postgresql.Driver"
-      - key: "DB_USERNAME"
-        value: "postgres"
-      - key: "DB_PASSWORD"
-        value: "postgres"
-      - key: "RULES_SCHEMA"
-        value: "rules"
-      - key: "DATA_SCHEMA"
-        value: "data"
-      - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
-    command: "bash"
-    args:
-      - -c
-      - |
-        mv /tests/test-artifacts/templates/context_compressed.xml.tmpl /opt/pega/config/context.xml.tmpl &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml.tmpl /tests/test-artifacts/templates/context.xml.tmpl || echo "context.xml.tmpl is not properly decompressed"
-    exitCode: 0
-    excludedOutput: [ "context.xml.tmpl is not properly decompressed" ]
-
   # Verify test case for mounted compressed context.xml.tmpl
   - name: "Mounted context.xml.tmpl with compress as false"
     envVars:
@@ -2337,7 +2310,7 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh' &&
         diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized when compress is false"
     exitCode: 0
-    expectedOutput: ["context.xml is not properly dockerized when compress is false"]
+    excludedOutput: ["context.xml is not properly dockerized when compress is false"]
 
   # Verify test case for no of decompressed files
   - name: "Decompressed files"
@@ -2361,6 +2334,6 @@ commandTests:
       - -c
       - |
         bash -c './scripts/docker-entrypoint.sh' &&
-        if [ "$(ls /opt/pega/config | wc -l)" -ne "$(ls /opt/pega/decompressedconfig | wc -l)" ]; then; echo "missing files in file_list variable"; fi
+        if [ "$(ls /opt/pega/config | wc -l)" -ne "$(ls /opt/pega/decompressedconfig | wc -l)" ]; then echo "missing files in file_list variable"; fi
     exitCode: 0
     excludedOutput: [ "missing files in file_list variable" ]
