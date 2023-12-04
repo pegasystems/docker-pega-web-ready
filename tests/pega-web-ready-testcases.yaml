@@ -1914,7 +1914,7 @@ commandTests:
         mv /tests/test-artifacts/prlog4j2_compressed.xml /opt/pega/config/prlog4j2.xml &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: ["Loading prlog4j2 from /opt/pega/decomrpessedconfig/prlog4j2.xml..."]
+    expectedOutput: ["Loading prlog4j2 from /opt/pega/decompressedconfig/prlog4j2.xml..."]
 
   # Verify test case for mounted compressed prconfig.xml
   - name: "Mounted compressed prconfig.xml"
@@ -1940,7 +1940,7 @@ commandTests:
         mv /tests/test-artifacts/prlog4j2_compressed.xml /opt/pega/config/prconfig.xml &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: [ "Loading prconfig from /opt/pega/decomrpessedconfig/prconfig.xml..." ]
+    expectedOutput: [ "Loading prconfig from /opt/pega/decompressedconfig/prconfig.xml..." ]
 
   # Verify test case for mounted compressed context.xml
   - name: "Mounted compressed context.xml"
@@ -1966,7 +1966,7 @@ commandTests:
         mv /tests/test-artifacts/prlog4j2_compressed.xml /opt/pega/config/context.xml &&
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    expectedOutput: [ "Loading context.xml from /opt/pega/decomrpessedconfig/context.xml..." ]
+    expectedOutput: [ "Loading context.xml from /opt/pega/decompressedconfig/context.xml..." ]
 
   # Dockerize compressed context xml
   - name: "Decompressed context.xml"
