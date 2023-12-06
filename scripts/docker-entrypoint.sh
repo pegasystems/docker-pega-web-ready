@@ -138,7 +138,7 @@ if [ -e "$file_setting_download_script" ]; then
   echo "File setting download script exists"
   (cd $pega_root ; source "$file_setting_download_script")
   if [ "$?" -ne 0 ]; then
-    echo "Error from the file setting download script: $output"
+    echo "Error from the file setting download script"
     exit 1
   fi
 else
