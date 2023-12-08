@@ -35,16 +35,35 @@ mkdir -p $tls_cert_root
 tomcat_cert_root="${pega_root}/tomcatcerts"
 mkdir -p $tomcat_cert_root
 
-prlog4j2="${config_root}/prlog4j2.xml"
-prconfig="${config_root}/prconfig.xml"
-context_xml="${config_root}/context.xml"
-server_xml="${config_root}/server.xml"
-web_xml="${config_root}/web.xml"
-tomcatusers_xml="${config_root}/tomcat-users.xml"
-catalina_properties="${config_root}/catalina.properties"
-prbootstrap_properties="${config_root}/prbootstrap.properties"
-java_security_overwrite="${config_root}/java.security.overwrite"
-tomcat_web_xml="${config_root}/tomcat-web.xml"
+decompressed_root="${pega_root}/decompressedconfig"
+mkdir -p decompressed_root
+
+final_config_root=$config_root
+
+if [ "$IS_PEGA_CONFIG_COMPRESSED" == true ]; then
+    final_config_root=$decompressed_root
+    file_list=("prlog4j2.xml" "prconfig.xml" "context.xml" "server.xml" "web.xml" "tomcat-users.xml" "catalina.properties" "prbootstrap.properties" "java.security.overwrite" "tomcat-web.xml" "server.xml.tmpl" "context.xml.tmpl")
+    # decompressing the files if exists
+    for filename in "${file_list[@]}"; do
+      if [ -e "${config_root}/${filename}" ]; then
+        echo "decompressing ${filename} in ${config_root}/${filename}"
+        cat "${config_root}/${filename}" | base64 --decode | gzip -d > "${final_config_root}/${filename}"
+      fi
+    done
+fi
+
+
+prlog4j2="${final_config_root}/prlog4j2.xml"
+prconfig="${final_config_root}/prconfig.xml"
+context_xml="${final_config_root}/context.xml"
+server_xml="${final_config_root}/server.xml"
+web_xml="${final_config_root}/web.xml"
+tomcatusers_xml="${final_config_root}/tomcat-users.xml"
+catalina_properties="${final_config_root}/catalina.properties"
+prbootstrap_properties="${final_config_root}/prbootstrap.properties"
+java_security_overwrite="${final_config_root}/java.security.overwrite"
+tomcat_web_xml="${final_config_root}/tomcat-web.xml"
+file_setting_download_script="${lib_root}/filesettingdownload.sh"
 
 declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG")
 for secret in "${secret_root}"/*
@@ -112,6 +131,18 @@ if [[ "$custom_artifactory_auth" == "" && ( "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_H
         echo "Using API key for authentication of custom artifactory to download JDBC driver."
         custom_artifactory_auth="-H "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER":"$SECRET_CUSTOM_ARTIFACTORY_APIKEY
     fi
+fi
+
+#for file settings in pega cloudk
+if [ -e "$file_setting_download_script" ]; then
+  echo "File setting download script exists"
+  (cd $pega_root ; source "$file_setting_download_script")
+  if [ "$?" -ne 0 ]; then
+    echo "Error from the file setting download script"
+    exit 1
+  fi
+else
+   echo "File setting script does not exist"
 fi
 
 custom_artifactory_certificate=''
@@ -274,10 +305,10 @@ fi
 if [ -e "${server_xml}" ]; then
   echo "Loading server.xml from ${server_xml}...";
   cp "${server_xml}" "${CATALINA_HOME}/conf/"
-elif [ -e "${config_root}/server.xml.tmpl" ]; then
+elif [ -e "${final_config_root}/server.xml.tmpl" ]; then
   #server.xml.tmpl
   echo "No server.xml was specified in ${server_xml}.  Generating from templates."
-  cp ${config_root}/server.xml.tmpl "${CATALINA_HOME}"/conf/server.xml.tmpl
+  cp ${final_config_root}/server.xml.tmpl "${CATALINA_HOME}"/conf/server.xml.tmpl
   /bin/detemplatize -template "${CATALINA_HOME}"/conf/server.xml.tmpl:"${CATALINA_HOME}"/conf/server.xml
 else
   echo "No server.xml was specified in ${server_xml}. Using defaults."
@@ -345,8 +376,8 @@ else
     fi
 
   echo "No context.xml was specified in ${context_xml}.  Generating from templates."
-    if [ -e ${config_root}/context.xml.tmpl ] ; then
-      cp ${config_root}/context.xml.tmpl "${CATALINA_HOME}"/conf/context.xml.tmpl
+    if [ -e ${final_config_root}/context.xml.tmpl ] ; then
+      cp ${final_config_root}/context.xml.tmpl "${CATALINA_HOME}"/conf/context.xml.tmpl
     fi
   /bin/detemplatize -template "${CATALINA_HOME}"/conf/context.xml.tmpl:"${CATALINA_HOME}"/conf/context.xml
 fi
