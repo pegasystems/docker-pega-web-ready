@@ -133,6 +133,18 @@ if [[ "$custom_artifactory_auth" == "" && ( "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_H
     fi
 fi
 
+#for file settings in pega cloudk
+if [ -e "$file_setting_download_script" ]; then
+  echo "File setting download script exists"
+  (cd $pega_root ; source "$file_setting_download_script")
+  if [ "$?" -ne 0 ]; then
+    echo "Error from the file setting download script"
+    exit 1
+  fi
+else
+   echo "File setting script does not exist"
+fi
+
 custom_artifactory_certificate=''
 if [ "$(ls -A "${pega_root}/artifactory/cert"/*)" ]; then
      if [ "$(ls "${pega_root}/artifactory/cert"/* | wc -l)" == 1 ]; then
