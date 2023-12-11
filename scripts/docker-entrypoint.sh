@@ -135,10 +135,10 @@ fi
 
 #for file settings in pega cloudk
 if [ -e "$file_setting_download_script" ]; then
-  echo "file setting script does exists"
+  echo "File setting script does exists"
   (cd $pega_root ; sh "$file_setting_download_script")
 else
-   echo "file setting script does not exist"
+   echo "File setting script does not exist"
 fi
 
 custom_artifactory_certificate=''
