@@ -105,10 +105,12 @@ else
 fi
 
 if [ -e "$tomcat_keystore_file" ]; then
+  export TOMCAT_KEYSTORE_CONTENT=$tomcat_keystore_file
   echo "TLS certificate for tomcat exists"
   cat ${tomcat_keystore_file} | xargs printf '%b\n' | base64 --decode > "${tomcat_cert_root}/tlskeystore.jks"
   export TOMCAT_KEYSTORE_DIR="${tomcat_cert_root}/tlskeystore.jks"
 else
+  export TOMCAT_KEYSTORE_CONTENT=$tomcat_keystore_file
   echo "TLS certificate does not exist"
 fi
 

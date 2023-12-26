@@ -2362,7 +2362,7 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    excludedOutput: [ "External custom keystore name key found" ]
+    expectedOutput: [ "External custom keystore name key found" ]
 
   # Verify external custom tomcat keystore password key
   - name: "External Custom Tomcat Keystore files"
@@ -2387,4 +2387,4 @@ commandTests:
       - |
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
-    excludedOutput: [ "External custom keystore password key found" ]
+    expectedOutput: [ "External custom keystore password key found" ]
