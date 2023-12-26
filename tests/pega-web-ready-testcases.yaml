@@ -2338,3 +2338,53 @@ commandTests:
         if [ "$(ls /opt/pega/config | wc -l)" -ne "$(ls /opt/pega/decompressedconfig | wc -l)" ]; then echo "missing files in file_list variable"; fi
     exitCode: 0
     excludedOutput: [ "missing files in file_list variable" ]
+
+  # Verify external custom tomcat keystore
+  - name: "External Custom Tomcat Keystore files"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+      - key: "EXTERNAL_KEYSTORE_NAME"
+        value: "keystore.jks"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 0
+    excludedOutput: [ "External custom keystore name key found" ]
+
+  # Verify external custom tomcat keystore password key
+  - name: "External Custom Tomcat Keystore files"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "RULES_SCHEMA"
+        value: "rules"
+      - key: "DATA_SCHEMA"
+        value: "data"
+      - key: "EXTERNAL_KEYSTORE_PASSWORD"
+        value: "password"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 0
+    excludedOutput: [ "External custom keystore password key found" ]
