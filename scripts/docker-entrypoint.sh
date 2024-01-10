@@ -81,9 +81,20 @@ do
    fi
 done
 
-#tomcat ssl certs
-tomcat_keystore_password_file="${tls_cert_root}/TOMCAT_KEYSTORE_PASSWORD"
-tomcat_keystore_file="${tls_cert_root}/TOMCAT_KEYSTORE_CONTENT"
+# tomcat ssl certs
+if [ -n "$EXTERNAL_KEYSTORE_NAME" ]; then
+  echo "External custom keystore name key found"
+  tomcat_keystore_file="${tls_cert_root}/$EXTERNAL_KEYSTORE_NAME"
+else
+  tomcat_keystore_file="${tls_cert_root}/TOMCAT_KEYSTORE_CONTENT"
+fi
+
+if [ -n "$EXTERNAL_KEYSTORE_PASSWORD" ]; then
+  echo "External custom keystore password key found"
+  tomcat_keystore_password_file="${tls_cert_root}/$EXTERNAL_KEYSTORE_PASSWORD"
+else
+  tomcat_keystore_password_file="${tls_cert_root}/TOMCAT_KEYSTORE_PASSWORD"
+fi
 
 if [ -e "$tomcat_keystore_password_file" ]; then
    TOMCAT_KEYSTORE_PASSWORD=$(<${tomcat_keystore_password_file})
@@ -99,6 +110,7 @@ if [ -e "$tomcat_keystore_file" ]; then
 else
   echo "TLS certificate does not exist"
 fi
+export TOMCAT_KEYSTORE_CONTENT=$tomcat_keystore_file
 
 # Define the JDBC_URL variable based on inputs
 if [ "$JDBC_URL" == "" ]; then
