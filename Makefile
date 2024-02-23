@@ -8,8 +8,8 @@ all: image
 container: image
 
 image:
-	echo $MAJOR_MINOR
-	echo $BUILD_NUMBER
+	echo $(MAJOR_MINOR)
+	echo $(BUILD_NUMBER)
 	docker build --build-arg VERSION=$(VERSION) -t $(IMAGE_NAME) . # Build image and automatically tag it as latest
 
 test: image
