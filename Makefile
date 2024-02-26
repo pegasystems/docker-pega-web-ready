@@ -8,9 +8,9 @@ all: image
 container: image
 
 image:
-	echo $(MAJOR_MINOR)
-	echo $(BUILD_NUMBER)
-	docker build --build-arg VERSION=$(VERSION) -t $(IMAGE_NAME) . # Build image and automatically tag it as latest
+	docker build --build-arg VERSION=$(VERSION) --build-arg BASE_TOMCAT_IMAGE=tomcat:9-jdk11 -t $(IMAGE_NAME) . # Build image and automatically tag it as latest
+	docker build --build-arg VERSION=$(VERSION) --build-arg BASE_TOMCAT_IMAGE=tomcat:9-jdk11 -t $(IMAGE_NAME):tomcat9-jdk11 . # Build image using tomcat 9 , jdk 11
+	docker build --build-arg VERSION=$(VERSION) --build-arg BASE_TOMCAT_IMAGE=tomcat:9-jdk17 -t $(IMAGE_NAME):tomcat9-jdk17 . # Build image using tomcat 9 , jdk 17
 
 test: image
 	# Build image for executing test cases against it
@@ -18,6 +18,10 @@ test: image
 	# Execute test cases
 	container-structure-test test --image qualitytest --config tests/pega-web-ready-testcases.yaml
 	container-structure-test test --image $(IMAGE_NAME) --config tests/pega-web-ready-release-testcases.yaml
+	container-structure-test test --image $(IMAGE_NAME):tomcat9-jdk11 --config tests/pega-web-ready-release-testcases.yaml
+    container-structure-test test --image $(IMAGE_NAME):tomcat9-jdk11 --config tests/pega-web-ready-release-testcases_jdk11_version.yaml
+	container-structure-test test --image $(IMAGE_NAME):tomcat9-jdk17 --config tests/pega-web-ready-release-testcases.yaml
+	container-structure-test test --image $(IMAGE_NAME):tomcat9-jdk17 --config tests/pega-web-ready-release-testcases_jdk17_version.yaml
 
 push: image
 	docker tag $(IMAGE_NAME):latest $(IMAGE_NAME):$(VERSION)

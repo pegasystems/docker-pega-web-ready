@@ -1,0 +1,10 @@
+schemaVersion: "2.0.0"
+
+commandTests:
+  - name: "JAVA VERSION check"
+    command: "bash"
+    args:
+    - -c
+    - |
+        java -version  2>&1 | grep "OpenJDK 64-Bit Server VM Temurin"
+    expectedOutput: [".*OpenJDK 64-Bit Server VM Temurin-17.*"]
