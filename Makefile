@@ -14,12 +14,12 @@ image:
 
 test: image
 	# Build image for executing test cases against it
-	docker build --build-arg VERSION=$(VERSION) -t qualitytest . --target qualitytest
+	docker build --build-arg VERSION=$(VERSION) --build-arg BASE_TOMCAT_IMAGE=tomcat:9-jdk11 -t qualitytest . --target qualitytest
 	# Execute test cases
 	container-structure-test test --image qualitytest --config tests/pega-web-ready-testcases.yaml
 	container-structure-test test --image $(IMAGE_NAME) --config tests/pega-web-ready-release-testcases.yaml
 	container-structure-test test --image $(IMAGE_NAME):tomcat9-jdk11 --config tests/pega-web-ready-release-testcases.yaml
-    container-structure-test test --image $(IMAGE_NAME):tomcat9-jdk11 --config tests/pega-web-ready-release-testcases_jdk11_version.yaml
+	container-structure-test test --image $(IMAGE_NAME):tomcat9-jdk11 --config tests/pega-web-ready-release-testcases_jdk11_version.yaml
 	container-structure-test test --image $(IMAGE_NAME):tomcat9-jdk17 --config tests/pega-web-ready-release-testcases.yaml
 	container-structure-test test --image $(IMAGE_NAME):tomcat9-jdk17 --config tests/pega-web-ready-release-testcases_jdk17_version.yaml
 
