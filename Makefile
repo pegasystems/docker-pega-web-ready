@@ -5,7 +5,7 @@ all: image
 container: image
 
 image:
-	docker build --build-arg VERSION=$(VERSION) --build-arg BASE_TOMCAT_IMAGE=tomcat:9-jdk11 -t $(IMAGE_NAME) . # Build image and automatically tag it as latest
+	docker build --build-arg VERSION=$(VERSION) --build-arg BASE_TOMCAT_IMAGE=tomcat:9-jdk17 -t $(IMAGE_NAME) . # Build image and automatically tag it as latest
 	docker build --build-arg VERSION=$(VERSION) --build-arg BASE_TOMCAT_IMAGE=tomcat:9-jdk11 -t $(IMAGE_NAME):3-jdk11 . # Build image using tomcat 9 , jdk 11
 	docker build --build-arg VERSION=$(VERSION) --build-arg BASE_TOMCAT_IMAGE=tomcat:9-jdk17 -t $(IMAGE_NAME):3-jdk17 . # Build image using tomcat 9 , jdk 17
 
