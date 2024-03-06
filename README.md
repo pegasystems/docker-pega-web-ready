@@ -24,7 +24,7 @@ Pega provides this *web-ready* Docker image with built-in user privileges - pega
 For clients who need to build their own deployment image, Pega recommends building your Pega image using your own Dockerfile with contents similar to the example below and specifying the .war file from the Pega distribution kit. You may also specify a database driver as shown in the example. It is a best practice to build this image on a Linux system to retain proper file permissions. Replace the source paths with the actual paths to the Pega Infinity software libraries and specify a valid JDBC driver for your target database to bake it in.
 
 If you want to build the pega image on jdk 11 , please use pegasystems/pega-ready:3-jdk11 as base image.
-If you want to build the pega image on jdk 11 , please use pegasystems/pega-ready:3-jdk17 as base image.
+If you want to build the pega image on jdk 17 , please use pegasystems/pega-ready:3-jdk17 as base image.
 Currently, latest tag is pointing to jdk 17 and can point to higher versions in the future.
 
 ```Dockerfile
@@ -35,7 +35,7 @@ COPY /path/to/prweb.war /prweb.war
 RUN mkdir prweb
 RUN unzip -q -o prweb.war -d /prweb
 
-# Building the pega deployment image on jdk11
+# Building the pega deployment image on jdk11. Please use the tag 3-jdk17 for images on jdk 17.
 FROM pegasystems/pega-ready:3-jdk11 
 
 # Copy prweb to tomcat webapps directory
