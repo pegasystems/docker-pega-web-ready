@@ -19,5 +19,7 @@ test: image
 
 push: image
 	docker tag $(IMAGE_NAME):latest $(IMAGE_NAME):$(VERSION)
+	docker tag $(IMAGE_NAME):latest $(IMAGE_NAME):3-jdk11
+	docker push $(IMAGE_NAME):3-jdk11
 	docker push $(IMAGE_NAME):$(VERSION)
 	docker push $(IMAGE_NAME):latest
