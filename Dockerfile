@@ -23,10 +23,10 @@ COPY hashes/ /hashes/
 COPY keys/ /keys/
 
 # Create directory for storing heapdump
-RUN mkdir -p /heapdumps  && \
-    chgrp -R 0 /heapdumps && \
-    chmod 770 /heapdumps && \
-    chown -R pegauser /heapdumps
+RUN mkdir -p /diagnosticfiles  && \
+    chgrp -R 0 /diagnosticfiles && \
+    chmod 770 /diagnosticfiles && \
+    chown -R pegauser /diagnosticfiles
 
 # Create common directory for mounting configuration and libraries
 RUN mkdir -p /opt/pega && \
@@ -121,7 +121,7 @@ ENV JAVA_OPTS="" \
     MAX_HEAP="4096m" \
     INITIAL_HEAP="2048m" \
     INDEX_DIRECTORY="NONE" \
-    HEAP_DUMP_PATH="/heapdumps/PegaOOMHeapDump$(date +_%Y%m%d-%H%M%S).hprof" \
+    HEAP_DUMP_PATH="/diagnosticfiles/PegaOOMHeapDump$(date +_%Y%m%d-%H%M%S).hprof" \
     NODE_TYPE="" \
     NODE_TIER="" \
     NODE_SETTINGS="" \

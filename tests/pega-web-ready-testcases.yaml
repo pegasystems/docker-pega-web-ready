@@ -60,7 +60,7 @@ fileExistenceTests:
   gid: 0
 
 - name: 'Heap Dumps File Path'
-  path: '/heapdumps'
+  path: '/diagnosticfiles'
   shouldExist: true
   permissions: 'drwxrwx---'
   uid: 9001

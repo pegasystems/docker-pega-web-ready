@@ -70,7 +70,7 @@ Mount points are used to link a directory within the Docker container to a durab
 Mount point 	| Purpose
 --- 			| ---
 `/opt/pega/kafkadata` 	| Used to persist Kafka data when you run stream nodes.
-`/heapdumps` 	| Used as the default output directory when you generate a heapdump.
+`/diagnosticfiles` 	| Used as the default output directory when you generate a heapdump.
 `/search_index`	| Used to persist a search index when the node hosts searched.
 
 ## Environment variables
@@ -167,7 +167,7 @@ PEGA_DEPLOYMENT_DIR   | The location of the Pega app deployment | /usr/local/tom
 JAVA_OPTS 		| Specify any additional parameters that should be appended to the `java` command. |
 INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`
 MAX_HEAP 		| Specify the maximum size (`Xmx`) of the java heap. | `4096m`
-HEAP_DUMP_PATH 	| Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps`
+HEAP_DUMP_PATH 	| Specify a location for a heap dump using `XX:HeapDumpPath` | `/diagnosticfiles`
 
 
 ### Cassandra settings
