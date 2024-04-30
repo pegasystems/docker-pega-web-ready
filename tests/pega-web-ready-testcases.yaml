@@ -66,6 +66,13 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
+- name: 'Diagnostic Files Path'
+  path: '/diagnosticfiles'
+  shouldExist: true
+  permissions: 'drwxrwx---'
+  uid: 9001
+  gid: 0
+
 - name: 'opt/pega File Path'
   path: '/opt/pega'
   shouldExist: true

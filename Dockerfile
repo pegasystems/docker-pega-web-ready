@@ -28,6 +28,12 @@ RUN mkdir -p /heapdumps  && \
     chmod 770 /heapdumps && \
     chown -R pegauser /heapdumps
 
+# Create directory for storing diagnosticfiles
+RUN mkdir -p /diagnosticfiles  && \
+    chgrp -R 0 /diagnosticfiles && \
+    chmod 770 /diagnosticfiles && \
+    chown -R pegauser /diagnosticfiles
+
 # Create common directory for mounting configuration and libraries
 RUN mkdir -p /opt/pega && \
     chgrp -R 0 /opt/pega && \
