@@ -1,7 +1,9 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-FROM pegasystems/tomcat:9-jdk11 as release
+
+ARG BASE_TOMCAT_IMAGE
+FROM pegasystems/$BASE_TOMCAT_IMAGE as release
 
 ARG VERSION
 
@@ -25,6 +27,12 @@ RUN mkdir -p /heapdumps  && \
     chgrp -R 0 /heapdumps && \
     chmod 770 /heapdumps && \
     chown -R pegauser /heapdumps
+
+# Create directory for storing diagnosticfiles
+RUN mkdir -p /diagnosticfiles  && \
+    chgrp -R 0 /diagnosticfiles && \
+    chmod 770 /diagnosticfiles && \
+    chown -R pegauser /diagnosticfiles
 
 # Create common directory for mounting configuration and libraries
 RUN mkdir -p /opt/pega && \
