@@ -3,7 +3,7 @@
 # Base image to extend from
 
 ARG BASE_TOMCAT_IMAGE
-FROM pegasystems/$BASE_TOMCAT_IMAGE as release
+FROM $BASE_TOMCAT_IMAGE as release
 
 ARG VERSION
 
@@ -236,6 +236,8 @@ COPY tomcat-bin ${CATALINA_HOME}/bin/
 COPY tomcat-conf ${CATALINA_HOME}/conf/
 COPY scripts /scripts
 
+# Uncomment the below line if building the image with a different jdk
+# COPY detemplatize /bin/
 
 # Update access of required directories to allow not running in root for openshift
 RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
