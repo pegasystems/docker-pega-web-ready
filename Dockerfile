@@ -236,7 +236,7 @@ COPY tomcat-bin ${CATALINA_HOME}/bin/
 COPY tomcat-conf ${CATALINA_HOME}/conf/
 COPY scripts /scripts
 
-# Uncomment the below line if building the image with a different jdk
+# Uncomment the below line if customizing the image with a different OS
 # COPY detemplatize /bin/
 
 # Update access of required directories to allow not running in root for openshift
