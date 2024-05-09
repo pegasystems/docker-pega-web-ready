@@ -189,6 +189,21 @@ RUN  mkdir -p /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
+# Set up dir for prometheus lib
+RUN apt-get update && \
+    apt-get install -y gpg && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /opt/pega/prometheus && \
+    curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
+    curl -sL -o /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar.asc && \
+    gpg --import /keys/prometheus.asc && \
+    gpg --verify /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc /opt/pega/prometheus/jmx_prometheus_javaagent.jar && \
+    rm /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc && \
+    apt-get autoremove --purge -y gpg && \
+    chgrp -R 0 /opt/pega/prometheus && \
+    chmod -R g+rw /opt/pega/prometheus && \
+    chown -R pegauser /opt/pega/prometheus && \
+    chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
 
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
@@ -220,6 +235,7 @@ COPY tomcat-webapps ${CATALINA_HOME}/webapps/
 COPY tomcat-bin ${CATALINA_HOME}/bin/
 COPY tomcat-conf ${CATALINA_HOME}/conf/
 COPY scripts /scripts
+
 
 # Update access of required directories to allow not running in root for openshift
 RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
