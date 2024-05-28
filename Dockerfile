@@ -3,7 +3,7 @@
 # Base image to extend from
 
 ARG BASE_TOMCAT_IMAGE
-FROM pegasystems/$BASE_TOMCAT_IMAGE as release
+FROM $BASE_TOMCAT_IMAGE as release
 
 ARG VERSION
 
