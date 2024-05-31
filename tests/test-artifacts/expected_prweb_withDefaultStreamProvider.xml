@@ -30,6 +30,7 @@
 
 
     <Environment name="prconfig/dnode/cassandra_client_encryption/enabled" value="true"  type="java.lang.String"/>
+    <Environment name="prconfig/dnode/cassandra_client_encryption/store_type" value="JKS"  type="java.lang.String"/>
     <Environment name="prconfig/dnode/cassandra_client_encryption/truststore" value="/fake/path"  type="java.lang.String"/>
     <Environment name="prconfig/dnode/cassandra_client_encryption/truststore_password" value=""  type="java.lang.String"/>
 
