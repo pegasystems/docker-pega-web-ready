@@ -1,30 +1,35 @@
-# Instructions to build custom pega-ready image on OS and JDK of preferred choice.
+# Build a custom pega-web-ready Docker image using your preferred OS and JDK
 
-Prerequisite:- Basic knowledge of Docker and Linux commands.
+Prerequisites:
+• You have a basic knowledge of Docker and Linux commands.
+• You have a base Docker image with your preferred OS and JDK.
+• The base image you selected must have $CATALINA_HOME set to the correct tomcat location.
 
+Pega provides a pega-web-ready Docker image using Tomcat 9 and JDK 11 as a base image. For more information about the pega-web-ready Docker image, see `pegasystems/docker-pega-web-ready`
+To build a custom pega-web-ready image using your preferred OS and JDK, perform the following actions:
 
-### Steps to build pega-ready image.
+1. Create a Dockerfile for your custom pega-web-ready image using your base image.
+     
+   a. Use multi-stage Docker build at the beginning of your Dockerfile to copy the detemplatize executive file from the `pegasystems/detemplatize` Docker image to your base image.
+      The detemplatize executive file replaces template variables with actual values in the Pega Platform code.
 
-  1. Navigate to https://github.com/pegasystems/docker-pega-web-ready . This is the open source code repository for pega-ready image.
-  2. We highly recommend that user should get familiarised with basic docker commands used here. https://github.com/pegasystems/docker-pega-web-ready/blob/master/Dockerfile
-  3. We will need `detemplatize` exe to be available under the `bin` directory of the base OS. Use Multistage docker build to copy the executable.
-     This detemplatize exe can be located inside the bin folder of this image https://hub.docker.com/r/pegasystems/detemplatize. Please see the reference below and make changes in Dockerfile.
-     ```Dockerfile
+   For example:
+      ```Dockerfile
       FROM pegasystems/detemplatize AS builder
       # Base Image to be used to build pega-ready image 
       FROM <BASE_IMAGE>
       # Copy detemplatize to base image bin directory
-      COPY --from=builder /bin/detemplatize /bin/detemplatize
-     ```
-       
-  4. We take base image as an argument to build the pega-ready image. Once you have finalised the base image to be used , we can pass the same base image in the docker run command.
-      ```bash
-         docker build --build-arg BASE_TOMCAT_IMAGE=<BASE_IMAGE> -t <IMAGE_NAME> .
+      COPY --from=builder /bin/detemplatize /bin/detemplatize 
       ```
+   
+   b. Use the open-source pega-web-ready Dockerfile code to complete the Dockerfile.
+      For more information, see pegasystems/docker-pega-web-ready/Dockerfile.
+      Note: You can add any extra environment variables needed in the Dockerfile as per your use-case.
+
+
+2. Use the following command to build the custom pega-web-ready image using the base image as an argument.
+     ```bash
+        docker build --build-arg BASE_TOMCAT_IMAGE=<BASE_IMAGE> -t <IMAGE_NAME> .
+     ```
      
-  5. On successful execution of the above command , we have build the pega-ready image.
-
-###  Note
-  1. Please make sure that base image selected should have $CATALINA_HOME set to correct tomcat location.
-  2. You can add any extra environment variables needed in the Dockerfile as per your use-case.
-
+The system then builds your custom pega-web-ready Docker image.
