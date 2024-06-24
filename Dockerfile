@@ -1,10 +1,10 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-
 ARG BASE_TOMCAT_IMAGE
 
 FROM pegasystems/detemplatize:latest as detemplatize
+
 FROM $BASE_TOMCAT_IMAGE as release
 
 ARG VERSION
