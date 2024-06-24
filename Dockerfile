@@ -3,6 +3,8 @@
 # Base image to extend from
 
 ARG BASE_TOMCAT_IMAGE
+
+FROM pegasystems/detemplatize:latest as detemplatize
 FROM $BASE_TOMCAT_IMAGE as release
 
 ARG VERSION
@@ -18,6 +20,8 @@ RUN groupadd -g 9001 pegauser && \
 
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
+
+COPY --from=detemplatize /bin/detemplatize /bin/detemplatize
 
 COPY hashes/ /hashes/
 COPY keys/ /keys/
