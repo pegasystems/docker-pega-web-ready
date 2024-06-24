@@ -20,7 +20,7 @@ RUN groupadd -g 9001 pegauser && \
 
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
-
+# Copy detemplatize to base image bin directory
 COPY --from=detemplatize /bin/detemplatize /bin/detemplatize
 
 COPY hashes/ /hashes/
