@@ -9,20 +9,8 @@ Pega provides a pega-web-ready Docker image using Tomcat 9 and JDK 11 as a base 
 To build a custom pega-web-ready image using your preferred OS and JDK, perform the following actions:
 
 1. Create a Dockerfile for your custom pega-web-ready image using your base image.
-     
-   a. Use multi-stage Docker build at the beginning of your Dockerfile to copy the detemplatize executive file from the `pegasystems/detemplatize` Docker image to your base image.
-      The detemplatize executive file replaces template variables with actual values in the Pega Platform code.
-
-   For example:
-      ```Dockerfile
-      FROM pegasystems/detemplatize AS builder
-      # Base Image to be used to build pega-ready image 
-      FROM <BASE_IMAGE>
-      # Copy detemplatize to base image bin directory
-      COPY --from=builder /bin/detemplatize /bin/detemplatize 
-      ```
    
-   b. Use the open-source pega-web-ready Dockerfile code to complete the Dockerfile.
+   a. Use the open-source pega-web-ready Dockerfile code to complete the Dockerfile.
       For more information, see pegasystems/docker-pega-web-ready/Dockerfile.
       Note: You can add any extra environment variables needed in the Dockerfile as per your use-case.
 
