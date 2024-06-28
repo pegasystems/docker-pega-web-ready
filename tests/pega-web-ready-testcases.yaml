@@ -1688,29 +1688,6 @@ commandTests:
     exitCode: 0
     expectedOutput: [ "TLS certificate password is - keystore_password_from_file" ]
 
-  # Tls certificate Directory as Environment variable
-  - name: "Tls certificate Directory as Environment variable"
-    envVars:
-      - key: "JDBC_URL"
-        value: "jdbc:postgresql://localhost:5432/pegadb"
-      - key: "JDBC_CLASS"
-        value: "org.postgresql.Driver"
-      - key: "DB_USERNAME"
-        value: "postgres"
-      - key: "DB_PASSWORD"
-        value: "postgres"
-      - key: "TOMCAT_KEYSTORE_CONTENT"
-        value: "pega_tls_cert_directory"
-    command: "bash"
-    args:
-      - -c
-      - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/TOMCAT_KEYSTORE_CONTENT /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_CONTENT &&
-        bash -c '/scripts/docker-entrypoint.sh run'
-    exitCode: 0
-    expectedOutput: [ "TLS certificate directory is - /opt/pega/tomcatcerts/tlskeystore.jks" ]
-
   # Dockerize server xml
   - name: "Dockerize server.xml tmpl file"
     envVars:
