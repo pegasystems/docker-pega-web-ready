@@ -8,7 +8,7 @@ JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"
 #
 # Append security overwrites
 #
-JAVA_OPTS="${JAVA_OPTS} -Djava.security.properties=/usr/local/tomcat/conf/java.security.overwrite"
+JAVA_OPTS="${JAVA_OPTS} -Djava.security.properties=${CATALINA_HOME}/conf/java.security.overwrite"
 
 #
 # Pass Node tier to Pega
@@ -81,7 +81,7 @@ CATALINA_OPTS="${CATALINA_OPTS} -XX:+DisableExplicitGC"
 CATALINA_OPTS="${CATALINA_OPTS} -Djava.security.egd=file:///dev/urandom"
 # recommended overridable JVM Arguments 
 CATALINA_OPTS="-XX:+UseStringDeduplication ${CATALINA_OPTS}"
-CATALINA_OPTS="-Xlog:gc*,gc+heap=debug,gc+humongous=debug:file=/usr/local/tomcat/logs/gc.log:uptime,pid,level,time,tags:filecount=3,filesize=2M ${CATALINA_OPTS}"
+CATALINA_OPTS="-Xlog:gc*,gc+heap=debug,gc+humongous=debug:file=${CATALINA_HOME}/logs/gc.log:uptime,pid,level,time,tags:filecount=3,filesize=2M ${CATALINA_OPTS}"
 
 echo "CATALINA_OPTS: \"${CATALINA_OPTS}\""
 
