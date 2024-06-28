@@ -8,7 +8,9 @@ Prerequisites:
 Pega provides a pega-web-ready Docker image using Tomcat 9 and JDK 11 as a base image. For more information about the pega-web-ready Docker image, see `pegasystems/docker-pega-web-ready`
 To build a custom pega-web-ready image using your preferred OS and JDK, perform the following actions:
 
-1. Create a Dockerfile for your custom pega-web-ready image using your base image and the open-source pega-web-ready Dockerfile code.
+1. Create a Dockerfile for your custom pega-web-ready image using your base image and the open-source pega-web-ready Dockerfile code. 
+   For more information, see pegasystems/docker-pega-web-ready/Dockerfile.
+   Note: You can add any extra environment variables needed in the Dockerfile as per your use-case.
 
 2. Use the following command to build the custom pega-web-ready image using the base image as an argument.
      ```bash
