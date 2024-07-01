@@ -57,6 +57,8 @@
   
 
   
+
+  
   <Environment name="prconfig/cluster/clientserver/clientmode" value="true" type="java.lang.String"/>
   <Environment name="prconfig/cluster/clientserver/hzOnK8s" value="" type="java.lang.String"/>
   <Environment name="prconfig/identification/cluster/name" value="" type="java.lang.String"/>

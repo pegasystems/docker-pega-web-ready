@@ -10,6 +10,8 @@ cassandra_password_file="/opt/pega/secrets/CASSANDRA_PASSWORD"
 
 hazelcast_username_file="/opt/pega/secrets/HZ_CS_AUTH_USERNAME"
 hazelcast_password_file="/opt/pega/secrets/HZ_CS_AUTH_PASSWORD"
+hz_ssl_keystore_password_file="/opt/hazelcast/certs/HZ_SSL_KEYSTORE_PASSWORD"
+hz_ssl_truststore_password_file="/opt/hazelcast/certs/HZ_SSL_TRUSTSTORE_PASSWORD"
 
 custom_artifactory_username_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_USERNAME"
 custom_artifactory_password_file="/opt/pega/secrets/CUSTOM_ARTIFACTORY_PASSWORD"
@@ -70,6 +72,22 @@ fi
 echo "Hazelcast Username is - $SECRET_HAZELCAST_USERNAME"
 
 echo "Hazelcast Password is - $SECRET_HAZELCAST_PASSWORD"
+
+if [ -e "$hz_ssl_keystore_password_file" ]; then
+   export SECRET_HZ_SSL_KEYSTORE_PASSWORD=$(<${hz_ssl_keystore_password_file})
+else
+   export SECRET_HZ_SSL_KEYSTORE_PASSWORD=hz_ssl_keystore_password
+fi
+
+if [ -e "$hz_ssl_truststore_password_file" ]; then
+   export SECRET_HZ_SSL_TRUSTSTORE_PASSWORD=$(<${hz_ssl_truststore_password_file})
+else
+   export SECRET_HZ_SSL_TRUSTSTORE_PASSWORD=hz_ssl_truststore_password
+fi
+
+echo "Hazelcast keystore password is - $SECRET_HZ_SSL_KEYSTORE_PASSWORD"
+
+echo "Hazelcast truststore password is - $SECRET_HZ_SSL_TRUSTSTORE_PASSWORD"
 
 if [ -e "$stream_truststore_password_file" ]; then
    export SECRET_STREAM_TRUSTSTORE_PASSWORD=$(<${stream_truststore_password_file})
