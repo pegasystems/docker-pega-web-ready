@@ -1163,6 +1163,8 @@ commandTests:
       value: "hzpassword"
     - key: "CASSANDRA_CLIENT_ENCRYPTION"
       value: "true"
+    - key: "CASSANDRA_CLIENT_ENCRYPTION_STORE_TYPE"
+      value: "JKS"
     - key: "CASSANDRA_TRUSTSTORE"
       value: "/fake/path"
     - key: "CASSANDRA_ASYNC_PROCESSING_ENABLED"
