@@ -3,7 +3,7 @@
 # Base image to extend from
 ARG BASE_TOMCAT_IMAGE
 
-FROM pegasystems/detemplatize:latest as detemplatize
+FROM pegasystems/detemplatize as detemplatize
 
 FROM $BASE_TOMCAT_IMAGE as release
 
