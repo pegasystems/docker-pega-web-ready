@@ -1,8 +1,10 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-
 ARG BASE_TOMCAT_IMAGE
+
+FROM pegasystems/detemplatize as detemplatize
+
 FROM $BASE_TOMCAT_IMAGE as release
 
 ARG VERSION
@@ -18,6 +20,8 @@ RUN groupadd -g 9001 pegauser && \
 
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
+# Copy detemplatize to base image bin directory
+COPY --from=detemplatize /bin/detemplatize /bin/detemplatize
 
 COPY hashes/ /hashes/
 COPY keys/ /keys/
