@@ -18,4 +18,3 @@ ignore:
   # https://nvd.nist.gov/vuln/detail/CVE-2024-24791  https://ubuntu.com/security/CVE-2024-24791
   # net/http libraries from GoLang are not utilized in this image.
   - vulnerability: CVE-2024-24791
-    fix-state: "not-fixed"
