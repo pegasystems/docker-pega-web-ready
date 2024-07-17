@@ -14,3 +14,7 @@ ignore:
   # SQLite is not leverage by this image. A fix appears to be in progress.
   - vulnerability: CVE-2020-35527
     fix-state: "not-fixed"
+
+  # https://nvd.nist.gov/vuln/detail/CVE-2024-24791  https://ubuntu.com/security/CVE-2024-24791
+  # net/http libraries from GoLang are not utilized in this image.
+  - vulnerability: CVE-2024-24791
