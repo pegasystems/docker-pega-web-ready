@@ -181,6 +181,12 @@ CASSANDRA_NODES | Specify A comma separated list of hosts in your Cassandra serv
 CASSANDRA_PORT | Specify the TCP port to connect to your Cassandra service cluster. | `9042`
 CASSANDRA_USERNAME | Specify the plain text username for authentication with your Cassandra service cluster. For better security, avoid plain text usernames and leave this parameter blank; then include the username in an external secrets manager with the key CASSANDRA_USERNAME. |
 CASSANDRA_PASSWORD | Specify the plain text password for authentication with your Cassandra service cluster. For better security, avoid plain text passwords and leave this parameter blank; then include the password in an external secrets manager with the key CASSANDRA_PASSWORD. |
+CASSANDRA_CLIENT_ENCRYPTION | Enable encryption of traffic between Pega Platform instance and your organization's Cassandra service. | `false`
+CASSANDRA_CLIENT_ENCRYPTION_STORE_TYPE | Specify the archive file format in which Cassandra client encryption keys are held. | `JKS`
+CASSANDRA_TRUSTSTORE | Specify the path to the truststore file which contains trusted third party certificates that will be used in Cassandra client encryption. |
+CASSANDRA_TRUSTSTORE_PASSWORD | Specify the plain text password for the Cassandra client encryption truststore file. For better security, avoid plain text passwords and leave this parameter blank; then include the password in an external secrets manager with the key CASSANDRA_TRUSTSTORE_PASSWORD. |
+CASSANDRA_KEYSTORE | Specify the path to the keystore file which contains keys and certificates that will be used in Cassandra client encryption to establish secure connection. |
+CASSANDRA_KEYSTORE_PASSWORD | Specify the plain text password for the Cassandra client encryption keystore file. For better security, avoid plain text passwords and leave this parameter blank; then include the password in an external secrets manager with the key CASSANDRA_KEYSTORE_PASSWORD. |
 CASSANDRA_ASYNC_PROCESSING_ENABLED | Enable asynchronous processing of records in DDS Dataset save operation. Failures to store individual records will not interrupt Dataset save operations. | `false`
 CASSANDRA_KEYSPACES_PREFIX | Specify a prefix to use when creating Pega-managed keyspaces in Cassandra. |
 CASSANDRA_EXTENDED_TOKEN_AWARE_POLICY | Enable an extended token aware policy for use when a Cassandra range query runs. When enabled this policy selects a token from the token range to determine which Cassandra node to send the request. Before you can enable this policy, you must configure the token range partitioner. | `false`
@@ -194,7 +200,7 @@ CASSANDRA_SPECULATIVE_EXECUTION_DELAY | Specify the delay in milliseconds before
 CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS | Specify the maximum number of speculative execution attempts when CASSANDRA_SPECULATIVE_EXECUTION_POLICY is true. For Pega Platform '23 and earlier releases use the dynamic system setting (DSS): dnode/cassandra_speculative_execution_policy/max_executions. | 2
 CASSANDRA_JMX_METRICS_ENABLED | Enable reporting of DDS SDK metrics to a Java Management Extension (JMX) format for use by your organization to monitor your Cassandra service. Setting this property `false` disables metrics being exposed through the JMX interface; disabling also limits the metrics being collected using the DDS landing page. | `true`
 CASSANDRA_CSV_METRICS_ENABLED | Enable reporting of DDS SDK metrics to a Comma Separated Value (CSV) format for use by your organization to monitor your Cassandra service. If you enable this property, use the Pega Platform DSS: dnode/ddsclient/metrics/csv_directory to customize the filepath to which the deployment writes CSV files. By default, after you enable this property, CSV files will be written to the Pega Platform work directory. | `false`
-CASSANDRA_LOG_METRICS_ENABLED | Enable reporting of DDS SDK metrics to your Pega Platform logs. |
+CASSANDRA_LOG_METRICS_ENABLED | Enable reporting of DDS SDK metrics to your Pega Platform logs. | `false`
 
 
 ### Hazelcast settings
