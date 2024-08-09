@@ -58,6 +58,16 @@
   
 
   
+  <Environment name="prconfig/cluster/encryption/enabled" value="true" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/encryption/protocol" value="TLS" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/encryption/keystore/path" value="/opt/hazelcast/certs/cluster-keystore.jks" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/encryption/keystore/password" value="test" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/encryption/keymanager/algorithm" value="SunX509" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/encryption/truststore/path" value="/opt/hazelcast/certs/cluster-truststore.jks" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/encryption/trustmanager/algorithm" value="SunX509" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/encryption/truststore/password" value="test" type="java.lang.String"/>
+  <Environment name="prconfig/cluster/encryption/customclass" value="com.pega.hazelcast.v5.nio.ssl.BasicSSLContextFactory" type="java.lang.String"/>
+  
 
   
   <Environment name="prconfig/cluster/clientserver/clientmode" value="true" type="java.lang.String"/>

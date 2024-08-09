@@ -41,6 +41,10 @@ else
   echo "No krb5.conf was specified in ${krb5_conf}."
 fi
 
+if [ "${HIGHLY_SECURE_CRYPTO_MODE_ENABLED}" == "true" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -DHighSecureCryptoModeEnabled=true "
+fi
+
 echo "JAVA_OPTS: \"${JAVA_OPTS}\""
 export  JAVA_OPTS
 
