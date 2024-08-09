@@ -188,7 +188,7 @@ ENV HZ_CLIENT_MODE=false \
     HZ_SSL_ALGO= \
     HZ_SSL_TRUST_STORE_NAME= \
     HZ_SSL_TRUSTSTORE_PASSWORD= \
-    HIGH_SECURE_CRYPTO_MODE_ENABLED=
+    HIGHLY_SECURE_CRYPTO_MODE_ENABLED=
 
 # Configure custom artifactory authentication details if it is secured with Basic or APIKey Authentication which is used for downloading JDBC driver.
 ENV CUSTOM_ARTIFACTORY_USERNAME= \
