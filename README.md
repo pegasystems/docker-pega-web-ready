@@ -224,7 +224,7 @@ HZ_SSL_KEYSTORE_PASSWORD | SSL keystore password |
 HZ_SSL_ALGO | SSL algorithm name |
 HZ_SSL_TRUST_STORE_NAME | SSL truststore name |
 HZ_SSL_TRUSTSTORE_PASSWORD | SSL truststore password |
-HIGHLY_SECURED_CRYPTO_MODE_ENABLED | Flag to enable Higly secured connection complying NIST SP 800-53 and NIST SP 800-131 | `false`
+HIGHLY_SECURE_CRYPTO_MODE_ENABLED | Flag to enable Higly secured connection complying NIST SP 800-53 and NIST SP 800-131 | `false`
 
 # Contributing
 
