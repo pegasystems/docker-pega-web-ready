@@ -113,6 +113,9 @@
   <Environment name="prconfig/cluster/encryption/truststore/path" value="/opt/hazelcast/certs/{{ .Env.HZ_SSL_TRUST_STORE_NAME }}" type="java.lang.String"/>
   <Environment name="prconfig/cluster/encryption/trustmanager/algorithm" value="{{ .Env.HZ_SSL_ALGO }}" type="java.lang.String"/>
   <Environment name="prconfig/cluster/encryption/truststore/password" value="{{ .Env.SECRET_HZ_SSL_TRUSTSTORE_PASSWORD }}" type="java.lang.String"/>
+  {{- if .Env.HZ_SSL_CUSTOM_CLASS }}
+  <Environment name="prconfig/cluster/encryption/customclass" value="{{ .Env.HZ_SSL_CUSTOM_CLASS }}" type="java.lang.String"/>
+  {{- end }}
   {{ end }}
 
   {{ if isTrue .Env.HZ_CLIENT_MODE }}
