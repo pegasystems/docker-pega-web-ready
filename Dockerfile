@@ -179,7 +179,16 @@ ENV HZ_CLIENT_MODE=false \
     HZ_CLUSTER_NAME= \
     HZ_SERVER_HOSTNAME= \
     HZ_CS_AUTH_USERNAME= \
-    HZ_CS_AUTH_PASSWORD=
+    HZ_CS_AUTH_PASSWORD= \
+    HZ_SSL_ENABLED= \
+    HZ_SSL_PROTOCOL= \
+    HZ_SSL_CUSTOM_CLASS= \
+    HZ_SSL_KEY_STORE_NAME= \
+    HZ_SSL_KEYSTORE_PASSWORD= \
+    HZ_SSL_ALGO= \
+    HZ_SSL_TRUST_STORE_NAME= \
+    HZ_SSL_TRUSTSTORE_PASSWORD= \
+    HIGHLY_SECURED_CRYPTO_MODE_ENABLED=
 
 # Configure custom artifactory authentication details if it is secured with Basic or APIKey Authentication which is used for downloading JDBC driver.
 ENV CUSTOM_ARTIFACTORY_USERNAME= \
