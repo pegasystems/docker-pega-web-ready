@@ -1,19 +1,40 @@
 Pega Docker Image
 ===========
 
-Pega Platform is a distributed web application for customer engagement, customer service, and digital process automation. A Pega deployment consists of a number of containers connecting to a Database and any other required backing services.  The Pega database contains business rule logic that must be preloaded with an installer for the containers to successfully start.  For more information and instructions on how to get started with a container based deployment of Pega, see [Pega's Cloud Choice documentation](https://community.pega.com/knowledgebase/articles/cloud-choice).
+Pega Platform is a distributed web application for customer engagement, customer service, and digital process automation. A Pega deployment consists of a number of containers connecting to a Database and any other required backing services.  The Pega database contains business rule logic that must be preloaded with an installer for the containers to successfully start.  For more information and instructions on how to get started with a container based deployment of Pega, see [Pega's Cloud Choice documentation](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/containerized-deployments-kubernetes.html).
 
 [![Docker Image Build](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml/badge.svg?branch=master)](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
 
 # Using this image
 
-This *ready* Docker image extends a customized Tomcat base image `pegasystems/tomcat:9-jdk11` and contains required components that allow you to run a Pega Platform on your deployment nodes. It does not include Pega Platform rules. This image is web-ready for clients to build a final image that includes the Pega .war file of your choice.
+The [pegasystems/pega-ready](https://hub.docker.com/r/pegasystems/pega-ready) Docker image extends a customized Tomcat base image with either JDK11 or JDK17 and contains required components that allow you to run a Pega Platform on your deployment nodes. It does not include Pega Platform rules. This image is web-ready for clients to build a final image that includes the Pega .war file of your choice.
 
-Pega offers an alterative, full image which *includes* the .war file - for details, see [pegasystems/pega on DockerHub][pegasystems/pega]. Docker images provided by Pegasystems are validated and supported by [Pega Support](https://community.pega.com/support).
+Pega offers an alterative, full image which *includes* the .war file - for details, see [pegasystems/pega on DockerHub][pegasystems/pega] and [Pega-provided Docker images](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/pega-docker-images-manage.html). Docker images provided by Pegasystems are validated and supported by [Pega Support](https://community.pega.com/support).
 
 ## Image customizations
 
-If you do not want to use the Pega-provided Docker image, you can copy this repository and build your own image based on your preferred base image such as one enforced by a corporate standard. When making customizations for your environment, check the [Pega Platform Support Guide Resources](https://community.pega.com/knowledgebase/articles/pega-platform-support-guide-resources) to verify that those changes are supported by your Pega Platform version. If you choose to build your own image, Pega will continue to offer support for Pega Platform, but problems that arise from your custom image are not the responsibility of Pegasystems.
+If you do not want to use the Pega-provided Docker image because, for example, you need a customized base image with your preferred OS and JDK enforced by a corporate standard, you can copy this repository and build your own pega-web-ready image based on your preferred base image. When making customizations for your environment, check the [Pega Platform Support Guide Resources](https://community.pega.com/knowledgebase/articles/pega-platform-support-guide-resources) to verify that those changes are supported by your Pega Platform version. 
+
+**Important:** If you choose to build your own image, Pega will continue to offer support for Pega Platform, but problems that arise from your custom image are not the responsibility of Pegasystems.
+
+To build a custom pega-web-ready image using your preferred OS and JDK, perform the following actions:
+
+1. Ensure that the base image you selected has $CATALINA_HOME set to the correct Tomcat location.
+   
+2. Create a Dockerfile for your custom pega-web-ready image using your base image and the open-source pega-web-ready Dockerfile code.
+
+For more information, see [pegasystems/docker-pega-web-ready/Dockerfile](Dockerfile).
+
+**Note:** You can add any extra environment variables needed in the Dockerfile as per your use-case.
+
+3. Use the following command to build the custom pega-web-ready image using the base image as an argument.
+
+     ```bash
+        $ docker build --build-arg BASE_TOMCAT_IMAGE=<BASE_IMAGE> -t <IMAGE_NAME> .
+     ```
+
+The system then builds your custom pega-web-ready Docker image.
+
 
 ## User access and control considerations for this image
 
