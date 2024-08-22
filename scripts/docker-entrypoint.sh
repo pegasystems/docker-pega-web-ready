@@ -317,6 +317,14 @@ else
 fi
 
 #
+# Adding snippet to web.xml
+#
+if [ -n "$WEB_XML_SNIPPET" ]; then
+  echo "Inserting WEB_XML_SNIPPET into web.xml";
+  awk -v var="$WEB_XML_SNIPPET" '/<\/web-app>/ {print var;} 1' ${PEGA_DEPLOYMENT_DIR}/WEB-INF/web.xml > /tmp/web.xml && mv /tmp/web.xml ${PEGA_DEPLOYMENT_DIR}/WEB-INF/web.xml
+fi
+
+#
 # Copying mounted catalina.properties file to conf
 #
 if [ -e "${catalina_properties}" ]; then
