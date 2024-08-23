@@ -1260,6 +1260,30 @@ commandTests:
     exitCode: 0
     expectedOutput: ["prweb.xml is not dockerized properly"]
 
+# Verify WEB_XML_SNIPPET
+  - name: "Verify WEB_XML_SNIPPET is inserted"
+    envVars:
+    - key: "JDBC_DRIVER_URI"
+      value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"   
+    - key: "WEB_XML_SNIPPET"
+      value: <resource-env-ref-type>javax.jms.QueueConnectionFactory</resource-env-ref-type>         
+    command: "bash"
+    args:
+    - -c
+    - |
+        bash -c './scripts/docker-entrypoint.sh' &&
+        grep -zocP "<resource-env-ref-type>javax.jms.QueueConnectionFactory</resource-env-ref-type>[[:space:]]*</web-app>" /usr/local/tomcat/webapps/prweb/WEB-INF/web.xml
+    exitCode: 0
+    expectedOutput: ["1"]
+
 # Verify the run argument for catalina.sh   
   - name: "Verify run argument for catalina.sh"
     envVars:
