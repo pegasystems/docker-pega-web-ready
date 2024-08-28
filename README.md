@@ -216,15 +216,15 @@ HZ_CLUSTER_NAME| Hazelcast cluster name |
 HZ_SERVER_HOSTNAME| Hazelcast server hostname |
 HZ_CS_AUTH_USERNAME | Hazelcast username for authentication |
 HZ_CS_AUTH_PASSWORD | Hazelcast password for authentication |
-HZ_SSL_ENABLED | Flag to enable SSL between Hazelcast and Infinity                                   | `false`
-HZ_SSL_PROTOCOL | To set SSL protocol                                                                 |
-HZ_SSL_CUSTOM_CLASS | SSL context factory class fully qualified name                                      | `com.pega.hazelcast.v5.nio.ssl.BasicSSLContextFactory`
-HZ_SSL_KEY_STORE_NAME | SSL keystore name                                                                   |
+HZ_SSL_ENABLED | Set to true to enable SSL between the Clustering Service and Pega Platform. | false
+HZ_SSL_PROTOCOL | The SSL protocol for the Clustering Service. For example, TLS. |
+HZ_SSL_CUSTOM_CLASS | SSL context factory class fully qualified name | com.pega.hazelcast.v5.nio.ssl.BasicSSLContextFactory
+HZ_SSL_KEY_STORE_NAME | SSL keystore name |
 HZ_SSL_KEYSTORE_PASSWORD | SSL keystore password |
 HZ_SSL_ALGO | SSL algorithm name |
 HZ_SSL_TRUST_STORE_NAME | SSL truststore name |
 HZ_SSL_TRUSTSTORE_PASSWORD | SSL truststore password |
-HIGHLY_SECURE_CRYPTO_MODE_ENABLED | Flag to enable Higly secured connection complying NIST SP 800-53 and NIST SP 800-131 | `false`
+HIGHLY_SECURE_CRYPTO_MODE_ENABLED | Set to true to enable highly secure encryption mode that complies with NIST SP 800-53 and NIST SP 800-131. | false
 
 # Contributing
 
