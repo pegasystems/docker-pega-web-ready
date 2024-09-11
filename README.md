@@ -7,9 +7,9 @@ Pega Platform is a distributed web application for customer engagement, customer
 
 # Using this image
 
-The [pegasystems/pega-ready](https://hub.docker.com/r/pegasystems/pega-ready) Docker image extends a customized Tomcat base image with either JDK11 or JDK17 and contains required components that allow you to run a Pega Platform on your deployment nodes. It does not include Pega Platform rules. This image is web-ready for clients to build a final image that includes the Pega .war file of your choice.
+Pega offers a publicly available Pega runtime Docker image which includes the prweb.war file, but does not contain Pega rules - for details, see [pegasystems/pega on DockerHub][pegasystems/pega] and [Pega-provided Docker images](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/pega-docker-images-manage.html). Pega builds the `pegasystems/pega` image from a [pegasystems/pega-ready](https://hub.docker.com/r/pegasystems/pega-ready) Docker image, a base image that contains an OS (Ubuntu Linux), a Java implementation (Adoptium Temurin JDK11 or JDK17), and an application server (Apache Tomcat) and is customized with Pega-specific configurations. You can use the `pegasystems/pega-ready` Dockerfile code to customize and build your own web-ready image and then extend it with the Pega .war file of your choice.
 
-Pega offers an alterative, full image which *includes* the .war file - for details, see [pegasystems/pega on DockerHub][pegasystems/pega] and [Pega-provided Docker images](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/pega-docker-images-manage.html). Docker images provided by Pegasystems are validated and supported by [Pega Support](https://community.pega.com/support).
+Docker images provided by Pegasystems are validated and supported by [Pega Support](https://community.pega.com/support).
 
 ## Image customizations
 
