@@ -75,7 +75,7 @@ jobs:
       
     - name: Publish Scan Results as Artifact
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: docker-scan-results
         path: ${{ steps.scan.outputs.sarif }}
