@@ -55,35 +55,37 @@ jobs:
 
     - name: Scan image
       id: scan
-      uses: anchore/scan-action@v3
+      uses: aquasecurity/trivy-action@0.10.0
       with:
-        image: "pegasystems/pega-ready:latest"
-        fail-build: true
-        severity-cutoff: "high"
-        acs-report-enable: true
+        image-ref: "pegasystems/pega-ready:latest"
+        format: 'sarif'
+        exit-code: '1'
+        #ignore-unfixed: true
+        severity: 'CRITICAL,HIGH'
+        output: 'trivy-results.sarif'
         
     - name: Log Scan Results
       if: always()
       run: |
         echo "Failures:"
-        cat ${{ steps.scan.outputs.sarif }} | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -i "critical" || true
-        cat ${{ steps.scan.outputs.sarif }} | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -i "high" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -i "critical" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -i "high" || true
         echo "Warnings:"
-        cat ${{ steps.scan.outputs.sarif }} | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -i "medium" || true
-        cat ${{ steps.scan.outputs.sarif }} | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -i "low" || true
-        cat ${{ steps.scan.outputs.sarif }} | jq '.runs[0].tool.driver.rules[].shortDescription.text' | grep -iv "critical\|high\|medium\|low" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -i "medium" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -i "low" || true
+        cat 'trivy-results.sarif' | jq '.runs[0].tool.driver.rules[].help.text' | grep -iv "critical\|high\|medium\|low" || true
       
     - name: Publish Scan Results as Artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: docker-scan-results
-        path: ${{ steps.scan.outputs.sarif }}
+        path: 'trivy-results.sarif'
         
     - name: Upload Anchore Scan SARIF Report
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: ${{ steps.scan.outputs.sarif }}
+        sarif_file: 'trivy-results.sarif'
 
   push:
     name: Push to DockerHub
