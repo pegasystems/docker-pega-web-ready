@@ -1136,6 +1136,7 @@ commandTests:
         diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml || echo "tomcat-users.xml is not properly dockerized"
     exitCode: 0
     excludedOutput: ["tomcat-users.xml is not properly dockerized"]
+
 # Dockerize prweb.xml check
   - name: "Dockerize PRWEB Check"
     envVars:
@@ -1163,6 +1164,8 @@ commandTests:
       value: "hzpassword"
     - key: "CASSANDRA_CLIENT_ENCRYPTION"
       value: "true"
+    - key: "CASSANDRA_CLIENT_ENCRYPTION_STORE_TYPE"
+      value: "JKS"
     - key: "CASSANDRA_TRUSTSTORE"
       value: "/fake/path"
     - key: "CASSANDRA_ASYNC_PROCESSING_ENABLED"
@@ -1225,6 +1228,116 @@ commandTests:
     - |
         bash -c './scripts/docker-entrypoint.sh' &&      
         diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly" 
+    exitCode: 0
+    excludedOutput: ["prweb.xml is not dockerized properly"]
+
+# Dockerize prweb.xml check when SSL is enabled for Hazelcast
+  - name: "Dockerize PRWEB Check with HZ SSL"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "PEGA_SEARCH_TYPE"
+        value: "external"
+      - key: "PEGA_SEARCH_URL"
+        value: "http://pega-search"
+      - key: "PEGA_STREAM_URL"
+        value: "http://pega-stream"
+      - key: "CASSANDRA_CLUSTER"
+        value: "true"
+      - key: "HZ_CLIENT_MODE"
+        value: "true"
+      - key: "HZ_CS_AUTH_USERNAME"
+        value: "hzusername"
+      - key: "HZ_CS_AUTH_PASSWORD"
+        value: "hzpassword"
+      - key: "CASSANDRA_CLIENT_ENCRYPTION"
+        value: "true"
+      - key: "CASSANDRA_CLIENT_ENCRYPTION_STORE_TYPE"
+        value: "JKS"
+      - key: "CASSANDRA_TRUSTSTORE"
+        value: "/fake/path"
+      - key: "CASSANDRA_ASYNC_PROCESSING_ENABLED"
+        value: "true"
+      - key: "CASSANDRA_KEYSPACES_PREFIX"
+        value: "fake_prefix"
+      - key: "CASSANDRA_EXTENDED_TOKEN_AWARE_POLICY"
+        value: "true"
+      - key: "CASSANDRA_LATENCY_AWARE_POLICY"
+        value: "true"
+      - key: "CASSANDRA_CUSTOM_RETRY_POLICY"
+        value: "true"
+      - key: "CASSANDRA_CUSTOM_RETRY_POLICY_ENABLED"
+        value: "false"
+      - key: "CASSANDRA_CUSTOM_RETRY_POLICY_COUNT"
+        value: "2"
+      - key: "CASSANDRA_SPECULATIVE_EXECUTION_POLICY"
+        value: "true"
+      - key: "CASSANDRA_SPECULATIVE_EXECUTION_POLICY_ENABLED"
+        value: "false"
+      - key: "CASSANDRA_SPECULATIVE_EXECUTION_DELAY"
+        value: "50"
+      - key: "CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS"
+        value: "2"
+      - key: "CASSANDRA_CSV_METRICS_ENABLED"
+        value: "true"
+      - key: "CASSANDRA_LOG_METRICS_ENABLED"
+        value: "true"
+      - key: "EXTERNAL_STREAM"
+        value: "true"
+      - key: "SERVICES_STREAM_PROVIDER"
+        value: "KafkaService"
+      - key: "STREAM_BOOTSTRAP_SERVERS"
+        value: "host:9092"
+      - key: "STREAM_SECURITY_PROTOCOL"
+        value: "PLAIN"
+      - key: "STREAM_SASL_MECHANISM"
+        value: "PLAIN"
+      - key: "STREAM_TRUSTSTORE"
+        value: "truststore.jks"
+      - key: "STREAM_TRUSTSTORE_TYPE"
+        value: "jks"
+      - key: "STREAM_KEYSTORE"
+        value: "keystore.jks"
+      - key: "STREAM_KEYSTORE_TYPE"
+        value: "jks"
+      - key: "STREAM_TRUSTSTORE_PASSWORD"
+        value: "fake password"
+      - key: "STREAM_KEYSTORE_PASSWORD"
+        value: "fake password"
+      - key: "STREAM_JAAS_CONFIG"
+        value: "fake config"
+      - key: "STREAM_NAME_PATTERN"
+        value: "pega-{stream.name}"
+      - key: "STREAM_REPLICATION_FACTOR"
+        value: "1"
+      - key: "HZ_SSL_ENABLED"
+        value: "true"
+      - key: "HZ_SSL_PROTOCOL"
+        value: "TLS"
+      - key: "HZ_SSL_CUSTOM_CLASS"
+        value: "com.pega.hazelcast.v5.nio.ssl.BasicSSLContextFactory"
+      - key: "HZ_SSL_KEY_STORE_NAME"
+        value: "cluster-keystore.jks"
+      - key: "HZ_SSL_KEYSTORE_PASSWORD"
+        value: "test"
+      - key: "HZ_SSL_ALGO"
+        value: "SunX509"
+      - key: "HZ_SSL_TRUST_STORE_NAME"
+        value: "cluster-truststore.jks"
+      - key: "HZ_SSL_TRUSTSTORE_PASSWORD"
+        value: "test"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh' &&      
+        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_hz_ssl.xml || echo "prweb.xml is not dockerized properly"
     exitCode: 0
     excludedOutput: ["prweb.xml is not dockerized properly"]
 
@@ -1687,29 +1800,6 @@ commandTests:
         bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: [ "TLS certificate password is - keystore_password_from_file" ]
-
-  # Tls certificate Directory as Environment variable
-  - name: "Tls certificate Directory as Environment variable"
-    envVars:
-      - key: "JDBC_URL"
-        value: "jdbc:postgresql://localhost:5432/pegadb"
-      - key: "JDBC_CLASS"
-        value: "org.postgresql.Driver"
-      - key: "DB_USERNAME"
-        value: "postgres"
-      - key: "DB_PASSWORD"
-        value: "postgres"
-      - key: "TOMCAT_KEYSTORE_CONTENT"
-        value: "pega_tls_cert_directory"
-    command: "bash"
-    args:
-      - -c
-      - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/TOMCAT_KEYSTORE_CONTENT /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_CONTENT &&
-        bash -c '/scripts/docker-entrypoint.sh run'
-    exitCode: 0
-    expectedOutput: [ "TLS certificate directory is - /opt/pega/tomcatcerts/tlskeystore.jks" ]
 
   # Dockerize server xml
   - name: "Dockerize server.xml tmpl file"

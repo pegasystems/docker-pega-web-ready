@@ -1,9 +1,11 @@
 # Dockerfile for Pega 8 Platform
 
 # Base image to extend from
-
 ARG BASE_TOMCAT_IMAGE
-FROM pegasystems/$BASE_TOMCAT_IMAGE as release
+
+FROM pegasystems/detemplatize as detemplatize
+
+FROM $BASE_TOMCAT_IMAGE as release
 
 ARG VERSION
 
@@ -18,6 +20,8 @@ RUN groupadd -g 9001 pegauser && \
 
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
+# Copy detemplatize to base image bin directory
+COPY --from=detemplatize /bin/detemplatize /bin/detemplatize
 
 COPY hashes/ /hashes/
 COPY keys/ /keys/
@@ -145,6 +149,7 @@ ENV CASSANDRA_CLUSTER=false \
     CASSANDRA_USERNAME= \
     CASSANDRA_PASSWORD= \
     CASSANDRA_CLIENT_ENCRYPTION=false \
+    CASSANDRA_CLIENT_ENCRYPTION_STORE_TYPE= \
     CASSANDRA_TRUSTSTORE= \
     CASSANDRA_TRUSTSTORE_PASSWORD= \
     CASSANDRA_KEYSTORE= \
@@ -174,7 +179,16 @@ ENV HZ_CLIENT_MODE=false \
     HZ_CLUSTER_NAME= \
     HZ_SERVER_HOSTNAME= \
     HZ_CS_AUTH_USERNAME= \
-    HZ_CS_AUTH_PASSWORD=
+    HZ_CS_AUTH_PASSWORD= \
+    HZ_SSL_ENABLED= \
+    HZ_SSL_PROTOCOL= \
+    HZ_SSL_CUSTOM_CLASS= \
+    HZ_SSL_KEY_STORE_NAME= \
+    HZ_SSL_KEYSTORE_PASSWORD= \
+    HZ_SSL_ALGO= \
+    HZ_SSL_TRUST_STORE_NAME= \
+    HZ_SSL_TRUSTSTORE_PASSWORD= \
+    HIGHLY_SECURE_CRYPTO_MODE_ENABLED=
 
 # Configure custom artifactory authentication details if it is secured with Basic or APIKey Authentication which is used for downloading JDBC driver.
 ENV CUSTOM_ARTIFACTORY_USERNAME= \

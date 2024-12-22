@@ -7,11 +7,11 @@ commandTests:
     - -c
     - |
         java -version  2>&1 | grep "OpenJDK 64-Bit Server VM Temurin"
-    expectedOutput: [".*OpenJDK 64-Bit Server VM Temurin-11.*"]
+    expectedOutput: [".*OpenJDK 64-Bit Server VM Temurin-21.*"]
   - name: "TOMCAT VERSION check"
     command: "bash"
     args:
     - -c
     - |
         env  2>&1 | grep "TOMCAT_VERSION"
-    expectedOutput: ["TOMCAT_VERSION=9.*"]
+    expectedOutput: ["TOMCAT_VERSION=10.*"]
