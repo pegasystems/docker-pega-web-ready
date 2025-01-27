@@ -2,12 +2,14 @@
 
 # Base image to extend from
 ARG BASE_TOMCAT_IMAGE
+ARG DETEMPLATIZE_IMAGE_VERSION=latest
 
-FROM pegasystems/detemplatize as detemplatize
+FROM pegasystems/detemplatize:$DETEMPLATIZE_IMAGE_VERSION as detemplatize
 
 FROM $BASE_TOMCAT_IMAGE as release
 
 ARG VERSION
+ARG DETEMPLATIZE_IMAGE_VERSION=latest
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
@@ -20,6 +22,7 @@ RUN groupadd -g 9001 pegauser && \
 
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
+ENV DETEMPLATIZE_IMAGE_VERSION=${DETEMPLATIZE_IMAGE_VERSION}
 # Copy detemplatize to base image bin directory
 COPY --from=detemplatize /bin/detemplatize /bin/detemplatize
 
