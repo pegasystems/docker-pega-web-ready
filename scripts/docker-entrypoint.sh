@@ -42,7 +42,7 @@ final_config_root=$config_root
 
 if [ "$IS_PEGA_CONFIG_COMPRESSED" == true ]; then
     final_config_root=$decompressed_root
-    file_list=("prlog4j2.xml" "prconfig.xml" "context.xml" "server.xml" "web.xml" "tomcat-users.xml" "catalina.properties" "prbootstrap.properties" "java.security.overwrite" "tomcat-web.xml" "server.xml.tmpl" "context.xml.tmpl")
+    file_list=("prlog4j2.xml" "prconfig.xml" "context.xml" "server.xml" "web.xml" "tomcat-users.xml" "catalina.properties" "prbootstrap.properties" "java.security.overwrite" "tomcat-web.xml" "server.xml.tmpl" "context.xml.tmpl" "java.security.overwrite.tmpl")
     # decompressing the files if exists
     for filename in "${file_list[@]}"; do
       if [ -e "${config_root}/${filename}" ]; then
@@ -342,6 +342,10 @@ fi
 if [ -e "${java_security_overwrite}" ]; then
   echo "Loading java.security.overwrite from ${java_security_overwrite}...";
   cp "${java_security_overwrite}" "${CATALINA_HOME}/conf/"
+elif [ -e "${final_config_root}/java.security.overwrite.tmpl" ]; then
+  echo "No java.security.overwrite was specified in ${java_security_overwrite}. Generating from templates"
+  cp ${final_config_root}/java.security.overwrite.tmpl "${CATALINA_HOME}"/conf/java.security.overwrite.tmpl
+  /bin/detemplatize -template "${CATALINA_HOME}"/conf/java.security.overwrite.tmpl:"${CATALINA_HOME}"/conf/java.security.overwrite
 else
   echo "No java.security.overwrite was specified in ${java_security_overwrite}. Using defaults."
 fi
