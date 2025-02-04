@@ -44,7 +44,7 @@ fi
 if [ "${FIPS_140_3_MODE}" == "true" ]; then
   JAVA_OPTS="${JAVA_OPTS} -Dorg.bouncycastle.fips.approved_only=true"
   export CLASSPATH="/opt/pega/bcfips/*"
-  HIGHLY_SECURE_CRYPTO_MODE_ENABLED = true
+  HIGHLY_SECURE_CRYPTO_MODE_ENABLED=true
 fi
 
 if [ "${HIGHLY_SECURE_CRYPTO_MODE_ENABLED}" == "true" ]; then
