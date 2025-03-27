@@ -230,6 +230,8 @@ RUN apt-get update && \
     curl -sL -o /tmp/bcutil-fips-2.0.3.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.0.3/bcutil-fips-2.0.3.jar.asc && \
     curl -sL -o /opt/pega/bcfips/bcmail-fips-2.0.5.jar https://repo1.maven.org/maven2/org/bouncycastle/bcmail-fips/2.0.5/bcmail-fips-2.0.5.jar && \
     curl -sL -o /tmp/bcmail-fips-2.0.5.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcmail-fips/2.0.5/bcmail-fips-2.0.5.jar.asc && \
+    curl -sL -o /opt/pega/bcfips/bcjmail-fips-2.0.5.jar https://repo1.maven.org/maven2/org/bouncycastle/bcjmail-fips/2.0.5/bc-fips-2.0.5.jar && \
+    curl -sL -o /tmp/bcjmail-fips-2.0.5.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcjmail-fips/2.0.5/bcjmail-fips-2.0.5.jar.asc && \
     curl -sL -o /opt/pega/bcfips/bcpg-fips-2.0.9.jar https://repo1.maven.org/maven2/org/bouncycastle/bcpg-fips/2.0.9/bcpg-fips-2.0.9.jar && \
     curl -sL -o /tmp/bcpg-fips-2.0.9.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcpg-fips/2.0.9/bcpg-fips-2.0.9.jar.asc && \
     gpg --import /keys/bc_maven_public_key.asc && \
@@ -243,6 +245,8 @@ RUN apt-get update && \
     rm /tmp/bcutil-fips-2.0.3.jar.asc && \
     gpg --verify /tmp/bcmail-fips-2.0.5.jar.asc /opt/pega/bcfips/bcmail-fips-2.0.5.jar && \
     rm /tmp/bcmail-fips-2.0.5.jar.asc && \
+    gpg --verify /tmp/bcjmail-fips-2.0.5.jar.asc /opt/pega/bcfips/bcjmail-fips-2.0.5.jar && \
+    rm /tmp/bcjmail-fips-2.0.5.jar.asc && \
     gpg --verify /tmp/bcpg-fips-2.0.9.jar.asc /opt/pega/bcfips/bcpg-fips-2.0.9.jar && \
     rm /tmp/bcpg-fips-2.0.9.jar.asc && \
     apt-get autoremove --purge -y gpg && \
