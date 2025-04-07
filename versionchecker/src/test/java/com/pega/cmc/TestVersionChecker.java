@@ -9,20 +9,6 @@ import static com.pega.cmc.VersionChecker.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestVersionChecker {
-    @Test
-    public void basicTest() {
-        TestEnvHelper env = new TestEnvHelper();
-        env.put(ENV_JDBC_DRIVER_CLASS,"org.postgresql.Driver");
-        env.put(ENV_JDBC_URL,"jdbc:postgresql://l43039wus.rpega.com:5432/rulesync");
-        env.put(ENV_JDBC_USER,"rulesync");
-        env.put(ENV_JDBC_PASSWORD,"rulesync");
-        env.put(ENV_JDBC_CONN_PROPS,"");
-        env.put(ENV_RULE_SCHEMA_NAME,"rules");
-
-        VersionChecker vc = VersionChecker.createVersionChecker(env);
-        System.out.println(vc.checkVersion());
-
-    }
 
     @Test
     public void testConnectionPropParsing() {
