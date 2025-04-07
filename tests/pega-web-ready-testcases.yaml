@@ -27,6 +27,8 @@ metadataTest:
      value: 60000
    - key: ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION
      value: false
+   - key: "IS_PEGA_25_OR_LATER"
+     value: "false"
   exposedPorts: ["8080", "9001", "47100", "7003"]
   # Add 5701-5710 ports                      
   entrypoint: [/scripts/docker-entrypoint.sh]
@@ -234,7 +236,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"      
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -255,7 +259,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"      
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -275,7 +281,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"       
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -295,7 +303,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"      
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -316,7 +326,9 @@ commandTests:
   - name: "JDBC_CLASS check"     
     envVars:      
     - key: "JDBC_URL"
-      value: "jdbc:postgresql://localhost:5432/pegadb"      
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -338,7 +350,9 @@ commandTests:
       - key: "DB_PASSWORD"
         value: "postgres"
       - key: "ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -358,6 +372,8 @@ commandTests:
         value: "postgres"
       - key: "DB_PASSWORD"
         value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -376,7 +392,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"          
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -395,7 +413,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"          
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -415,7 +435,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"          
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -435,7 +457,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"          
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -457,6 +481,8 @@ commandTests:
       value: "postgres"
     - key: "INDEX_DIRECTORY"
       value: "NONE"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
 
     command: "bash"
     args:
@@ -479,6 +505,8 @@ commandTests:
       value: "postgres"
     - key: "NODE_TYPE"
       value: "DDS, Universal"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
 
     command: "bash"
     args:
@@ -501,6 +529,8 @@ commandTests:
       value: "postgres"
     - key: "NODE_TYPE"
       value: "Stream"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
 
     command: "bash"
     args:
@@ -523,6 +553,8 @@ commandTests:
       value: "postgres"
     - key: "NODE_TYPE"
       value: "Search"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
 
     command: "bash"
     args:
@@ -543,6 +575,8 @@ commandTests:
       value: "artifactory_basic_auth_password"
     - key: "DB_USERNAME"
       value: "db_user"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -562,6 +596,8 @@ commandTests:
       value: "org.postgresql.Driver"
     - key: "DB_USERNAME"
       value: "db_user"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -583,6 +619,8 @@ commandTests:
       value: "db_user"
     - key: "CUSTOM_ARTIFACTORY_USERNAME"
       value: "artifactory_basic_user"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -602,6 +640,8 @@ commandTests:
       value: "org.postgresql.Driver"
     - key: "DB_USERNAME"
       value: "db_user"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -623,6 +663,8 @@ commandTests:
       value: "db_user"
     - key: "CUSTOM_ARTIFACTORY_APIKEY"
       value: "artifactory_apikey"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -642,6 +684,8 @@ commandTests:
       value: "org.postgresql.Driver"
     - key: "DB_USERNAME"
       value: "db_user"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -663,6 +707,8 @@ commandTests:
       value: "db_user"
     - key: "CUSTOM_ARTIFACTORY_APIKEY_HEADER"
       value: "test_user"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -682,6 +728,8 @@ commandTests:
       value: "org.postgresql.Driver"
     - key: "DB_USERNAME"
       value: "db_user"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -702,7 +750,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres_user"
     - key: "DB_PASSWORD"
-      value: "postgres_pass"      
+      value: "postgres_pass"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -723,7 +773,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres_user"
     - key: "DB_PASSWORD"
-      value: "postgres_pass"      
+      value: "postgres_pass"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -745,6 +797,8 @@ commandTests:
         value: "postgres_user"
       - key: "DB_PASSWORD"
         value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -763,7 +817,9 @@ commandTests:
     - key: "JDBC_CLASS"
       value: "org.postgresql.Driver"
     - key: "DB_PASSWORD"
-      value: "postgres_pass"      
+      value: "postgres_pass"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -782,7 +838,9 @@ commandTests:
     - key: "JDBC_CLASS"
       value: "org.postgresql.Driver"
     - key: "DB_USERNAME"
-      value: "postgres_user"      
+      value: "postgres_user"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -810,6 +868,8 @@ commandTests:
         value: "artifactory_basic_user"
       - key: "CUSTOM_ARTIFACTORY_PASSWORD"
         value: "artifactory_basic_auth_password"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -836,6 +896,8 @@ commandTests:
         value: "artifactory_basic_user"
       - key: "CUSTOM_ARTIFACTORY_PASSWORD"
         value: "artifactory_basic_auth_password"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -862,6 +924,8 @@ commandTests:
         value: "artifactory_apikey_header"
       - key: "CUSTOM_ARTIFACTORY_APIKEY"
         value: "artifactory_apikey"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -888,6 +952,8 @@ commandTests:
         value: "artifactory_apikey_header"
       - key: "CUSTOM_ARTIFACTORY_APIKEY"
         value: "artifactory_apikey"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -910,6 +976,8 @@ commandTests:
       value: "postgres_pass"      
     - key: "CASSANDRA_USERNAME"
       value: "cassandra_username"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -932,6 +1000,8 @@ commandTests:
       value: "postgres_pass"      
     - key: "CASSANDRA_PASSWORD"
       value: "cassandra_password"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -951,7 +1021,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres_user"
     - key: "DB_PASSWORD"
-      value: "postgres_pass"      
+      value: "postgres_pass"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -971,7 +1043,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres_user"      
     - key: "DB_PASSWORD"
-      value: "postgres_pass"      
+      value: "postgres_pass"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -991,7 +1065,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"                 
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1011,7 +1087,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"                
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1031,7 +1109,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"     
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1052,7 +1132,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"                
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1076,7 +1158,9 @@ commandTests:
     - key: "RULES_SCHEMA"
       value: "rules"
     - key: "DATA_SCHEMA"
-      value: "data"          
+      value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1102,6 +1186,8 @@ commandTests:
       value: "rules_negative"
     - key: "DATA_SCHEMA"
       value: "data_negative"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1126,7 +1212,9 @@ commandTests:
     - key: "RULES_SCHEMA"
       value: "rules"
     - key: "DATA_SCHEMA"
-      value: "data"          
+      value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1222,6 +1310,8 @@ commandTests:
       value: "pega-{stream.name}"
     - key: "STREAM_REPLICATION_FACTOR"
       value: "1"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1332,6 +1422,8 @@ commandTests:
         value: "cluster-truststore.jks"
       - key: "HZ_SSL_TRUSTSTORE_PASSWORD"
         value: "test"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1362,6 +1454,8 @@ commandTests:
       value: "false"
     - key: "HZ_CLIENT_MODE"
       value: "false"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1383,7 +1477,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"               
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1406,7 +1502,9 @@ commandTests:
     - key: "RULES_SCHEMA"
       value: "rules"
     - key: "DATA_SCHEMA"
-      value: "data"          
+      value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1429,7 +1527,9 @@ commandTests:
     - key: "RULES_SCHEMA"
       value: "rules"
     - key: "DATA_SCHEMA"
-      value: "data"          
+      value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1453,6 +1553,8 @@ commandTests:
       value: "rules"
     - key: "DATA_SCHEMA"
       value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1476,6 +1578,8 @@ commandTests:
       value: "rules"
     - key: "DATA_SCHEMA"
       value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1500,6 +1604,8 @@ commandTests:
       value: "rules"
     - key: "DATA_SCHEMA"
       value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1524,6 +1630,8 @@ commandTests:
       value: "rules"
     - key: "DATA_SCHEMA"
       value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1548,6 +1656,8 @@ commandTests:
       value: "rules"
     - key: "DATA_SCHEMA"
       value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1570,6 +1680,8 @@ commandTests:
       value: "postgres_user"
     - key: "DB_PASSWORD"
       value: "postgres_pass"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
      - -c
@@ -1591,6 +1703,8 @@ commandTests:
       value: "postgres_user"
     - key: "DB_PASSWORD"
       value: "postgres_pass"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1614,6 +1728,8 @@ commandTests:
       value: "postgres_pass"
     - key: "HZ_CS_AUTH_USERNAME"
       value: "hz_cs_auth_username"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1636,6 +1752,8 @@ commandTests:
       value: "postgres_pass"
     - key: "HZ_CS_AUTH_PASSWORD"
       value: "hz_cs_auth_password"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1651,6 +1769,8 @@ commandTests:
         value: "jdbc:postgresql://localhost:5432/pegadb"
       - key: "JDBC_CLASS"
         value: "org.postgresql.Driver"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1667,6 +1787,8 @@ commandTests:
         value: "org.postgresql.Driver"
       - key: "DB_USERNAME"
         value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1697,7 +1819,9 @@ commandTests:
     - key: "DB_USERNAME"
       value: "postgres"
     - key: "DB_PASSWORD"
-      value: "postgres"      
+      value: "postgres"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
     command: "bash"
     args:
     - -c
@@ -1724,6 +1848,8 @@ commandTests:
         value: "postgres"
       - key: "DB_PASSWORD"
         value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1747,6 +1873,8 @@ commandTests:
         value: "postgres"
       - key: "DB_PASSWORD"
         value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1770,6 +1898,8 @@ commandTests:
         value: "postgres"
       - key: "DB_PASSWORD"
         value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1791,6 +1921,8 @@ commandTests:
         value: "postgres"
       - key: "DB_PASSWORD"
         value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1816,6 +1948,8 @@ commandTests:
         value: "directory"
       - key: "TOMCAT_KEYSTORE_PASSWORD"
         value: "password"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1837,6 +1971,8 @@ commandTests:
         value: "postgres_user"
       - key: "DB_PASSWORD"
         value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1858,6 +1994,8 @@ commandTests:
         value: "postgres_user"
       - key: "DB_PASSWORD"
         value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1879,6 +2017,8 @@ commandTests:
         value: "postgres_user"
       - key: "DB_PASSWORD"
         value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1904,6 +2044,8 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1929,6 +2071,8 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1954,6 +2098,8 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -1979,6 +2125,8 @@ commandTests:
         value: "rules"
       - key: "DATA_SCHEMA"
         value: "data"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2004,7 +2152,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2030,7 +2180,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2056,7 +2208,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2082,7 +2236,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2109,7 +2265,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2135,7 +2293,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2162,7 +2322,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2188,7 +2350,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2214,7 +2378,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2241,7 +2407,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2267,7 +2435,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2293,7 +2463,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2319,7 +2491,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2345,7 +2519,9 @@ commandTests:
       - key: "TOMCAT_KEYSTORE_PASSWORD"
         value: "password"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2372,7 +2548,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2399,7 +2577,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: false
+        value: "false"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2426,7 +2606,9 @@ commandTests:
       - key: "DATA_SCHEMA"
         value: "data"
       - key: "IS_PEGA_CONFIG_COMPRESSED"
-        value: true
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2453,6 +2635,8 @@ commandTests:
         value: "data"
       - key: "EXTERNAL_KEYSTORE_NAME"
         value: "keystore.jks"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2478,6 +2662,8 @@ commandTests:
         value: "data"
       - key: "EXTERNAL_KEYSTORE_PASSWORD"
         value: "password"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
     command: "bash"
     args:
       - -c
