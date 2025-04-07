@@ -90,9 +90,9 @@ public class TestVersionChecker {
     private EnvHelper getTestEnv() {
         TestEnvHelper env = new TestEnvHelper();
         env.put(ENV_JDBC_DRIVER_CLASS,"org.postgresql.Driver");
-        env.put(ENV_JDBC_URL,"jdbc:postgresql://somehostname:5432/rulesync");
-        env.put(ENV_JDBC_USER,"rulesync");
-        env.put(ENV_JDBC_PASSWORD,"rulesync");
+        env.put(ENV_JDBC_URL,"jdbc:postgresql://somehostname:5432/example-dbname");
+        env.put(ENV_JDBC_USER,"example_username");
+        env.put(ENV_JDBC_PASSWORD,"example_password");
         env.put(ENV_JDBC_CONN_PROPS,"");
         env.put(ENV_RULE_SCHEMA_NAME,"rules");
         return env;
