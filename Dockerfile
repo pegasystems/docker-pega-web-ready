@@ -102,7 +102,7 @@ RUN  mkdir -p /opt/pega/utility && \
      chmod g+rw /opt/pega/utility && \
      chown -R pegauser /opt/pega/utility
 
-COPY versionchecker/build/libs/versionchecker-*.jar /opt/pega/utility/versionchecker.jar
+COPY versionchecker/build/libs/versionchecker-1.0.jar /opt/pega/utility/
 
 # Set up an empty JDBC URL which will, if set to a non-empty value, be used in preference
 # to the "constructed" JDBC URL

@@ -93,9 +93,10 @@ public class VersionChecker {
     }
 
     String performQuery(Properties props) {
-        try (Connection c = getConnection(props)) {
-            PreparedStatement ps = c.prepareStatement(getQuery());
-            try (ResultSet rs = ps.executeQuery()) {
+        try {
+            try (Connection c = getConnection(props);
+                 PreparedStatement ps = c.prepareStatement(getQuery());
+                 ResultSet rs = ps.executeQuery();) {
                 rs.next();
                 return rs.getString(1);
             }
@@ -126,11 +127,11 @@ public class VersionChecker {
 
     public static void main(String[] args) {
         VersionChecker versionChecker = createVersionChecker(new SystemEnvHelper());
-
         try {
             System.out.println(versionChecker.checkVersion());
         } catch (RuntimeException e) {
             e.printStackTrace(System.err);
+            System.err.flush();
             System.exit(1);
         }
     }
