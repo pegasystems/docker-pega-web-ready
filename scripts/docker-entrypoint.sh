@@ -394,7 +394,7 @@ rm "${CATALINA_HOME}"/conf/server.xml.tmpl
 # the bootstrap classpath for tomcat.
 #
 if [ -z "${IS_PEGA_25_OR_LATER}" ]; then
-  vc_classpath="/opt/pega/utility/*"
+  vc_classpath="/opt/pega/utility/*:/opt/pega/lib/*"
   vc_javaopts="-Xms${INITIAL_HEAP} -Xmx${MAX_HEAP} ${JAVA_OPTS}"
   vc_javaopts="${vc_javaopts} --add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED"
   vc_javaopts="${vc_javaopts} --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED"
@@ -424,7 +424,7 @@ if [ -z "${IS_PEGA_25_OR_LATER}" ]; then
   if [ $? -ne 0 ]; then
     echo "Pega version check failed and container will exit -- verify your database connection details."
     echo "To bypass this check, set global.pegaVersion in the Pega Helm Chart values.yaml file.  The value"
-    echo "should be set to the highest ruleset version of the 'Pega-RULES' ruleset in your environment."
+    echo "should be set to the Pega version in the [major].[minor].[patch] format."
     exit 25
   else
     echo "Pega version check succeeded."
