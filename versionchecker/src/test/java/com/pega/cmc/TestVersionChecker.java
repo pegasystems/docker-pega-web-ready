@@ -41,6 +41,8 @@ public class TestVersionChecker {
         env.put(ENV_JDBC_PASSWORD, TEST_DB_PASSWORD);
         env.put(ENV_JDBC_CONN_PROPS, "");
         env.put(ENV_RULE_SCHEMA_NAME, "rules");
+        env.put(ENV_DB_TYPE, "h2");
+
         VersionChecker vc = VersionChecker.createVersionChecker(env);
 
         String maxVersion = vc.checkVersion();
@@ -77,7 +79,7 @@ public class TestVersionChecker {
         VersionChecker vc = VersionChecker.createVersionChecker(env);
         vc.setJdbcConnectionProperties("a=1;b=2;c=3;d;");
         assertThrows(VersionCheckerException.class,
-                () -> vc.parsePropertyString(),
+                vc::parsePropertyString,
                 "Exception should have been thrown.");
     }
 
@@ -87,7 +89,7 @@ public class TestVersionChecker {
         VersionChecker vc = VersionChecker.createVersionChecker(env);
         vc.setJdbcDriverClass("org.missingclass.Driver");
         assertThrows(VersionCheckerException.class,
-                () -> vc.loadDriver(),
+                vc::loadDriver,
                 "Exception should have been thrown.");
     }
 
@@ -120,10 +122,43 @@ public class TestVersionChecker {
     public void testQuery() {
         TestEnvHelper env = new TestEnvHelper();
         env.put(ENV_RULE_SCHEMA_NAME, "rules");
+        env.put(ENV_DB_TYPE, "postgres");
 
         VersionChecker vc = VersionChecker.createVersionChecker(env);
 
         assertEquals("select max(pyrulesetversionid) from rules.pr4_rule_ruleset where pxObjClass='Rule-RuleSet-Version' and pyrulesetname='Pega-RULES'", vc.getQuery());
+    }
+
+    @Test
+    public void testQueryNoRuleSchemaName() {
+        TestEnvHelper env = new TestEnvHelper();
+        VersionChecker vc = VersionChecker.createVersionChecker(env);
+
+        assertThrows(VersionCheckerException.class,
+                vc::getQuery,
+                "Exception should have been thrown.");
+    }
+
+    @Test
+    public void testQueryBlankRuleSchemaName() {
+        TestEnvHelper env = new TestEnvHelper();
+        env.put(ENV_RULE_SCHEMA_NAME, "");
+        VersionChecker vc = VersionChecker.createVersionChecker(env);
+
+        assertThrows(VersionCheckerException.class,
+                vc::getQuery,
+                "Exception should have been thrown.");
+    }
+
+    @Test
+    public void testQuerySuspiciousRuleSchemaName() {
+        TestEnvHelper env = new TestEnvHelper();
+        env.put(ENV_RULE_SCHEMA_NAME, "rules.pr4_rule_ruleset a inner join rules.sometable b on a.pxobjclass=b.pxobjclass ");
+        VersionChecker vc = VersionChecker.createVersionChecker(env);
+
+        assertThrows(VersionCheckerException.class,
+                vc::getQuery,
+                "Exception should have been thrown.");
     }
 
     private EnvHelper getTestEnv() {
@@ -134,8 +169,7 @@ public class TestVersionChecker {
         env.put(ENV_JDBC_PASSWORD,"example_password");
         env.put(ENV_JDBC_CONN_PROPS,"");
         env.put(ENV_RULE_SCHEMA_NAME,"rules");
+        env.put(ENV_DB_TYPE, "postgres");
         return env;
     }
-
-
 }
