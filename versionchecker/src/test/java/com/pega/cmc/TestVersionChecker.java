@@ -1,14 +1,53 @@
 package com.pega.cmc;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 import static com.pega.cmc.VersionChecker.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestVersionChecker {
+    private static final String TEST_DB_USERNAME = "pegauser";
+    private static final String TEST_DB_PASSWORD = "pegapassword";
+    private static final String MAX_VERSION = "08-25-02";
+
+    @BeforeAll
+    public static void setUp() throws SQLException {
+        Connection c = DriverManager.getConnection("jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS rules", TEST_DB_USERNAME, TEST_DB_PASSWORD);
+        try ( Statement s = c.createStatement(); ){
+            s.execute("create schema if not exists rules");
+            s.execute("create table rules.pr4_rule_ruleset(pyrulesetversionid varchar(32), pxObjClass varchar(32), pyrulesetname varchar(32))");
+            s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('" + MAX_VERSION + "', 'Rule-RuleSet-Version', 'Pega-RULES')");
+            s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('08-24-02', 'Rule-RuleSet-Version', 'Pega-RULES')");
+            s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('07-30-10', 'Rule-RuleSet-Version', 'Pega-RULES')");
+            s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('06-01-10', 'Rule-RuleSet-Version', 'Pega-RULES')");
+            s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('05-04-02', 'Rule-RuleSet-Version', 'Pega-RULES')");
+        }
+    }
+
+
+    @Test
+    public void testQueryExecution() {
+        TestEnvHelper env = new TestEnvHelper();
+        env.put(ENV_JDBC_DRIVER_CLASS, "org.h2.Driver");
+        env.put(ENV_JDBC_URL, "jdbc:h2:mem:testdb");
+        env.put(ENV_JDBC_USER, TEST_DB_USERNAME);
+        env.put(ENV_JDBC_PASSWORD, TEST_DB_PASSWORD);
+        env.put(ENV_JDBC_CONN_PROPS, "");
+        env.put(ENV_RULE_SCHEMA_NAME, "rules");
+        VersionChecker vc = VersionChecker.createVersionChecker(env);
+
+        String maxVersion = vc.checkVersion();
+
+        assertEquals(MAX_VERSION, maxVersion);
+    }
+
 
     @Test
     public void testConnectionPropParsing() {
@@ -97,5 +136,6 @@ public class TestVersionChecker {
         env.put(ENV_RULE_SCHEMA_NAME,"rules");
         return env;
     }
+
 
 }

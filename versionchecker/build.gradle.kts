@@ -12,7 +12,7 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.postgresql:postgresql:42.7.2")
+    testImplementation("com.h2database:h2:2.3.232")
 }
 
 java {
