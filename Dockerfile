@@ -210,8 +210,7 @@ RUN  mkdir -p /opt/pega/kafkadata && \
 
 # download necessary jars
 RUN yum -y update && \
-    yum install -y gpg && \
-    rm -rf /var/lib/apt/lists/* && \
+    yum install -y gnupg && \
     mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
