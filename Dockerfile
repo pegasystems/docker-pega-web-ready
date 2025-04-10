@@ -210,6 +210,9 @@ RUN  mkdir -p /opt/pega/kafkadata && \
 
 # download necessary jars
 RUN yum -y update && \
+    yum -y upgrade && \
+    yum -y install fontconfig && \
+    yum -y install glibc-langpack-en curl && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
