@@ -397,6 +397,55 @@ rm "${CATALINA_HOME}"/conf/context.xml.tmpl
 rm "${CATALINA_HOME}"/conf/tomcat-users.xml.tmpl
 rm "${CATALINA_HOME}"/conf/server.xml.tmpl
 
+#
+# Determine whether we are running against a 25.1 + environment as it is necessary to add bc-fips libraries
+# the bootstrap classpath for tomcat.
+#
+if [ -z "${IS_PEGA_25_OR_LATER}" ]; then
+  vc_classpath="/opt/pega/utility/*:/opt/pega/lib/*"
+  vc_javaopts="-Xms${INITIAL_HEAP} -Xmx${MAX_HEAP} ${JAVA_OPTS}"
+  vc_javaopts="${vc_javaopts} --add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED"
+  vc_javaopts="${vc_javaopts} --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED"
+  vc_javaopts="${vc_javaopts} --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED"
+  vc_javaopts="${vc_javaopts} --add-opens jdk.management/com.ibm.lang.management.internal=ALL-UNNAMED"
+  vc_javaopts="${vc_javaopts} --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
+
+  if [ "${FIPS_140_3_MODE}" == "true" ]; then
+    vc_classpath="/opt/pegabcfips/*:${vc_classpath}"
+    vc_javaopts="${vc_javaopts} -Dorg.bouncycastle.fips.approved_only=true"
+  fi
+
+  krb5_conf="/opt/pega/kerberos/krb5.conf"
+  #
+  # Adding krb5.conf location to JAVA_OPTS
+  #
+  if [ -e "$krb5_conf" ]; then
+    echo "Adding ${krb5_conf} to JAVA_OPTS";
+    vc_javaopts="${vc_javaopts} -Djava.security.krb5.conf=${krb5_conf}"
+  else
+    echo "No krb5.conf was specified in ${krb5_conf}."
+  fi
+
+  echo "java -cp '${vc_classpath}' ${vc_javaopts} com.pega.cmc.VersionChecker"
+
+  pega_version=$(eval exec java -cp '${vc_classpath}' ${vc_javaopts} com.pega.cmc.VersionChecker)
+  if [ $? -ne 0 ]; then
+    echo "Pega version check failed and container will exit -- verify your database connection details."
+    echo "To bypass this check, set global.pegaVersion in the Pega Helm Chart values.yaml file.  The value"
+    echo "should be set to the Pega version in the [major].[minor].[patch] format."
+    exit 25
+  else
+    echo "Pega version check succeeded."
+  fi
+
+  echo "Detected Pega Version: ${pega_version}"
+
+  if [[ "${pega_version}" > "08-25-01" ]] || [ "${pega_version}" = "08-25-01" ]; then
+    export IS_PEGA_25_OR_LATER=true
+  fi
+fi
+echo "IS_PEGA_25_OR_LATER is '${IS_PEGA_25_OR_LATER}'"
+
 
 for secret in "${secrets_list[@]}"
 do
