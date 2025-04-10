@@ -210,7 +210,10 @@ RUN  mkdir -p /opt/pega/kafkadata && \
 
 # download necessary jars
 RUN yum -y update && \
-    yum install -y gnupg 
+    yum install -y gnupg && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /opt/pega/prometheus && \
+    mkdir -p /opt/pega/bcfips
     
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
