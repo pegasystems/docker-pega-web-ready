@@ -235,7 +235,27 @@ RUN yum -y update && \
     curl -sL -o /opt/pega/bcfips/bcjmail-fips-2.0.5.jar https://repo1.maven.org/maven2/org/bouncycastle/bcjmail-fips/2.0.5/bcjmail-fips-2.0.5.jar && \
     curl -sL -o /tmp/bcjmail-fips-2.0.5.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcjmail-fips/2.0.5/bcjmail-fips-2.0.5.jar.asc && \
     curl -sL -o /opt/pega/bcfips/bcpg-fips-2.0.9.jar https://repo1.maven.org/maven2/org/bouncycastle/bcpg-fips/2.0.9/bcpg-fips-2.0.9.jar && \
-    curl -sL -o /tmp/bcpg-fips-2.0.9.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcpg-fips/2.0.9/bcpg-fips-2.0.9.jar.asc
+    curl -sL -o /tmp/bcpg-fips-2.0.9.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcpg-fips/2.0.9/bcpg-fips-2.0.9.jar.asc && \
+    gpg --import /keys/bc_maven_public_key.asc && \
+    gpg --verify /tmp/bc-fips-2.0.0.jar.asc /opt/pega/bcfips/bc-fips-2.0.0.jar && \
+    rm /tmp/bc-fips-2.0.0.jar.asc && \
+    gpg --verify /tmp/bctls-fips-2.0.19.jar.asc /opt/pega/bcfips/bctls-fips-2.0.19.jar && \
+    rm /tmp/bctls-fips-2.0.19.jar.asc && \
+    gpg --verify /tmp/bcpkix-fips-2.0.7.jar.asc /opt/pega/bcfips/bcpkix-fips-2.0.7.jar && \
+    rm /tmp/bcpkix-fips-2.0.7.jar.asc  && \
+    gpg --verify /tmp/bcutil-fips-2.0.3.jar.asc /opt/pega/bcfips/bcutil-fips-2.0.3.jar && \
+    rm /tmp/bcutil-fips-2.0.3.jar.asc && \
+    gpg --verify /tmp/bcmail-fips-2.0.5.jar.asc /opt/pega/bcfips/bcmail-fips-2.0.5.jar && \
+    rm /tmp/bcmail-fips-2.0.5.jar.asc && \
+    gpg --verify /tmp/bcjmail-fips-2.0.5.jar.asc /opt/pega/bcfips/bcjmail-fips-2.0.5.jar && \
+    rm /tmp/bcjmail-fips-2.0.5.jar.asc && \
+    gpg --verify /tmp/bcpg-fips-2.0.9.jar.asc /opt/pega/bcfips/bcpg-fips-2.0.9.jar && \
+    rm /tmp/bcpg-fips-2.0.9.jar.asc && \
+    yum remove -y gpg && \
+    chgrp -R 0 /opt/pega/prometheus && \
+    chmod -R g+rw /opt/pega/prometheus && \
+    chown -R pegauser /opt/pega/prometheus && \
+    chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
     
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
