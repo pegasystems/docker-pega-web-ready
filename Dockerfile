@@ -251,7 +251,10 @@ RUN yum -y update && \
     rm /tmp/bcjmail-fips-2.0.5.jar.asc && \
     gpg --verify /tmp/bcpg-fips-2.0.9.jar.asc /opt/pega/bcfips/bcpg-fips-2.0.9.jar && \
     rm /tmp/bcpg-fips-2.0.9.jar.asc && \
-    yum remove -y gnupg
+    chgrp -R 0 /opt/pega/prometheus && \
+    chmod -R g+rw /opt/pega/prometheus && \
+    chown -R pegauser /opt/pega/prometheus && \
+    chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
     
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
