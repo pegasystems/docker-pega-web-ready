@@ -255,6 +255,9 @@ RUN yum -y update && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
+
+
+RUN yum list installed | grep -i gpg
     
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
