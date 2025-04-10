@@ -98,6 +98,13 @@ RUN  mkdir -p /opt/pega/decompressedconfig  && \
      chmod -R g+rw /opt/pega/decompressedconfig && \
      chown -R pegauser /opt/pega/decompressedconfig
 
+# Create directory for deployment utilities
+RUN  mkdir -p /opt/pega/utility && \
+     chgrp -R 0 /opt/pega/utility && \
+     chmod g+rw /opt/pega/utility && \
+     chown -R pegauser /opt/pega/utility
+
+COPY versionchecker/build/libs/versionchecker-1.0.jar /opt/pega/utility/
 
 # Set up an empty JDBC URL which will, if set to a non-empty value, be used in preference
 # to the "constructed" JDBC URL
