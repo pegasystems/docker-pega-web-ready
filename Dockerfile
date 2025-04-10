@@ -250,7 +250,7 @@ RUN yum -y update && \
     gpg --verify /tmp/bcjmail-fips-2.0.5.jar.asc /opt/pega/bcfips/bcjmail-fips-2.0.5.jar && \
     rm /tmp/bcjmail-fips-2.0.5.jar.asc && \
     gpg --verify /tmp/bcpg-fips-2.0.9.jar.asc /opt/pega/bcfips/bcpg-fips-2.0.9.jar && \
-    rm /tmp/bcpg-fips-2.0.9.jar.asc && \
+    rm /tmp/bcpg-fips-2.0.9.jar.asc
     
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
