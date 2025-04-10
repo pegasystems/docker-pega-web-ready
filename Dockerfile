@@ -213,7 +213,11 @@ RUN yum -y update && \
     yum install -y gnupg && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /opt/pega/prometheus && \
-    mkdir -p /opt/pega/bcfips
+    mkdir -p /opt/pega/bcfips && \
+    curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
+    curl -sL -o /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar.asc && \
+    gpg --import /keys/prometheus.asc && \
+    gpg --verify /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc /opt/pega/prometheus/jmx_prometheus_javaagent.jar
     
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
