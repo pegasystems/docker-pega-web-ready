@@ -28,7 +28,7 @@ Fedora uses `yum` as package manager and Debian uses `apt-get` as package manage
 Pega shipped images are built on Ubuntu which is debian based.
 Hence in the Dockerfile, it is needed to replace the apt-get references with yum.
 
-In Dockerfile, in the section where we download necessary jars, we are using apt-get and this has to be replaced with yum. Look for text `#download necessary jars` in the Dockerfile.
+In Dockerfile, in the section where we download necessary jars, we are using apt-get and this has to be replaced with yum. Look for text `# download necessary jars` in the Dockerfile.
 Please see below reference how to replace the apt-get commands with yum commands.
 
 
