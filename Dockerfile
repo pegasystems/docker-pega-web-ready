@@ -210,7 +210,6 @@ RUN  mkdir -p /opt/pega/kafkadata && \
 
 # download necessary jars
 RUN yum -y update && \
-    yum install -y gpg && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
