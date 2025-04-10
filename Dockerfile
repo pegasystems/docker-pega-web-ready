@@ -242,20 +242,7 @@ RUN yum -y update && \
     gpg --verify /tmp/bctls-fips-2.0.19.jar.asc /opt/pega/bcfips/bctls-fips-2.0.19.jar && \
     rm /tmp/bctls-fips-2.0.19.jar.asc && \
     gpg --verify /tmp/bcpkix-fips-2.0.7.jar.asc /opt/pega/bcfips/bcpkix-fips-2.0.7.jar && \
-    rm /tmp/bcpkix-fips-2.0.7.jar.asc  && \
-    gpg --verify /tmp/bcutil-fips-2.0.3.jar.asc /opt/pega/bcfips/bcutil-fips-2.0.3.jar && \
-    rm /tmp/bcutil-fips-2.0.3.jar.asc && \
-    gpg --verify /tmp/bcmail-fips-2.0.5.jar.asc /opt/pega/bcfips/bcmail-fips-2.0.5.jar && \
-    rm /tmp/bcmail-fips-2.0.5.jar.asc && \
-    gpg --verify /tmp/bcjmail-fips-2.0.5.jar.asc /opt/pega/bcfips/bcjmail-fips-2.0.5.jar && \
-    rm /tmp/bcjmail-fips-2.0.5.jar.asc && \
-    gpg --verify /tmp/bcpg-fips-2.0.9.jar.asc /opt/pega/bcfips/bcpg-fips-2.0.9.jar && \
-    rm /tmp/bcpg-fips-2.0.9.jar.asc && \
-    yum remove -y gpg && \
-    chgrp -R 0 /opt/pega/prometheus && \
-    chmod -R g+rw /opt/pega/prometheus && \
-    chown -R pegauser /opt/pega/prometheus && \
-    chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
+    rm /tmp/bcpkix-fips-2.0.7.jar.asc
     
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
