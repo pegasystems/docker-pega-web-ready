@@ -251,6 +251,7 @@ RUN yum -y update && \
     rm /tmp/bcjmail-fips-2.0.5.jar.asc && \
     gpg --verify /tmp/bcpg-fips-2.0.9.jar.asc /opt/pega/bcfips/bcpg-fips-2.0.9.jar && \
     rm /tmp/bcpg-fips-2.0.9.jar.asc && \
+    yum remove -y gpgme && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
