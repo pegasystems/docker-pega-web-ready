@@ -209,8 +209,8 @@ RUN  mkdir -p /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
 # download necessary jars
-RUN yum check-update && \
-    yum install -y gnupg && \
+RUN yum -y update && \
+    yum install -y gpg && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
