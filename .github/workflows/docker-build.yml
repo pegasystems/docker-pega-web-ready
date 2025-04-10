@@ -4,6 +4,7 @@ env:
   IMAGE_NAME: pegasystems/pega-ready
   MAJOR_MINOR: "3.1"
   BUILD_NUMBER: $GITHUB_RUN_NUMBER
+  DETEMPLATIZE_IMAGE_VERSION: "1.0.0"
 
 on:
   push:
@@ -75,7 +76,7 @@ jobs:
       
     - name: Publish Scan Results as Artifact
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: docker-scan-results
         path: ${{ steps.scan.outputs.sarif }}

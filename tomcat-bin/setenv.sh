@@ -41,6 +41,18 @@ else
   echo "No krb5.conf was specified in ${krb5_conf}."
 fi
 
+if [ "${IS_PEGA_25_OR_LATER}" == "true" ]; then
+  export CLASSPATH="/opt/pega/bcfips/*"
+  if [ "${FIPS_140_3_MODE}" == "true" ]; then
+    JAVA_OPTS="${JAVA_OPTS} -Dorg.bouncycastle.fips.approved_only=true"
+    HIGHLY_SECURE_CRYPTO_MODE_ENABLED=true
+  fi
+fi
+
+if [ "${HIGHLY_SECURE_CRYPTO_MODE_ENABLED}" == "true" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -DHighSecureCryptoModeEnabled=true "
+fi
+
 echo "JAVA_OPTS: \"${JAVA_OPTS}\""
 export  JAVA_OPTS
 
