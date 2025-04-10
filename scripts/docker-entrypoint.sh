@@ -403,7 +403,7 @@ if [ -z "${IS_PEGA_25_OR_LATER}" ]; then
   vc_javaopts="${vc_javaopts} --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
 
   if [ "${FIPS_140_3_MODE}" == "true" ]; then
-    vc_classpath="/opt/pegabcfips/*:${vc_classpath}"
+    vc_classpath="/opt/pega/bcfips/*:${vc_classpath}"
     vc_javaopts="${vc_javaopts} -Dorg.bouncycastle.fips.approved_only=true"
   fi
 
