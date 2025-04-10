@@ -50,7 +50,7 @@ if [ "${IS_PEGA_25_OR_LATER}" == "true" ]; then
 fi
 
 if [ "${HIGHLY_SECURE_CRYPTO_MODE_ENABLED}" == "true" ]; then
-  JAVA_OPTS="${JAVA_OPTS} -DHighSecureCryptoModeEnabled=true "
+  JAVA_OPTS="${JAVA_OPTS} -DHighSecureCryptoModeEnabled=true -Dorg.bouncycastle.fips.approved_only=true"
 fi
 
 echo "JAVA_OPTS: \"${JAVA_OPTS}\""
