@@ -210,7 +210,7 @@ RUN  mkdir -p /opt/pega/kafkadata && \
 
 # download necessary jars
 RUN yum -y update && \
-    yum install -y gnupg && \
+    yum install -y gpg && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
@@ -251,7 +251,7 @@ RUN yum -y update && \
     rm /tmp/bcjmail-fips-2.0.5.jar.asc && \
     gpg --verify /tmp/bcpg-fips-2.0.9.jar.asc /opt/pega/bcfips/bcpg-fips-2.0.9.jar && \
     rm /tmp/bcpg-fips-2.0.9.jar.asc && \
-    yum remove -y gpgme && \
+    yum remove -y gpg && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
