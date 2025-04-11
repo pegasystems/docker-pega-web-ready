@@ -30,7 +30,7 @@ Fedora uses `yum` or `dnf` as package manager and Debian uses `apt-get` as packa
 Pega shipped images are built on Ubuntu which is debian based.
 Hence in the Dockerfile, it is needed to replace the apt-get references with yum or dnf depending upon the base image selected.
 
-In Dockerfile, in the section where we download necessary jars, we are using apt-get and this has to be replaced with yum. Look for text `# download necessary jars` in the Dockerfile.
+In Dockerfile, in the section where we download necessary jars, we are using apt-get and this has to be replaced with yum or dnf. Look for text `# download necessary jars` in the Dockerfile.
 Please see below reference how to replace the apt-get commands with yum command. If yum is not supported for your OS, try with dnf. Replace dnf with yum.
 
 
@@ -83,8 +83,8 @@ chmod -R g+rw /opt/pega/prometheus && \
 chown -R pegauser /opt/pega/prometheus && \
 chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar 
 ```
-1. Please note yum or dnf update will contact enabled mirror OS repositories to fetch the packages and their latest versions.The repositories are defined in the /etc/yum.repos.d directory.
-   Please ensure these repositories are reachable within the docker host.
-2. If building an image using RHEL, yum/dnf update will try to contact Red Hat repositoriesand therefore you will need to confirm your identity using subscription-manager in the Dockerfile to connect to 
+1. Please note yum or dnf update will contact enabled mirror repositories to fetch the packages and their latest versions.The repositories are defined in the /etc/yum.repos.d directory.
+   Please ensure these repositories are reachable within the docker host network.
+2. If building an image using RHEL, yum/dnf update will try to contact Red Hat repositorie sand therefore you will need to confirm your identity using subscription-manager to connect to 
    the Red Hat repositories. Please refer https://access.redhat.com/solutions/253273 for more details. 
 3. If curl is not availble for your base image, consider pulling the curl lib in this section.
