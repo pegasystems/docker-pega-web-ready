@@ -20,6 +20,7 @@ LABEL vendor="Pegasystems Inc." \
 RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser pegauser
 
+# This I needed to configure the mirror list to look up for repos for CentOS7. 
 # RUN sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo && \
 #    sed -i 's|^#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Base.repo
 
@@ -216,10 +217,9 @@ RUN  mkdir -p /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
 # download necessary jars
+# replace dnf with yum based on your package-manager.
 RUN dnf -y update && \
     dnf -y upgrade && \
-    dnf -y install fontconfig && \
-    dnf -y install glibc-langpack-en && \
     mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
@@ -250,7 +250,7 @@ RUN dnf -y update && \
     gpg --verify /tmp/bctls-fips-2.0.19.jar.asc /opt/pega/bcfips/bctls-fips-2.0.19.jar && \
     rm /tmp/bctls-fips-2.0.19.jar.asc && \
     gpg --verify /tmp/bcpkix-fips-2.0.7.jar.asc /opt/pega/bcfips/bcpkix-fips-2.0.7.jar && \
-    rm /tmp/bcpkix-fips-2.0.7.jar.asc && \
+    rm /tmp/bcpkix-fips-2.0.7.jar.asc  && \
     gpg --verify /tmp/bcutil-fips-2.0.3.jar.asc /opt/pega/bcfips/bcutil-fips-2.0.3.jar && \
     rm /tmp/bcutil-fips-2.0.3.jar.asc && \
     gpg --verify /tmp/bcmail-fips-2.0.5.jar.asc /opt/pega/bcfips/bcmail-fips-2.0.5.jar && \
@@ -264,8 +264,6 @@ RUN dnf -y update && \
     chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
 
-
-RUN yum list installed | grep -i gpg
     
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
