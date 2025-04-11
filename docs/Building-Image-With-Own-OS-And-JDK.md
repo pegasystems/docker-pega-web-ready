@@ -12,6 +12,8 @@ To build a custom pega-web-ready image using your preferred OS and JDK, perform 
    For more information, see pegasystems/docker-pega-web-ready/Dockerfile.
    Note: You can add any extra environment variables needed in the Dockerfile as per your use-case.
          The base image selected should have $CATALINA_HOME and $JAVA_HOME set to the correct tomcat and jdk locations.
+         The base image selected should have curl installed to be able to pull the jars at build time.
+         If curl is not available in your base image, please take care of adding curl lib using a package-manager.
 
 2. Use the following command to build the custom pega-web-ready image using the base image as an argument.
      ```bash
@@ -23,13 +25,13 @@ The system then builds your custom pega-web-ready Docker image.
  ### Special Instructions for Fedora based OS.
 
 If you are building an image using OS like RHEL/CentOS which are Fedora based, some of the commands used in Dockerfile will not work.
-Fedora uses `yum` as package manager and Debian uses `apt-get` as package manager.
+Fedora uses `yum` or `dnf` as package manager and Debian uses `apt-get` as package manager.
 
 Pega shipped images are built on Ubuntu which is debian based.
-Hence in the Dockerfile, it is needed to replace the apt-get references with yum.
+Hence in the Dockerfile, it is needed to replace the apt-get references with yum or dnf depending upon the base image selected.
 
 In Dockerfile, in the section where we download necessary jars, we are using apt-get and this has to be replaced with yum. Look for text `# download necessary jars` in the Dockerfile.
-Please see below reference how to replace the apt-get commands with yum commands.
+Please see below reference how to replace the apt-get commands with yum command. If yum is not supported for your OS, try with dnf. Replace dnf with yum.
 
 
 ```bash
@@ -84,3 +86,4 @@ chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
 1. Please note yum update will contact enabled repositories to fetch the packages and their latest versions.The repositories are defined in the /etc/yum.repos.d directory.
 2. If building an image using RHEL, yum update will try to contact Red Hat repos and therefore you will need to confirm your identity using subscription-manager in the Dockerfile to connect to the Red Hat 
    repositories.
+3. If curl is not availble for your base image, consider pulling the curl lib in this section.
