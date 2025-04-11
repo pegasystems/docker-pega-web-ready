@@ -20,8 +20,8 @@ LABEL vendor="Pegasystems Inc." \
 RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser pegauser
 
-RUN sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo && \
-    sed -i 's|^#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Base.repo
+# RUN sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo && \
+#    sed -i 's|^#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Base.repo
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 ENV DETEMPLATIZE_IMAGE_VERSION=${DETEMPLATIZE_IMAGE_VERSION}
