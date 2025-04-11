@@ -220,6 +220,7 @@ RUN  mkdir -p /opt/pega/kafkadata && \
 # replace dnf with yum based on your package-manager.
 RUN dnf -y update && \
     dnf -y upgrade && \
+    dnf -y install gpg && \
     mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
@@ -259,6 +260,7 @@ RUN dnf -y update && \
     rm /tmp/bcjmail-fips-2.0.5.jar.asc && \
     gpg --verify /tmp/bcpg-fips-2.0.9.jar.asc /opt/pega/bcfips/bcpg-fips-2.0.9.jar && \
     rm /tmp/bcpg-fips-2.0.9.jar.asc && \
+    dnf autoremove -y gpg && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
