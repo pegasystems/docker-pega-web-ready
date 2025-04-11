@@ -104,8 +104,6 @@ RUN  mkdir -p /opt/pega/utility && \
      chmod g+rw /opt/pega/utility && \
      chown -R pegauser /opt/pega/utility
 
-COPY versionchecker/build/libs/versionchecker-1.0.jar /opt/pega/utility/
-
 # Set up an empty JDBC URL which will, if set to a non-empty value, be used in preference
 # to the "constructed" JDBC URL
 ENV JDBC_URL='' \
@@ -220,7 +218,6 @@ RUN yum -y update && \
     yum -y upgrade && \
     yum -y install fontconfig && \
     yum -y install glibc-langpack-en curl && \
-    rm -rf /var/lib/apt/lists/* && \
     mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
