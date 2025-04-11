@@ -11,7 +11,6 @@ public class VersionChecker {
     static final String ENV_JDBC_PASSWORD     = "SECRET_DB_PASSWORD";
     static final String ENV_JDBC_CONN_PROPS   = "JDBC_CONNECTION_PROPERTIES";
     static final String ENV_RULE_SCHEMA_NAME  = "RULES_SCHEMA";
-    static final String ENV_DB_TYPE           = "DB_TYPE";
 
     static final String PROP_USER = "user";
     static final String PROP_PASSWORD = "password";
@@ -21,7 +20,6 @@ public class VersionChecker {
     private String jdbcUser;
     private String jdbcPassword;
     private String jdbcConnectionProperties;
-    private String dbType;
 
     private String rulesSchemaName;
 
@@ -46,8 +44,6 @@ public class VersionChecker {
     void setJdbcConnectionProperties(String jdbcConnectionProperties) {
         this.jdbcConnectionProperties = jdbcConnectionProperties;
     }
-
-    void setDbType(String dbType) { this.dbType = dbType; }
 
     void setRulesSchemaName(String rulesSchemaName) {
         this.rulesSchemaName = rulesSchemaName;
@@ -92,7 +88,7 @@ public class VersionChecker {
     }
 
     String getQuery() {
-        if (rulesSchemaName!=null && rulesSchemaName.trim().isEmpty()) {
+        if (rulesSchemaName==null || rulesSchemaName.trim().isEmpty()) {
             throw new VersionCheckerException("Rules schema name must be specified");
         }
         if (!isSchemaNameSanitized()) {
@@ -105,16 +101,7 @@ public class VersionChecker {
     }
 
     boolean isSchemaNameSanitized() {
-        Optional<DBType> dt = DBType.getDBType(dbType);
-        if (dt.isPresent()) {
-            if (dt.get()==DBType.ORACLE) {
-                return rulesSchemaName.matches("[a-zA-Z][a-zA-Z0-9_$#]*");
-            }
-            else {
-                return rulesSchemaName.matches("[a-zA-Z][a-zA-Z0-9_]*");
-            }
-        }
-        return false;
+        return rulesSchemaName.matches("[a-zA-Z][a-zA-Z0-9_$#]*");
     }
 
     String performQuery(Properties props) {
@@ -131,17 +118,10 @@ public class VersionChecker {
     }
 
     public String checkVersion() {
-        validateDBType();
         loadDriver();
         Properties props = parsePropertyString();
         addCredentialProperties(props);
         return performQuery(props);
-    }
-
-    public void validateDBType() {
-        if (!DBType.isValid(this.dbType)) {
-            throw new VersionCheckerException("Database type '" + this.dbType + "' is not a supported database type.");
-        }
     }
 
     public static VersionChecker createVersionChecker(EnvHelper env) {
@@ -152,7 +132,6 @@ public class VersionChecker {
         versionChecker.setJdbcUser(env.getEnvVar(ENV_JDBC_USER));
         versionChecker.setJdbcPassword(env.getEnvVar(ENV_JDBC_PASSWORD));
         versionChecker.setJdbcConnectionProperties(env.getEnvVar(ENV_JDBC_CONN_PROPS));
-        versionChecker.setDbType(env.getEnvVar(ENV_DB_TYPE));
         versionChecker.setRulesSchemaName(env.getEnvVar(ENV_RULE_SCHEMA_NAME));
 
         return versionChecker;
