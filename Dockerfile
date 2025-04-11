@@ -219,7 +219,7 @@ RUN  mkdir -p /opt/pega/kafkadata && \
 RUN yum -y update && \
     yum -y upgrade && \
     yum -y install fontconfig && \
-    yum -y install glibc-langpack-en curl && \
+    yum -y install glibc-langpack-en && \
     mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
