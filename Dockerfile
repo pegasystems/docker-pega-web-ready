@@ -20,7 +20,7 @@ LABEL vendor="Pegasystems Inc." \
 RUN groupadd -g 9001 pegauser && \
     useradd -r -u 9001 -g pegauser pegauser
 
-# This I needed to configure the mirror list to look up for repos for CentOS7. 
+# This I needed to configure the mirror list to look up for repos for CentOS7. Only needed if issue with yum lookup
 # RUN sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo && \
 #    sed -i 's|^#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Base.repo
 
@@ -263,7 +263,6 @@ RUN dnf -y update && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
-
     
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
