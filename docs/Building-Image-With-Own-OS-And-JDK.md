@@ -34,8 +34,7 @@ Please see below reference how to replace the apt-get commands with yum command.
 ```bash
 # Fetches the packages and latest versions.
 RUN yum -y update && \
-yum install gpg && \
-rm -rf /var/lib/apt/lists/* && \
+yum install gpg
 
 ```
 Also comment out below line in Dockerfile. This command is not intended for Fedora based OS is it could impact the OS functionality.
