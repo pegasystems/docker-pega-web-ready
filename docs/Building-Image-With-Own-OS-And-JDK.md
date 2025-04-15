@@ -47,4 +47,4 @@ RUN apt-get autoremove --purge -y gpg
 2. If building an image using RHEL, yum/dnf update will try to contact Red Hat repositories and therefore you will need to confirm your Red Hat identity using subscription-manager to connect to
    the Red Hat repositories. Please refer https://access.redhat.com/solutions/253273 for more details.
 3. Curl is needed for downloading few jars in the Dockerfile at the build time. It is recommended to download curl lib or any other similar utility if its not part of your base image.
-   If using some replacement of curl, please change the reference of curl accordingly. Alternatively, you can also bake in the required jars in the base image.
+   If using some alternate for curl, please change the reference of curl accordingly. Alternatively, you can also bake in the required jars in the base image.
