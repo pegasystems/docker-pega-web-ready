@@ -213,11 +213,13 @@ RUN  mkdir -p /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
-# download necessary jars
+# Fetches the packages and latest versions.
 RUN apt-get update && \
     apt-get install -y gpg && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /opt/pega/prometheus && \
+    rm -rf /var/lib/apt/lists/*
+
+# download necessary jars
+RUN mkdir -p /opt/pega/prometheus && \
     mkdir -p /opt/pega/bcfips && \
     curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
     curl -sL -o /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar.asc && \
@@ -256,11 +258,13 @@ RUN apt-get update && \
     rm /tmp/bcjmail-fips-2.0.5.jar.asc && \
     gpg --verify /tmp/bcpg-fips-2.0.9.jar.asc /opt/pega/bcfips/bcpg-fips-2.0.9.jar && \
     rm /tmp/bcpg-fips-2.0.9.jar.asc && \
-    apt-get autoremove --purge -y gpg && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
+
+# Should not be called when building image on Fedora based OS. Safe call with Debian based OS like Ubuntu.
+RUN apt-get autoremove --purge -y gpg
 
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \

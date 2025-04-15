@@ -35,6 +35,44 @@ For more information, see [pegasystems/docker-pega-web-ready/Dockerfile](Dockerf
 
 The system then builds your custom pega-web-ready Docker image.
 
+### Special Instructions for Fedora based OS.
+
+Pega builds images on Ubuntu, which is Debian-based. If you want to build the Pega web-ready image using a Fedora-based OS, such as RHEL or CentOS,
+some of the commands used in the Dockerfile will not work.
+
+Debian uses `apt-get` as package manager, whereas Fedora uses `yum` or `dnf`, therefore you need to replace the `apt-get` references in the Dockerfile with `yum` or `dnf` 
+depending on the base image selected.
+
+For example, in the following section of the Dockerfile:
+
+```bash
+# Fetches the packages and latest versions.
+RUN apt-get update && \
+    apt-get install -y gpg && \
+    rm -rf /var/lib/apt/lists/*
+```
+
+You must replace the `apt-get` package manager with `yum` or `dnf` depending on which package manager is supported in the OS of your choice.
+
+
+```bash
+# Fetches the packages and latest versions.
+RUN yum -y update && \
+yum install gpg
+```
+
+Additionally, you must comment out the following line in the Dockerfile. This command is not intended for Fedora-based OS, and it might impact the OS functionality if used.
+```bash
+RUN apt-get autoremove --purge -y gpg
+```
+Important additional notes when building your Pega web-ready image with a Fedora-based OS
+1. The `yum/dnf` update command contacts enabled mirror repositories to fetch the packages and their latest versions. 
+   For `yum`, you can configure the repositories in the /etc/yum.repos.d directory. Ensure that these repositories are reachable within the docker host network.
+2. If you build an image using `RHEL`, the `yum/dnf` update command attempts to contact Red Hat repositories, so you must confirm your Red Hat identity using subscription-manager to connect to the Red Hat repositories.
+   For more details, see https://access.redhat.com/solutions/253273.
+3. `Curl` is required for downloading several jars in the Dockerfile at the build time. As a best practice, download curl lib or any other similar utility if it is not part of your base image.
+    If you use some alternate tool for curl, change the curl reference accordingly. Alternatively, you can also include the required jars in the base image.
+
 
 ## User access and control considerations for this image
 
