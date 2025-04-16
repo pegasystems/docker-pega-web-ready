@@ -176,6 +176,7 @@ NODE_TYPE 					| Specify a node type or classification to specialize the process
 PEGA_DIAGNOSTIC_USER 		| Set a Pega diagnostic username to download log files. |
 PEGA_DIAGNOSTIC_PASSWORD 	| Set a secure Pega diagnostic username to download log files. |
 NODE_TIER                 | Specify the display name of the tier to which you logically associate this node. |
+WEB_XML_SNIPPET | Specify additional text to be inserted before the closing tag of web.xml. This can be used to add JMS Resource References. |
 
 ### Customize the Tomcat runtime
 
@@ -189,7 +190,6 @@ JAVA_OPTS 		| Specify any additional parameters that should be appended to the `
 INITIAL_HEAP 	| Specify the initial size (`Xms`) of the java heap. | `2048m`
 MAX_HEAP 		| Specify the maximum size (`Xmx`) of the java heap. | `4096m`
 HEAP_DUMP_PATH 	| Specify a location for a heap dump using `XX:HeapDumpPath` | `/heapdumps`
-
 
 ### Cassandra settings
 
