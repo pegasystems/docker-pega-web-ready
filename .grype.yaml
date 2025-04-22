@@ -34,7 +34,4 @@ ignore:
   # Concerned clients should avoid loading untrusted code into the platform until this is resolved.
   # Unspecified network protocols are impacted - not enough information yet to determine risk.
   # This is less relevant for the platform installer - more relevant for a running Pega image.
-  # Original analysis: 2025-04-22
-  # Last reviewed: 2025-04-22
-  # Next review due: 2025-05-22
   - vulnerability: CVE-2025-21587
