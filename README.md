@@ -67,7 +67,7 @@ RUN apt-get autoremove --purge -y gpg
 ```
 Important additional notes when building your Pega web-ready image with a Fedora-based OS
 1. The `yum/dnf` update command contacts enabled mirror repositories to fetch the packages and their latest versions. 
-   For `yum`, you can configure the repositories in the /etc/yum.repos.d directory. Ensure that these repositories are reachable within the docker host network.
+   For `yum`, you can configure the repositories in the /etc/yum.repos.d directory. Ensure that these repositories are reachable within the Docker host network.
 2. If you build an image using `RHEL`, the `yum/dnf` update command attempts to contact Red Hat repositories, so you must confirm your Red Hat identity using subscription-manager to connect to the Red Hat repositories.
    For more details, see https://access.redhat.com/solutions/253273.
 3. `Curl` is required for downloading several jars in the Dockerfile at the build time. As a best practice, download curl lib or any other similar utility if it is not part of your base image.
