@@ -58,7 +58,7 @@ You must replace the `apt-get` package manager with `yum` or `dnf` depending on 
 ```bash
 # Fetches the packages and latest versions.
 RUN yum -y update && \
-    yum install gpg
+    yum -y install gpg
 ```
 
 Additionally, you must comment out the following line in the Dockerfile. This command is not intended for Fedora-based OS, and it might impact the OS functionality if used.
