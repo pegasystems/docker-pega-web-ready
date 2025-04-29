@@ -35,7 +35,7 @@ For more information, see [pegasystems/docker-pega-web-ready/Dockerfile](Dockerf
 
 The system then builds your custom pega-web-ready Docker image.
 
-### Special Instructions for Fedora based OS.
+### Additional Instructions for Fedora based OS.
 
 Pega builds images on Ubuntu, which is Debian-based. If you want to build the Pega web-ready image using a Fedora-based OS, such as RHEL or CentOS,
 some of the commands used in the Dockerfile will not work.
@@ -58,7 +58,7 @@ You must replace the `apt-get` package manager with `yum` or `dnf` depending on 
 ```bash
 # Fetches the packages and latest versions.
 RUN yum -y update && \
-yum install gpg
+    yum install gpg
 ```
 
 Additionally, you must comment out the following line in the Dockerfile. This command is not intended for Fedora-based OS, and it might impact the OS functionality if used.
