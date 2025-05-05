@@ -241,6 +241,7 @@ CASSANDRA_PORT | Specify the TCP port to connect to your Cassandra service clust
 CASSANDRA_USERNAME | Specify the plain text username for authentication with your Cassandra service cluster. For better security, avoid plain text usernames and leave this parameter blank; then include the username in an external secrets manager with the key CASSANDRA_USERNAME. |
 CASSANDRA_PASSWORD | Specify the plain text password for authentication with your Cassandra service cluster. For better security, avoid plain text passwords and leave this parameter blank; then include the password in an external secrets manager with the key CASSANDRA_PASSWORD. |
 CASSANDRA_CLIENT_ENCRYPTION | Enable encryption of traffic between Pega Platform instance and your organization's Cassandra service. | `false`
+CASSANDRA_CLIENT_AUTH | Enable authentication of client certificates in the encrypted connection to your organization's Cassandra service. | `false`
 CASSANDRA_CLIENT_ENCRYPTION_STORE_TYPE | Specify the archive file format in which Cassandra client encryption keys are held. | `JKS`
 CASSANDRA_TRUSTSTORE | Specify the path to the truststore file which contains trusted third party certificates that will be used in Cassandra client encryption. |
 CASSANDRA_TRUSTSTORE_PASSWORD | Specify the plain text password for the Cassandra client encryption truststore file. For better security, avoid plain text passwords and leave this parameter blank; then include the password in an external secrets manager with the key CASSANDRA_TRUSTSTORE_PASSWORD. |
