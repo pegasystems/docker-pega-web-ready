@@ -185,6 +185,13 @@ fileExistenceTests:
   permissions: 'drwxrwxr-x'
   uid: 9001
   gid: 0
+
+- name: 'Pega RASP jars File Path Check'
+  path: '/opt/pega/rasp'
+  shouldExist: true
+  permissions: 'drwxrwxr-x'
+  uid: 9001
+  gid: 0
   
  # Simulate the functional use case for testing
 

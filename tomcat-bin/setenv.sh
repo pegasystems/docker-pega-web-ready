@@ -41,12 +41,13 @@ else
   echo "No krb5.conf was specified in ${krb5_conf}."
 fi
 
-pegarasp_root="/opt/pega/rasp/"
-if [ "${IS_RASP_ENABLED}" == "true" ]; then
-  echo "Adding ${pegarasp_root} jars paths to JAVA_OPTS";
-  JAVA_OPTS="${JAVA_OPTS}  -javaagent:${pegarasp_root}/pegarasp-agent.jar,action=${RASP_ACTION} -Xbootclasspath/a:${pegarasp_root}/pegarasp-core.jar"
+# Adding Pega RASP agent jar to JAVA_OPTS
+pega_rasp_agent_root="/opt/pega/rasp"
+if [ "${IS_PEGA_25_OR_LATER}" == "true" ] && [ "${IS_RASP_ENABLED}" == "true" ]; then
+  echo "Adding ${pega_rasp_agent_root} agent jar to JAVA_OPTS";
+  JAVA_OPTS="${JAVA_OPTS} -javaagent:${pega_rasp_agent_root}/pegarasp-agent.jar=action=${RASP_ACTION} -Xbootclasspath/a:${pega_rasp_agent_root}/pegarasp-core.jar"
 else
-  echo "RASP is disabled, not adding RASP jars paths to JAVA_OPTS"
+  echo "RASP is disabled, not adding RASP agent jar to JAVA_OPTS"
 fi
 
 if [ "${IS_PEGA_25_OR_LATER}" == "true" ]; then
