@@ -48,6 +48,8 @@ if [ "${IS_PEGA_25_OR_LATER}" == "true" ] && [ "${IS_RASP_ENABLED}" == "true" ];
   echo "Adding ${pega_rasp_agent_root} agent jar to JAVA_OPTS";
   if [ -n "${RASP_ACTION}" ]; then
     pega_rasp_action="=action=${RASP_ACTION}"
+  else
+    pega_rasp_action=""
   fi
   JAVA_OPTS="${JAVA_OPTS} -javaagent:${pega_rasp_agent_root}/pegarasp-agent.jar${pega_rasp_action} -Xbootclasspath/a:${pega_rasp_agent_root}/pegarasp-core.jar"
 else
