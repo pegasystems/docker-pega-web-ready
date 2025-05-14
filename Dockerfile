@@ -25,6 +25,7 @@ ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 ENV DETEMPLATIZE_IMAGE_VERSION=${DETEMPLATIZE_IMAGE_VERSION}
 # Copy detemplatize to base image bin directory
 COPY --from=detemplatize /bin/detemplatize /bin/detemplatize
+COPY --from=detemplatize /opt/pega/rasp /opt/pega/rasp/
 
 COPY hashes/ /hashes/
 COPY keys/ /keys/
