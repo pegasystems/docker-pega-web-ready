@@ -255,7 +255,7 @@ if [ "$HZ_CLIENT_MODE" == true ]; then
     fi
 fi
 
-/bin/detemplatize -template "${CATALINA_HOME}"/webapps/ROOT/index.html:"${CATALINA_HOME}"/webapps/ROOT/index.html
+/bin/detemplatize -template "${CATALINA_HOME}"/webapps/ROOT/index.jsp:"${CATALINA_HOME}"/webapps/ROOT/index.jsp
 
 appContextFileName=$(echo "${PEGA_APP_CONTEXT_PATH}"|sed 's/\//#/g')
 
