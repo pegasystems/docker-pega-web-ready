@@ -207,7 +207,7 @@ commandTests:
         sleep 15s &&
         curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080"
     exitCode: 0
-    expectedOutput: ["200"]
+    expectedOutput: ["302"]
 # Verify Java install    
   - name: "Java version check"
     command: "which"

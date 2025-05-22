@@ -10,6 +10,7 @@ FROM $BASE_TOMCAT_IMAGE as release
 
 ARG VERSION
 ARG DETEMPLATIZE_IMAGE_VERSION=latest
+ARG TOMCAT_MAJOR_VERSION=9
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
@@ -298,6 +299,7 @@ COPY tomcat-webapps ${CATALINA_HOME}/webapps/
 COPY tomcat-bin ${CATALINA_HOME}/bin/
 COPY tomcat-conf ${CATALINA_HOME}/conf/
 COPY scripts /scripts
+COPY tomcat-versioned-artifacts/${TOMCAT_MAJOR_VERSION}/root_web.xml ${CATALINA_HOME}/webapps/ROOT/WEB-INF/web.xml
 
 
 # Update access of required directories to allow not running in root for openshift
