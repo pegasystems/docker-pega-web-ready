@@ -16,6 +16,11 @@ JAVA_OPTS="${JAVA_OPTS} -Djava.security.properties=${CATALINA_HOME}/conf/java.se
 JAVA_OPTS="${JAVA_OPTS} -DNodeTier=${NODE_TIER}"
 
 #
+# Add setup for IBM MQ encryption
+#
+JAVA_OPTS="${JAVA_OPTS} -Dcom.ibm.mq.cfg.useIBMCipherMappings=false"
+
+#
 # Setup Heapdump path
 #
 JAVA_OPTS="${JAVA_OPTS} -XX:HeapDumpPath=${HEAP_DUMP_PATH}"
