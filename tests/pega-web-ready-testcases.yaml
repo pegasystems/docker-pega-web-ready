@@ -197,7 +197,7 @@ fileExistenceTests:
 
 commandTests:
 # Check with the default tomcat catalina  
-  - name: "catalina check"
+  - name: "catalina check -- root web app redirection"
     command: "bash"
     args:
     - -c
@@ -208,6 +208,28 @@ commandTests:
         curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080"
     exitCode: 0
     expectedOutput: ["302"]
+  - name: "catalina check -- return 404 for non-existent resource"
+    command: "bash"
+    args:
+      - -c
+      - |
+        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        sleep 15s &&
+        curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080/favicon.ico"
+    exitCode: 0
+    expectedOutput: ["404"]
+  - name: "catalina check -- return 200 for static resource"
+    command: "bash"
+    args:
+      - -c
+      - |
+        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        sleep 15s &&
+        curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080/healthz.html"
+    exitCode: 0
+    expectedOutput: ["200"]
 # Verify Java install    
   - name: "Java version check"
     command: "which"
