@@ -8,14 +8,4 @@
 
     <display-name>Redirect to the Pega Platform</display-name>
 
-    <servlet>
-        <servlet-name>index</servlet-name>
-        <jsp-file>/index.jsp</jsp-file>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>index</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
-
 </web-app>
