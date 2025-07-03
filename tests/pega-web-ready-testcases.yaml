@@ -2744,12 +2744,10 @@ commandTests:
     exitCode: 0
     excludedOutput: [ " -javaagent:/opt/pega/rasp/pegarasp-agent.jar=action=WARN -Xbootclasspath/a:/opt/pega/rasp/pegarasp-core.jar" ]
 
-  - name: "Pega RASP java_opts check with IS_PEGA_25_OR_LATER true"
+  - name: "Pega RASP java_opts check with IS_PEGA_25_OR_LATER false"
     envVars:
       - key: "IS_PEGA_25_OR_LATER"
-        value: "true"
-      - key: "RASP_ACTION"
-        value: "DISABLE"
+        value: "false"
     command: "bash"
     args:
       - -c
@@ -2757,9 +2755,9 @@ commandTests:
         bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
         sleep 5s
     exitCode: 0
-    expectedOutput: [ " -javaagent:/opt/pega/rasp/pegarasp-agent.jar=action=WARN -Xbootclasspath/a:/opt/pega/rasp/pegarasp-core.jar" ]
+    excludedOutput: [ " -javaagent:/opt/pega/rasp/pegarasp-agent.jar -Xbootclasspath/a:/opt/pega/rasp/pegarasp-core.jar" ]
 
-  - name: "Pega RASP java_opts check with IS_RASP_ENABLED false"
+  - name: "Pega RASP java_opts check with IS_PEGA_25_OR_LATER true"
     envVars:
       - key: "IS_PEGA_25_OR_LATER"
         value: "true"
@@ -2772,7 +2770,7 @@ commandTests:
         bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
         sleep 5s
     exitCode: 0
-    excludedOutput: [ " -javaagent:/opt/pega/rasp/pegarasp-agent.jar -Xbootclasspath/a:/opt/pega/rasp/pegarasp-core.jar" ]
+    expectedOutput: [ " -javaagent:/opt/pega/rasp/pegarasp-agent.jar=action=WARN -Xbootclasspath/a:/opt/pega/rasp/pegarasp-core.jar" ]
 
   - name: "Pega RASP java_opts check with RASP_ACTION not set"
     envVars:
