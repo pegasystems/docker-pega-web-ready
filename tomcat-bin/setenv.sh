@@ -44,7 +44,7 @@ fi
 
 # Adding Pega RASP agent jar to JAVA_OPTS
 pega_rasp_agent_root="/opt/pega/rasp"
-if [ "${IS_PEGA_25_OR_LATER}" == "true" ] && [ "${IS_RASP_ENABLED}" == "true" ]; then
+if [ "${IS_PEGA_25_OR_LATER}" == "true" ] && [ "${RASP_ACTION}" != "DISABLE" ]; then
   echo "Adding ${pega_rasp_agent_root} agent jar to JAVA_OPTS";
   if [ -n "${RASP_ACTION}" ]; then
     pega_rasp_action="=action=${RASP_ACTION}"
