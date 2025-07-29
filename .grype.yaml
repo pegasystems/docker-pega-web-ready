@@ -1,47 +1,73 @@
 ignore:
   # For grype configuration, see https://github.com/anchore/grype#specifying-matches-to-ignore
 
-  # Disputed scanner issue https://github.com/anchore/grype/issues/504
-  - vulnerability: CVE-2002-0493
-  - vulnerability: CVE-2013-2185
-  - vulnerability: CVE-2016-5425
-  - vulnerability: CVE-2016-6325
-  - vulnerability: CVE-2020-8022
-  - vulnerability: CVE-2022-42800
-  - vulnerability: CVE-2024-34156
-  - vulnerability: CVE-2024-34158
+  # https://nvd.nist.gov/vuln/detail/CVE-2024-10963
+  # Severity: High (Medium from Ubuntu)
+  # A vulnerability in pam_access where some rules are incorrectly interpreted as hostnames.  The image does not
+  # leverage the pam_access config file
+  # Original analysis: 2024-11-20
+  # Last reviewed: 2025-07-29
+  # Next review due: 2025-08-29
+  - vulnerability: CVE-2024-10963
 
-  # https://nvd.nist.gov/vuln/detail/CVE-2025-22874
-  # Calling Verify with a VerifyOptions.KeyUsages that contains ExtKeyUsageAny unintentionally disabledpolicy validation.
-  # This only affected certificate chains which contain policy graphs, which are rather uncommon.
-  # The CVE is originating from the go standard library included in detemplatize utility and does not leverage the
-  # particularly problematic go methods.
+  # https://nvd.nist.gov/vuln/detail/CVE-2025-30749
+  # https://nvd.nist.gov/vuln/detail/CVE-2025-50106
+  # https://nvd.nist.gov/vuln/detail/CVE-2025-50059
+  # https://nvd.nist.gov/vuln/detail/CVE-2025-30754
+  # Bug: BUG-940984
   # Severity: High
-  # Date Detected: 2025-06-16
-  # Date of next action: 2025-07-16
-  - vulnerability: CVE-2025-22874
+  # These CVEs are fixed upstream but we are blocked waiting for https://github.com/adoptium/temurin/issues/89.
+  # Once the fix is available we will immediately pull in the fix and rebuild.
+  # No known exploit related to Pega servers but there is potentially a risk - currently waiting for updates.
+  # Original analysis: 2025-07-28
+  # Last reviewed: 2025-07-29
+  # Next review due: 2025-08-29
+  - vulnerability: CVE-2025-30749
+  - vulnerability: CVE-2025-50106
+  - vulnerability: CVE-2025-50059
+  - vulnerability: CVE-2025-30754
 
-  # https://nvd.nist.gov/vuln/detail/CVE-2020-35527  https://ubuntu.com/security/CVE-2020-35527
-  # In SQLite 3.31.1, there is an out of bounds access problem through ALTER TABLE for views that have a nested FROM clause.
-  # SQLite is not leverage by this image. A fix appears to be in progress.
-  - vulnerability: CVE-2020-35527
-    fix-state: "not-fixed"
+  # https://nvd.nist.gov/vuln/detail/CVE-2024-10041
+  # Severity: Medium
+  # A vulnerability was found in PAM. We don't believe Pega Infinity is vulnerable as this library is not
+  # leveraged.
+  # Original analysis: 2024-10-25
+  # Last reviewed: 2025-04-17
+  # Next review due: 2025-07-16
+  - vulnerability: CVE-2024-10041
 
-  # https://nvd.nist.gov/vuln/detail/CVE-2024-24791  https://ubuntu.com/security/CVE-2024-24791
-  # net/http libraries from GoLang are not utilized in this image.
-  - vulnerability: CVE-2024-24791
+  # https://nvd.nist.gov/vuln/detail/CVE-2025-45582
+  # Severity: Medium
+  # Vulnerability involving extracting untrusted archives.  No fix available upstream at time of initial analysis. Our
+  # images don't really extract untrusted tar archives in the first place.
+  # Original analysis: 2025-07-29
+  # Last reviewed: 2025-07-29
+  # Next review due: 2025-10-29
+  - vulnerability: CVE-2025-45582
 
-  # https://nvd.nist.gov/vuln/detail/CVE-2025-22871  https://ubuntu.com/security/CVE-2025-22871
-  # Severity: Critical
-  # net/http libraries from GoLang are not utilized in this image. As such image is not vulnerable.
-  - vulnerability: CVE-2025-22871
+  # https://nvd.nist.gov/vuln/detail/CVE-2025-8058
+  # Severity: Medium
+  # Memory allocation flaw in gnu c. Currently a theoretical medium risk and is still being evaluated by
+  # upstream providers. Will update once Ubuntu provides a new release of glibc.
+  # Original analysis: 2025-07-28
+  # Last reviewed: 2025-07-29
+  # Next review due: 2025-10-29
+  - vulnerability: CVE-2025-8058
 
-  # https://nvd.nist.gov/vuln/detail/CVE-2025-21587
-  # Severity: High
-  # Valid vulnerability, difficult to exploit. Waiting for patch from Adoptium upstream. Image will be
-  # updated automatically upon release.
-  # Recommend waiting for upstream fix, as the fix will be provided in the near future.
-  # Concerned clients should avoid loading untrusted code into the platform until this is resolved.
-  # Unspecified network protocols are impacted - not enough information yet to determine risk.
-  # This is less relevant for the platform installer - more relevant for a running Pega image.
-  - vulnerability: CVE-2025-21587
+  # https://nvd.nist.gov/vuln/detail/CVE-2025-8114
+  # Severity: Medium
+  # Denial of service via a crash in SSH during key exchange. SSH would only be leveraged in a Pega Cloud context by operations.
+  # Does not seem to be a relevant vulnerability for Pega Cloud.
+  # Original analysis: 2025-07-28
+  # Last reviewed: 2025-07-29
+  # Next review due: 2025-10-29
+  - vulnerability: CVE-2025-8114
+
+  # https://nvd.nist.gov/vuln/detail/CVE-2025-40909
+  # Severity: Medium
+  # Race condition in perl that could cause incorrect file paths to be used.  By default, our images only use perl
+  # during image build and not at runtime, so exploitation risk seems very low.
+  # Original analysis: 2025-07-02
+  # Last reviewed: 2025-10-02
+  # Next review due: 2025-10-02
+  - vulnerability: CVE-2025-40909
