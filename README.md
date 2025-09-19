@@ -261,6 +261,8 @@ CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS | Specify the maximum number of s
 CASSANDRA_JMX_METRICS_ENABLED | Enable reporting of DDS SDK metrics to a Java Management Extension (JMX) format for use by your organization to monitor your Cassandra service. Setting this property `false` disables metrics being exposed through the JMX interface; disabling also limits the metrics being collected using the DDS landing page. | `true`
 CASSANDRA_CSV_METRICS_ENABLED | Enable reporting of DDS SDK metrics to a Comma Separated Value (CSV) format for use by your organization to monitor your Cassandra service. If you enable this property, use the Pega Platform DSS: dnode/ddsclient/metrics/csv_directory to customize the filepath to which the deployment writes CSV files. By default, after you enable this property, CSV files will be written to the Pega Platform work directory. | `false`
 CASSANDRA_LOG_METRICS_ENABLED | Enable reporting of DDS SDK metrics to your Pega Platform logs. | `false`
+CASSANDRA_LOCAL_DATACENTER | Local Cassandra datacenter in a multi-datacenter Cassandra cluster. | 
+CASSANDRA_DATACENTERS | List of all Cassandra datacenters in a multi-datacenter Cassandra cluster. |
 
 
 ### Hazelcast settings

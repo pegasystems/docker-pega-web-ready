@@ -26,6 +26,8 @@
   <Environment name="prconfig/dnode/external_cassandra_port" value="9042" type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_username" value="" type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_password" value="" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_datacenter" value="datacenter1" type="java.lang.String"/>
+  <Environment name="prconfig/dnode/cassandra_datacenters" value="datacenter1,datacenter2" type="java.lang.String"/>
   
 
   
