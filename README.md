@@ -288,6 +288,15 @@ HZ_SSL_TRUST_STORE_NAME | SSL truststore name |
 HZ_SSL_TRUSTSTORE_PASSWORD | SSL truststore password |
 HIGHLY_SECURE_CRYPTO_MODE_ENABLED | Set to true to enable highly secure encryption mode that complies with NIST SP 800-53 and NIST SP 800-131. | false
 
+### Search and Reporting Service settings
+
+Search and reporting functionality within a Pega environment is provided by the Search and Reporting Service (SRS). SRS operates as an external service and can be deployed in a cluster. For comprehensive guidance on deploying Pega with SRS as an external service, refer to the Helm charts and the official Pega Community documentation.
+
+Name                    | Purpose                                                  | Default
+---                     |----------------------------------------------------------| ---
+SRS_TRUSTSTORE_PASSWORD | Password for the truststore to use in mTLS communication. | 
+SRS_KEYSTORE_PASSWORD   | Password for the keystore to use in mTLS communication.  |
+
 # Contributing
 
 This is an open source project and contributions are welcome.  Please see the [contributing guidelines](./CONTRIBUTING.md) to get started.
