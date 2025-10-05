@@ -14,6 +14,14 @@
   <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="{{ .Env.PEGA_SEARCH_URL }}" type="java.lang.String"/>
   {{ end }}
 
+  {{- if .Env.SECRET_SRS_TRUSTSTORE_PASSWORD }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/truststore/password" value="{{ .Env.SECRET_SRS_TRUSTSTORE_PASSWORD }}" type="java.lang.String"/>
+  {{- end }}
+
+  {{- if .Env.SECRET_SRS_KEYSTORE_PASSWORD }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/keystore/password" value="{{ .Env.SECRET_SRS_KEYSTORE_PASSWORD }}" type="java.lang.String"/>
+  {{- end }}
+
   {{ if .Env.PEGA_STREAM_URL }}
   <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
   <Environment name="prconfig/services/stream/provider" value="StreamService" type="java.lang.String"/>
