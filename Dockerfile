@@ -249,6 +249,8 @@ RUN mkdir -p /opt/pega/prometheus && \
     rm /tmp/bctls-fips-2.0.19.jar.asc && \
     gpg --verify /tmp/bcutil-fips-2.0.3.jar.asc /opt/pega/bcfips/bcutil-fips-2.0.3.jar && \
     rm /tmp/bcutil-fips-2.0.3.jar.asc && \
+    gpg --verify /tmp/bc-rng-jent-fips-1.3.6.jar.asc /opt/pega/bcfips/bc-rng-jent-1.3.6.jar && \
+    rm /tmp/bc-rng-jent-fips-1.3.6.jar.asc && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
