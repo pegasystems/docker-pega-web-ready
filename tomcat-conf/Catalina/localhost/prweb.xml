@@ -14,6 +14,14 @@
   <Environment name="prconfig/database/databases/pegasearch/searchEndpoint" value="{{ .Env.PEGA_SEARCH_URL }}" type="java.lang.String"/>
   {{ end }}
 
+  {{- if .Env.SECRET_SRS_TRUSTSTORE_PASSWORD }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/truststore/password" value="{{ .Env.SECRET_SRS_TRUSTSTORE_PASSWORD }}" type="java.lang.String"/>
+  {{- end }}
+
+  {{- if .Env.SECRET_SRS_KEYSTORE_PASSWORD }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/keystore/password" value="{{ .Env.SECRET_SRS_KEYSTORE_PASSWORD }}" type="java.lang.String"/>
+  {{- end }}
+
   {{ if .Env.PEGA_STREAM_URL }}
   <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
   <Environment name="prconfig/services/stream/provider" value="StreamService" type="java.lang.String"/>
@@ -26,7 +34,13 @@
   <Environment name="prconfig/dnode/external_cassandra_port" value="{{ default .Env.CASSANDRA_PORT "9042" }}" type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_username" value="{{ default .Env.SECRET_CASSANDRA_USERNAME "dnode_ext" }}" type="java.lang.String"/>
   <Environment name="prconfig/dnode/cassandra_password" value="{{ default .Env.SECRET_CASSANDRA_PASSWORD "dnode_ext" }}" type="java.lang.String"/>
+  {{ if .Env.CASSANDRA_LOCAL_DATACENTER -}}
+  <Environment name="prconfig/dnode/cassandra_datacenter" value="{{ .Env.CASSANDRA_LOCAL_DATACENTER }}" type="java.lang.String"/>
   {{ end }}
+  {{- if .Env.CASSANDRA_DATACENTERS -}}
+  <Environment name="prconfig/dnode/cassandra_datacenters" value="{{ .Env.CASSANDRA_DATACENTERS }}" type="java.lang.String"/>
+  {{ end }}
+  {{- end }}
 
   {{ if isTrue .Env.CASSANDRA_CLIENT_ENCRYPTION}}
   <Environment name="prconfig/dnode/cassandra_client_encryption/enabled" value="{{ .Env.CASSANDRA_CLIENT_ENCRYPTION }}"  type="java.lang.String"/>

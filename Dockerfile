@@ -180,7 +180,9 @@ ENV CASSANDRA_CLUSTER=false \
     CASSANDRA_SPECULATIVE_EXECUTION_MAX_EXECUTIONS= \
     CASSANDRA_JMX_METRICS_ENABLED=true \
     CASSANDRA_CSV_METRICS_ENABLED=false \
-    CASSANDRA_LOG_METRICS_ENABLED=false
+    CASSANDRA_LOG_METRICS_ENABLED=false \
+    CASSANDRA_LOCAL_DATACENTER= \
+    CASSANDRA_DATACENTERS=
 
 # Configure search nodes. Empty string falls back to search being done on the nodes themselves.
 ENV PEGA_SEARCH_URL=
@@ -231,22 +233,22 @@ RUN mkdir -p /opt/pega/prometheus && \
     rm /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc && \
     # Updating Bouncy Castle jars versions below?  As these are used for FIPS 140-3 support, the versions below should
     # only be replaced with FIPS certified library versions.  See https://www.bouncycastle.org/download/bouncy-castle-java-fips/#latest --
-    # paying particular attention to the "Distribution Files (JAR Format)".  The jars below correspond to BC-FJA 2.1.0.
-    curl -sL -o /opt/pega/bcfips/bc-fips-2.1.0.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.1.0/bc-fips-2.1.0.jar && \
-    curl -sL -o /tmp/bc-fips-2.1.0.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.1.0/bc-fips-2.1.0.jar.asc && \
-    curl -sL -o /opt/pega/bcfips/bctls-fips-2.1.20.jar https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.1.20/bctls-fips-2.1.20.jar && \
-    curl -sL -o /tmp/bctls-fips-2.1.20.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.1.20/bctls-fips-2.1.20.jar.asc && \
-    curl -sL -o /opt/pega/bcfips/bcutil-fips-2.1.4.jar https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.1.4/bcutil-fips-2.1.4.jar && \
-    curl -sL -o /tmp/bcutil-fips-2.1.4.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.1.4/bcutil-fips-2.1.4.jar.asc && \
+    # paying particular attention to the "Distribution Files (JAR Format)".  The jars below correspond to BC-FJA 2.0.0.
+    curl -sL -o /opt/pega/bcfips/bc-fips-2.0.0.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.0.0/bc-fips-2.0.0.jar && \
+    curl -sL -o /tmp/bc-fips-2.0.0.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.0.0/bc-fips-2.0.0.jar.asc && \
+    curl -sL -o /opt/pega/bcfips/bctls-fips-2.0.19.jar https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.0.19/bctls-fips-2.0.19.jar && \
+    curl -sL -o /tmp/bctls-fips-2.0.19.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.0.19/bctls-fips-2.0.19.jar.asc && \
+    curl -sL -o /opt/pega/bcfips/bcutil-fips-2.0.3.jar https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.0.3/bcutil-fips-2.0.3.jar && \
+    curl -sL -o /tmp/bcutil-fips-2.0.3.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.0.3/bcutil-fips-2.0.3.jar.asc && \
     curl -sL -o /opt/pega/bcfips/bc-rng-jent-1.3.6.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-rng-jent/1.3.6/bc-rng-jent-1.3.6.jar && \
     curl -sL -o /tmp/bc-rng-jent-fips-1.3.6.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-rng-jent/1.3.6/bc-rng-jent-1.3.6.jar.asc && \
     gpg --import /keys/bc_maven_public_key.asc && \
-    gpg --verify /tmp/bc-fips-2.1.0.jar.asc /opt/pega/bcfips/bc-fips-2.1.0.jar && \
-    rm /tmp/bc-fips-2.1.0.jar.asc && \
-    gpg --verify /tmp/bctls-fips-2.1.20.jar.asc /opt/pega/bcfips/bctls-fips-2.1.20.jar && \
-    rm /tmp/bctls-fips-2.1.20.jar.asc && \
-    gpg --verify /tmp/bcutil-fips-2.1.4.jar.asc /opt/pega/bcfips/bcutil-fips-2.1.4.jar && \
-    rm /tmp/bcutil-fips-2.1.4.jar.asc && \
+    gpg --verify /tmp/bc-fips-2.0.0.jar.asc /opt/pega/bcfips/bc-fips-2.0.0.jar && \
+    rm /tmp/bc-fips-2.0.0.jar.asc && \
+    gpg --verify /tmp/bctls-fips-2.0.19.jar.asc /opt/pega/bcfips/bctls-fips-2.0.19.jar && \
+    rm /tmp/bctls-fips-2.0.19.jar.asc && \
+    gpg --verify /tmp/bcutil-fips-2.0.3.jar.asc /opt/pega/bcfips/bcutil-fips-2.0.3.jar && \
+    rm /tmp/bcutil-fips-2.0.3.jar.asc && \
     chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \

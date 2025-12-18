@@ -64,7 +64,7 @@ prbootstrap_properties="${final_config_root}/prbootstrap.properties"
 java_security_overwrite="${final_config_root}/java.security.overwrite"
 tomcat_web_xml="${final_config_root}/tomcat-web.xml"
 
-declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "HZ_SSL_KEYSTORE_PASSWORD" "HZ_SSL_TRUSTSTORE_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG")
+declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "HZ_SSL_KEYSTORE_PASSWORD" "HZ_SSL_TRUSTSTORE_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG" "SRS_KEYSTORE_PASSWORD" "SRS_TRUSTSTORE_PASSWORD")
 for secret in "${secret_root}"/*
 do
   basename=$(basename "$secret")
@@ -403,7 +403,7 @@ rm "${CATALINA_HOME}"/conf/server.xml.tmpl
 #
 if [ -z "${IS_PEGA_25_OR_LATER}" ]; then
   vc_classpath="/opt/pega/utility/*:/opt/pega/lib/*"
-  vc_javaopts="-Xms${INITIAL_HEAP} -Xmx${MAX_HEAP} ${JAVA_OPTS}"
+  vc_javaopts="-Xms${INITIAL_HEAP} -Xmx${MAX_HEAP} ${JAVA_OPTS} ${CATALINA_OPTS}"
   vc_javaopts="${vc_javaopts} --add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED"
   vc_javaopts="${vc_javaopts} --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED"
   vc_javaopts="${vc_javaopts} --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED"

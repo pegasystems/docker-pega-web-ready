@@ -22,6 +22,9 @@ stream_truststore_password_file="/opt/pega/secrets/STREAM_TRUSTSTORE_PASSWORD"
 stream_keystore_password_file="/opt/pega/secrets/STREAM_KEYSTORE_PASSWORD"
 stream_jaas_config_file="/opt/pega/secrets/STREAM_JAAS_CONFIG"
 
+srs_truststore_password_file="/opt/pega/secrets/SRS_TRUSTSTORE_PASSWORD"
+srs_keystore_password_file="/opt/pega/secrets/SRS_KEYSTORE_PASSWORD"
+
 tomcat_keystore_password_file="/opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD"
 
 if [ -e "$tomcat_keystore_password_file" ]; then
@@ -112,6 +115,22 @@ else
 fi
 
 echo "Stream jaas config is - $SECRET_STREAM_JAAS_CONFIG"
+
+if [ -e "$srs_truststore_password_file" ]; then
+   export SECRET_SRS_TRUSTSTORE_PASSWORD=$(<${srs_truststore_password_file})
+else
+   export SECRET_SRS_TRUSTSTORE_PASSWORD=srs_truststore_password
+fi
+
+echo "SRS truststore password is - $SECRET_SRS_TRUSTSTORE_PASSWORD"
+
+if [ -e "$srs_keystore_password_file" ]; then
+   export SECRET_SRS_KEYSTORE_PASSWORD=$(<${srs_keystore_password_file})
+else
+   export SECRET_SRS_KEYSTORE_PASSWORD=srs_keystore_password
+fi
+
+echo "SRS keystore password is - $SECRET_SRS_KEYSTORE_PASSWORD"
 
 if [ -e "$db_username_file" ]; then
    export SECRET_DB_USERNAME=$(<${db_username_file})
