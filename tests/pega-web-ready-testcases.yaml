@@ -248,6 +248,11 @@ commandTests:
     - |
         java -version  2>&1 | grep -E "OpenJDK 64-Bit Server VM (AdoptOpenJDK|Temurin)"
     expectedOutput: [".*OpenJDK 64-Bit Server VM (AdoptOpenJDK|Temurin).*"] 
+# Check bc-fips path
+  - name: "BCFIPS_PATH check"
+    command: "echo"
+    args: ["$BCFIPS_PATH"]
+    expectedOutput: ["/opt/pega/bcfips"]
 # Verify Cataline_home variable       
   - name: "Catalina Home check"
     command: "echo"

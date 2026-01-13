@@ -212,6 +212,8 @@ ENV CUSTOM_ARTIFACTORY_USERNAME= \
     CUSTOM_ARTIFACTORY_APIKEY= \
     ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION=false
 
+ENV BCFIPS_PATH="/opt/pega/bcfips"
+
 #Set up volume for persistent Kafka data storage
 RUN  mkdir -p /opt/pega/kafkadata && \
      chgrp -R 0 /opt/pega/kafkadata && \

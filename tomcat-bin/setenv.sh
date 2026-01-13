@@ -57,8 +57,8 @@ else
 fi
 
 if [ "${IS_PEGA_25_OR_LATER}" == "true" ]; then
-  export CLASSPATH="/opt/pega/bcfips/*"
-  JAVA_OPTS="${JAVA_OPTS} -Dcompiler/externaljardir=/opt/pega/bcfips"
+  export CLASSPATH="${BCFIPS_PATH}/*"
+  JAVA_OPTS="${JAVA_OPTS} -Dcompiler/externaljardir=${BCFIPS_PATH}"
   if [ "${FIPS_140_3_MODE}" == "true" ]; then
     JAVA_OPTS="${JAVA_OPTS} -Dorg.bouncycastle.fips.approved_only=true"
     HIGHLY_SECURE_CRYPTO_MODE_ENABLED=true
