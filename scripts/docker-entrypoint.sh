@@ -426,9 +426,10 @@ if [ -z "${IS_PEGA_25_OR_LATER}" ]; then
     echo "No krb5.conf was specified in ${krb5_conf}."
   fi
 
-  echo "java -cp '${vc_classpath}' ${vc_javaopts} com.pega.cmc.VersionChecker"
-
-  pega_version=$(eval exec java -cp '${vc_classpath}' ${vc_javaopts} com.pega.cmc.VersionChecker)
+  pega_platform_version_file="/opt/pega/utility/platform_version.txt"
+  vc_command="java -cp '${vc_classpath}' ${vc_javaopts} com.pega.cmc.VersionChecker ${pega_platform_version_file}"
+  echo "executing command: ${vc_command}"
+  eval $vc_command
   if [ $? -ne 0 ]; then
     echo "Pega version check failed and container will exit -- verify your database connection details."
     echo "To bypass this check, set global.pegaVersion in the Pega Helm Chart values.yaml file.  The value"
@@ -437,7 +438,7 @@ if [ -z "${IS_PEGA_25_OR_LATER}" ]; then
   else
     echo "Pega version check succeeded."
   fi
-
+  pega_version=$(cat ${pega_platform_version_file})
   echo "Detected Pega Version: ${pega_version}"
 
   if [[ "${pega_version}" > "08-25-01" ]] || [ "${pega_version}" = "08-25-01" ]; then
