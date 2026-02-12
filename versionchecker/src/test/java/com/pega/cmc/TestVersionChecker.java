@@ -3,6 +3,11 @@ package com.pega.cmc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -23,6 +28,13 @@ public class TestVersionChecker {
         try ( Statement s = c.createStatement(); ){
             s.execute("create schema if not exists rules");
             s.execute("create table rules.pr4_rule_ruleset(pyrulesetversionid varchar(32), pxObjClass varchar(32), pyrulesetname varchar(32))");
+        }
+        addRSData();
+    }
+
+    private static void addRSData() throws SQLException {
+        Connection c = DriverManager.getConnection("jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS rules", TEST_DB_USERNAME, TEST_DB_PASSWORD);
+        try ( Statement s = c.createStatement(); ) {
             s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('" + MAX_VERSION + "', 'Rule-RuleSet-Version', 'Pega-RULES')");
             s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('08-24-02', 'Rule-RuleSet-Version', 'Pega-RULES')");
             s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('07-30-10', 'Rule-RuleSet-Version', 'Pega-RULES')");
@@ -30,7 +42,6 @@ public class TestVersionChecker {
             s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('05-04-02', 'Rule-RuleSet-Version', 'Pega-RULES')");
         }
     }
-
 
     @Test
     public void testQueryExecution() {
@@ -49,6 +60,43 @@ public class TestVersionChecker {
         assertEquals(MAX_VERSION, maxVersion);
     }
 
+    @Test
+    public void testFileOutput() throws IOException {
+        String outputFile = System.getenv("OUTPUTFILE");
+        String[] args = {outputFile};
+
+        VersionChecker.main(args);
+
+        String maxVersion = new String(Files.readAllBytes(Path.of(outputFile)));
+
+        assertEquals(MAX_VERSION, maxVersion);
+    }
+
+    @Test
+    public void testEmptyVersionResultHandling() throws SQLException {
+        try {
+            //Remove existing entries
+            Connection c = DriverManager.getConnection("jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS rules", TEST_DB_USERNAME, TEST_DB_PASSWORD);
+            try (Statement s = c.createStatement();) {
+                s.execute("delete from rules.pr4_rule_ruleset");
+            }
+
+            TestEnvHelper env = new TestEnvHelper();
+            env.put(ENV_JDBC_DRIVER_CLASS, "org.h2.Driver");
+            env.put(ENV_JDBC_URL, "jdbc:h2:mem:testdb");
+            env.put(ENV_JDBC_USER, TEST_DB_USERNAME);
+            env.put(ENV_JDBC_PASSWORD, TEST_DB_PASSWORD);
+            env.put(ENV_JDBC_CONN_PROPS, "");
+            env.put(ENV_RULE_SCHEMA_NAME, "rules");
+
+            VersionChecker vc = VersionChecker.createVersionChecker(env);
+
+            assertThrows(VersionCheckerException.class, vc::checkVersion);
+        }
+        finally {
+            addRSData();
+        }
+    }
 
     @Test
     public void testConnectionPropParsing() {

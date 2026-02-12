@@ -1,5 +1,9 @@
 package com.pega.cmc;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.Optional;
 import java.util.Properties;
@@ -14,6 +18,8 @@ public class VersionChecker {
 
     static final String PROP_USER = "user";
     static final String PROP_PASSWORD = "password";
+
+    private static String outputFile;
 
     private String jdbcDriverClass;
     private String jdbcUrl;
@@ -121,7 +127,11 @@ public class VersionChecker {
         loadDriver();
         Properties props = parsePropertyString();
         addCredentialProperties(props);
-        return performQuery(props);
+        String version = performQuery(props);
+        if (version==null || version.isEmpty()) {
+            throw new VersionCheckerException("Version check resulted in an empty result.");
+        }
+        return version;
     }
 
     public static VersionChecker createVersionChecker(EnvHelper env) {
@@ -138,10 +148,20 @@ public class VersionChecker {
     }
 
     public static void main(String[] args) {
+        if (args.length>=1) {
+            outputFile = args[0];
+        }
         VersionChecker versionChecker = createVersionChecker(new SystemEnvHelper());
         try {
-            System.out.println(versionChecker.checkVersion());
-        } catch (RuntimeException e) {
+            String version = versionChecker.checkVersion();
+            if (outputFile!=null) {
+                try ( FileOutputStream fos = new FileOutputStream(outputFile) ) {
+                    fos.write(version.getBytes(StandardCharsets.UTF_8));
+                }
+            } else {
+                System.out.println(version);
+            }
+        } catch (RuntimeException | IOException e) {
             e.printStackTrace(System.err);
             System.err.flush();
             System.exit(1);

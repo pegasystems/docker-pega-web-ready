@@ -5,6 +5,7 @@ plugins {
 group = "com.pega.cmc"
 version = "1.0"
 
+val testOutputFile = "${layout.buildDirectory.get().asFile.getAbsolutePath()}/platform_version.txt"
 repositories {
     mavenCentral()
 }
@@ -21,6 +22,16 @@ java {
     }
 }
 
-tasks.test {
+tasks.test{
     useJUnitPlatform()
+
+    environment (
+        "OUTPUTFILE" to testOutputFile,
+        "JDBC_CLASS" to "org.h2.Driver",
+        "JDBC_URL" to "jdbc:h2:mem:testdb",
+        "SECRET_DB_USERNAME" to "pegauser",
+        "SECRET_DB_PASSWORD" to "pegapassword",
+        "JDBC_CONNECTION_PROPERTIES" to "",
+        "RULES_SCHEMA" to "rules"
+    )
 }
