@@ -155,7 +155,7 @@ public class VersionChecker {
         try {
             String version = versionChecker.checkVersion();
             if (outputFile!=null) {
-                try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+                try ( FileOutputStream fos = new FileOutputStream(outputFile) ) {
                     fos.write(version.getBytes(StandardCharsets.UTF_8));
                 }
             } else {
