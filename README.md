@@ -103,7 +103,7 @@ COPY --chown=pegauser:root --from=builder /prweb ${CATALINA_HOME}/webapps/prweb
 RUN chmod -R g+rw   ${CATALINA_HOME}/webapps/prweb
 
 # Make a jdbc driver available to tomcat applications
-COPY --chown=pegauser:root /path/to/jdbcdriver.jar ${CATALINA_HOME}/lib/
+COPY --chown=pegauser:root /path/to/jdbcdriver.jar /opt/pega/lib/
 
 RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prconfig.xml
 RUN chmod g+rw ${CATALINA_HOME}/webapps/prweb/WEB-INF/classes/prlog4j2.xml
