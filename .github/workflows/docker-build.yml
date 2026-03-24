@@ -56,7 +56,7 @@ jobs:
 
     - name: Scan image
       id: scan
-      uses: anchore/scan-action@v3
+      uses: anchore/scan-action@v7
       with:
         image: "pegasystems/pega-ready:latest"
         fail-build: true
