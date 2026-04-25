@@ -25,6 +25,13 @@ stream_jaas_config_file="/opt/pega/secrets/STREAM_JAAS_CONFIG"
 srs_truststore_password_file="/opt/pega/secrets/SRS_TRUSTSTORE_PASSWORD"
 srs_keystore_password_file="/opt/pega/secrets/SRS_KEYSTORE_PASSWORD"
 
+srs_mtls_vault_enabled_file="/opt/pega/secrets/SRS_MTLS_VAULT_ENABLED"
+srs_mtls_vault_url_file="/opt/pega/secrets/SRS_MTLS_VAULT_URL"
+srs_mtls_vault_role_file="/opt/pega/secrets/SRS_MTLS_VAULT_ROLE"
+srs_mtls_vault_secret_path_file="/opt/pega/secrets/SRS_MTLS_VAULT_SECRET_PATH"
+srs_mtls_vault_token_path_file="/opt/pega/secrets/SRS_MTLS_VAULT_TOKEN_PATH"
+srs_mtls_vault_namespace_file="/opt/pega/secrets/SRS_MTLS_VAULT_NAMESPACE"
+
 tomcat_keystore_password_file="/opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD"
 
 if [ -e "$tomcat_keystore_password_file" ]; then
@@ -131,6 +138,54 @@ else
 fi
 
 echo "SRS keystore password is - $SECRET_SRS_KEYSTORE_PASSWORD"
+
+if [ -e "$srs_mtls_vault_enabled_file" ]; then
+   export SECRET_SRS_MTLS_VAULT_ENABLED=$(<${srs_mtls_vault_enabled_file})
+else
+   export SECRET_SRS_MTLS_VAULT_ENABLED=srs_mtls_vault_enabled
+fi
+
+echo "SRS mTLS vault enabled is - $SECRET_SRS_MTLS_VAULT_ENABLED"
+
+if [ -e "$srs_mtls_vault_url_file" ]; then
+   export SECRET_SRS_MTLS_VAULT_URL=$(<${srs_mtls_vault_url_file})
+else
+   export SECRET_SRS_MTLS_VAULT_URL=srs_mtls_vault_url
+fi
+
+echo "SRS mTLS vault url is - $SECRET_SRS_MTLS_VAULT_URL"
+
+if [ -e "$srs_mtls_vault_role_file" ]; then
+   export SECRET_SRS_MTLS_VAULT_ROLE=$(<${srs_mtls_vault_role_file})
+else
+   export SECRET_SRS_MTLS_VAULT_ROLE=srs_mtls_vault_role
+fi
+
+echo "SRS mTLS vault role is - $SECRET_SRS_MTLS_VAULT_ROLE"
+
+if [ -e "$srs_mtls_vault_secret_path_file" ]; then
+   export SECRET_SRS_MTLS_VAULT_SECRET_PATH=$(<${srs_mtls_vault_secret_path_file})
+else
+   export SECRET_SRS_MTLS_VAULT_SECRET_PATH=srs_mtls_vault_secret_path
+fi
+
+echo "SRS mTLS vault secret path is - $SECRET_SRS_MTLS_VAULT_SECRET_PATH"
+
+if [ -e "$srs_mtls_vault_token_path_file" ]; then
+   export SECRET_SRS_MTLS_VAULT_TOKEN_PATH=$(<${srs_mtls_vault_token_path_file})
+else
+   export SECRET_SRS_MTLS_VAULT_TOKEN_PATH=srs_mtls_vault_token_path
+fi
+
+echo "SRS mTLS vault token path is - $SECRET_SRS_MTLS_VAULT_TOKEN_PATH"
+
+if [ -e "$srs_mtls_vault_namespace_file" ]; then
+   export SECRET_SRS_MTLS_VAULT_NAMESPACE=$(<${srs_mtls_vault_namespace_file})
+else
+   export SECRET_SRS_MTLS_VAULT_NAMESPACE=srs_mtls_vault_namespace
+fi
+
+echo "SRS mTLS vault namespace is - $SECRET_SRS_MTLS_VAULT_NAMESPACE"
 
 if [ -e "$db_username_file" ]; then
    export SECRET_DB_USERNAME=$(<${db_username_file})

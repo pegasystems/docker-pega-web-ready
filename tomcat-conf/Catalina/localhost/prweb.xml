@@ -22,6 +22,25 @@
   <Environment name="prconfig/services/indexer/srs/encryption/mtls/keystore/password" value="{{ .Env.SECRET_SRS_KEYSTORE_PASSWORD }}" type="java.lang.String"/>
   {{- end }}
 
+  {{- if .Env.SECRET_SRS_MTLS_VAULT_ENABLED }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/vault/enabled" value="{{ .Env.SECRET_SRS_MTLS_VAULT_ENABLED }}" type="java.lang.String"/>
+  {{- end }}
+  {{- if .Env.SECRET_SRS_MTLS_VAULT_URL }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/vault/url" value="{{ .Env.SECRET_SRS_MTLS_VAULT_URL }}" type="java.lang.String"/>
+  {{- end }}
+  {{- if .Env.SECRET_SRS_MTLS_VAULT_ROLE }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/vault/role" value="{{ .Env.SECRET_SRS_MTLS_VAULT_ROLE }}" type="java.lang.String"/>
+  {{- end }}
+  {{- if .Env.SECRET_SRS_MTLS_VAULT_SECRET_PATH }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/vault/secret/path" value="{{ .Env.SECRET_SRS_MTLS_VAULT_SECRET_PATH }}" type="java.lang.String"/>
+  {{- end }}
+  {{- if .Env.SECRET_SRS_MTLS_VAULT_TOKEN_PATH }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/vault/token/path" value="{{ .Env.SECRET_SRS_MTLS_VAULT_TOKEN_PATH }}" type="java.lang.String"/>
+  {{- end }}
+  {{- if .Env.SECRET_SRS_MTLS_VAULT_NAMESPACE }}
+  <Environment name="prconfig/services/indexer/srs/encryption/mtls/vault/namespace" value="{{ .Env.SECRET_SRS_MTLS_VAULT_NAMESPACE }}" type="java.lang.String"/>
+  {{- end }}
+
   {{ if .Env.PEGA_STREAM_URL }}
   <Environment name="prconfig/services/stream/validate" value="true" type="java.lang.String"/>
   <Environment name="prconfig/services/stream/provider" value="StreamService" type="java.lang.String"/>

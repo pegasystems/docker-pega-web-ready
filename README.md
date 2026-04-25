@@ -296,6 +296,12 @@ Name                    | Purpose                                               
 ---                     |----------------------------------------------------------| ---
 SRS_TRUSTSTORE_PASSWORD | Password for the truststore to use in mTLS communication. | 
 SRS_KEYSTORE_PASSWORD   | Password for the keystore to use in mTLS communication.  |
+SRS_MTLS_VAULT_ENABLED  | Set to true to enable vault integration for SRS mTLS certificates. |
+SRS_MTLS_VAULT_URL      | Vault server address for SRS mTLS certificate retrieval. |
+SRS_MTLS_VAULT_ROLE     | Vault Kubernetes auth role for SRS mTLS. |
+SRS_MTLS_VAULT_SECRET_PATH | Path in Vault where SRS mTLS secrets are stored. |
+SRS_MTLS_VAULT_TOKEN_PATH  | File path to the mounted vault token for SRS mTLS. |
+SRS_MTLS_VAULT_NAMESPACE   | Vault namespace for SRS mTLS (optional, for multi-tenant Vault). |
 
 # Contributing
 

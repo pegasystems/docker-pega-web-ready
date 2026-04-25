@@ -2141,6 +2141,184 @@ commandTests:
     exitCode: 0
     expectedOutput: ["SRS keystore password is - srs_keystore_password_from_file"]
 
+  # SRS MTLS vault env vars JNDI check
+  - name: "SRS mTLS vault env vars in prweb.xml"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "SRS_MTLS_VAULT_ENABLED"
+        value: "true"
+      - key: "SRS_MTLS_VAULT_URL"
+        value: "https://vault.example.com"
+      - key: "SRS_MTLS_VAULT_ROLE"
+        value: "pega-srs-role"
+      - key: "SRS_MTLS_VAULT_SECRET_PATH"
+        value: "secret/data/srs/mtls"
+      - key: "SRS_MTLS_VAULT_TOKEN_PATH"
+        value: "/opt/pega/secrets/vault/token"
+      - key: "SRS_MTLS_VAULT_NAMESPACE"
+        value: "pega-ns"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh' &&
+        grep -q 'prconfig/services/indexer/srs/encryption/mtls/vault/enabled.*true' /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        grep -q 'prconfig/services/indexer/srs/encryption/mtls/vault/url.*https://vault.example.com' /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        grep -q 'prconfig/services/indexer/srs/encryption/mtls/vault/role.*pega-srs-role' /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        grep -q 'prconfig/services/indexer/srs/encryption/mtls/vault/secretPath.*secret/data/srs/mtls' /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        grep -q 'prconfig/services/indexer/srs/encryption/mtls/vault/tokenPath.*/opt/pega/secrets/vault/token' /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        grep -q 'prconfig/services/indexer/srs/encryption/mtls/vault/namespace.*pega-ns' /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        echo "SRS mTLS vault JNDI entries verified"
+    exitCode: 0
+    expectedOutput: ["SRS mTLS vault JNDI entries verified"]
+
+  # SRS mTLS vault enabled as file input
+  - name: "SRS mTLS vault enabled as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/SRS_MTLS_VAULT_ENABLED /opt/pega/secrets/SRS_MTLS_VAULT_ENABLED &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["SRS mTLS vault enabled is - true"]
+
+  # SRS mTLS vault url as file input
+  - name: "SRS mTLS vault url as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/SRS_MTLS_VAULT_URL /opt/pega/secrets/SRS_MTLS_VAULT_URL &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["SRS mTLS vault url is - https://vault.example.com"]
+
+  # SRS mTLS vault role as file input
+  - name: "SRS mTLS vault role as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/SRS_MTLS_VAULT_ROLE /opt/pega/secrets/SRS_MTLS_VAULT_ROLE &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["SRS mTLS vault role is - pega-srs-role"]
+
+  # SRS mTLS vault secret path as file input
+  - name: "SRS mTLS vault secret path as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/SRS_MTLS_VAULT_SECRET_PATH /opt/pega/secrets/SRS_MTLS_VAULT_SECRET_PATH &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["SRS mTLS vault secret path is - secret/data/srs/mtls"]
+
+  # SRS mTLS vault token path as file input
+  - name: "SRS mTLS vault token path as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/SRS_MTLS_VAULT_TOKEN_PATH /opt/pega/secrets/SRS_MTLS_VAULT_TOKEN_PATH &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["SRS mTLS vault token path is - /opt/pega/secrets/vault/token"]
+
+  # SRS mTLS vault namespace as file input
+  - name: "SRS mTLS vault namespace as file input"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres_user"
+      - key: "DB_PASSWORD"
+        value: "postgres_pass"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/SRS_MTLS_VAULT_NAMESPACE /opt/pega/secrets/SRS_MTLS_VAULT_NAMESPACE &&
+        bash -c './scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["SRS mTLS vault namespace is - pega-ns"]
+
   # Verify test case for mounted catalina.properties
   - name: "Mounted catalina.properties"
     envVars:
