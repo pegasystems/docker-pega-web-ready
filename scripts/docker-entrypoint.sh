@@ -47,7 +47,7 @@ if [ "$IS_PEGA_CONFIG_COMPRESSED" == true ]; then
     for filename in "${file_list[@]}"; do
       if [ -e "${config_root}/${filename}" ]; then
         echo "decompressing ${filename} in ${config_root}/${filename}"
-        cat "${config_root}/${filename}" | base64 --decode | gzip -d > "${final_config_root}/${filename}"
+        cat "${config_root}/${filename}" | base64 -d | gzip -d > "${final_config_root}/${filename}"
       fi
     done
 fi
@@ -65,7 +65,7 @@ java_security_overwrite="${final_config_root}/java.security.overwrite"
 tomcat_web_xml="${final_config_root}/tomcat-web.xml"
 
 declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "HZ_SSL_KEYSTORE_PASSWORD" "HZ_SSL_TRUSTSTORE_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG" "SRS_KEYSTORE_PASSWORD" "SRS_TRUSTSTORE_PASSWORD")
-for secret in "${secret_root}"/*
+for secret in $(ls ${secret_root});
 do
   basename=$(basename "$secret")
   temp_file="${secret_root}/${basename}"

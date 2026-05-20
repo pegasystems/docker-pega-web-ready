@@ -6,9 +6,9 @@ schemaVersion: "2.0.0"
 metadataTest:
   envVars:
    - key: CATALINA_HOME
-     value: /usr/local/tomcat
+     value: /usr/share/tomcat
    - key: PATH
-     value: /usr/local/tomcat/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+     value: /usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
    - key: JDBC_MAX_ACTIVE
      value: 75
    - key: JDBC_MIN_IDLE
@@ -28,9 +28,9 @@ metadataTest:
    - key: ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION
      value: false
   exposedPorts: ["8080", "9001", "47100", "7003"]
-  # Add 5701-5710 ports                      
+  # Add 5701-5710 ports
   entrypoint: [/scripts/docker-entrypoint.sh]
-  cmd: ["run"] 
+  cmd: ["run"]
 
 # Verify all directories/files/folders to be present
 
@@ -41,19 +41,19 @@ fileExistenceTests:
   isExecutableBy: 'group'
 
 - name: 'tomcat path'
-  path: '/usr/local/tomcat/'
+  path: '/usr/share/tomcat/'
   shouldExist: true
   permissions: 'drwxr-xr-x'
   uid: 9001
   gid: 0
 
 - name: 'Incorrect path'
-  path: '/usr/local/tomcat/test'
+  path: '/usr/share/tomcat/test'
   shouldExist: false
   permissions: 'dgrwxr-xr-x'
 
 - name: 'catalina file path'
-  path: '/usr/local/tomcat/bin/catalina.sh'
+  path: '/usr/share/tomcat/bin/catalina.sh'
   shouldExist: true
   permissions: '-rwxrwxr-x'
   uid: 9001
@@ -202,10 +202,10 @@ commandTests:
     args:
     - -c
     - |
-        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
-        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        rm -f /usr/share/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/share/tomcat/bin/catalina.sh run &'&&
         sleep 15s &&
-        curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080"
+        jrunscript -f /tests/test-artifacts/getresponsecode.js "http://localhost:8080"
     exitCode: 0
     expectedOutput: ["302"]
   - name: "catalina check -- return 404 for non-existent resource"
@@ -213,10 +213,10 @@ commandTests:
     args:
       - -c
       - |
-        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
-        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        rm -f /usr/share/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/share/tomcat/bin/catalina.sh run &'&&
         sleep 15s &&
-        curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080/favicon.ico"
+        jrunscript -f /tests/test-artifacts/getresponsecode.js "http://localhost:8080/favicon.ico"
     exitCode: 0
     expectedOutput: ["404"]
   - name: "catalina check -- return 200 for static resource"
@@ -224,30 +224,30 @@ commandTests:
     args:
       - -c
       - |
-        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
-        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        rm -f /usr/share/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/share/tomcat/bin/catalina.sh run &'&&
         sleep 15s &&
-        curl --write-out "%{http_code}\n" --silent --output /dev/null "localhost:8080/healthz.html"
+        jrunscript -f /tests/test-artifacts/getresponsecode.js "http://localhost:8080/healthz.html"
     exitCode: 0
     expectedOutput: ["200"]
 # Verify Java install    
   - name: "Java version check"
     command: "which"
     args: ["java"]
-    expectedOutput: ["/opt/java/openjdk/bin/java"]
+    expectedOutput: ["/usr/sbin/java"]
 #Verify JAVA_HOME environment variable    
   - name: "JAVA_HOME check"
     command: "echo"
     args: ["$JAVA_HOME"]
-    expectedOutput: ["/opt/java/openjdk"]
+    expectedOutput: ["/usr/lib/jvm/default-jvm"]
 # Verify Java Version    
   - name: "JAVA VERSION check"
     command: "bash"
     args:
     - -c
     - |
-        java -version  2>&1 | grep -E "OpenJDK 64-Bit Server VM (AdoptOpenJDK|Temurin)"
-    expectedOutput: [".*OpenJDK 64-Bit Server VM (AdoptOpenJDK|Temurin).*"] 
+        java -version  2>&1 | grep -E "OpenJDK 64-Bit Server VM openjdk"
+    expectedOutput: [".*OpenJDK 64-Bit Server VM openjdk.*"]
 # Check bc-fips path
   - name: "BCFIPS_PATH check"
     command: "echo"
@@ -257,7 +257,7 @@ commandTests:
   - name: "Catalina Home check"
     command: "echo"
     args: ["$CATALINA_HOME"]
-    expectedOutput: ["/usr/local/tomcat"]
+    expectedOutput: ["/usr/share/tomcat"]
 # Verify Nodetype initialization    
   - name: "NodeType initialization check"
     envVars:
@@ -275,8 +275,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["WebUser,BackgroundProcessing,Search,Stream"]
 # Verify NodeType as Foreground    
@@ -298,8 +298,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        bash -c './scripts/docker-entrypoint.sh run'      
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        bash -c '/scripts/docker-entrypoint.sh run'      
     expectedOutput: ["WebUser"]
 # Verify NodeType as Background     
   - name: "Background NodeType check"
@@ -320,8 +320,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        bash -c './scripts/docker-entrypoint.sh run'      
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        bash -c '/scripts/docker-entrypoint.sh run'      
     expectedOutput: ["BackgroundProcessing,Search,Batch,RealTime,Custom1,Custom2,Custom3,Custom4,Custom5,BIX"]
 # Verify NodeType as Stream      
   - name: "Stream NodeType check"
@@ -342,8 +342,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        bash -c './scripts/docker-entrypoint.sh run'       
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        bash -c '/scripts/docker-entrypoint.sh run'       
     expectedOutput: ["Stream"] 
 # Verify empty JDBC_URL         
   - name: "JDBC_URL check"     
@@ -351,7 +351,7 @@ commandTests:
     args:
     - -c
     - |
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 1       
     expectedOutput: ["JDBC_URL must be specified"]
 # Verify empty JDBC_CLASS     
@@ -365,7 +365,7 @@ commandTests:
     args:
     - -c
     - |
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 1       
     expectedOutput: ["JDBC_CLASS must be specified"]
 
@@ -389,8 +389,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     expectedOutput: ["Index Directory Value - "]
 
 # Unsupported Node Type check   
@@ -413,7 +413,7 @@ commandTests:
     args:
     - -c
     - |
-        bash -c './scripts/docker-entrypoint.sh run'
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 1
     expectedOutput: ["IS NOT SUPPORTED BY THIS IMAGE."]
 
@@ -437,8 +437,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        bash -c '/scripts/docker-entrypoint.sh run'
     expectedOutput: ["IsStreamNode - true"]    
 
 # Search Index Directory Check   
@@ -461,8 +461,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        bash -c '/scripts/docker-entrypoint.sh run'
     expectedOutput: ["Index Directory for Search - /search_index"]
 
 
@@ -483,9 +483,9 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/CASSANDRA_USERNAME /opt/pega/secrets/CASSANDRA_USERNAME &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/CASSANDRA_USERNAME /opt/pega/secrets/CASSANDRA_USERNAME &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Cassandra Username is - cassandra_username_from_file"]
 
@@ -506,9 +506,9 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        mv tests/test-artifacts/CASSANDRA_PASSWORD /opt/pega/secrets/CASSANDRA_PASSWORD &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        mv /tests/test-artifacts/CASSANDRA_PASSWORD /opt/pega/secrets/CASSANDRA_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Cassandra Password is - cassandra_password_from_file"] 
 
@@ -529,9 +529,9 @@ commandTests:
     args:
       - -c
       - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        mv tests/test-artifacts/CASSANDRA_PASSWORD_WITH_SPACES /opt/pega/secrets/CASSANDRA_PASSWORD &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        mv /tests/test-artifacts/CASSANDRA_PASSWORD_WITH_SPACES /opt/pega/secrets/CASSANDRA_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Cassandra Password is - cassandra password from file with spaces"]
 
@@ -550,9 +550,9 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        mv tests/test-artifacts/DB_USERNAME /opt/pega/secrets/DB_USERNAME &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        mv /tests/test-artifacts/DB_USERNAME /opt/pega/secrets/DB_USERNAME &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Database Username is - db_username_from_file"]
 
@@ -571,9 +571,9 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        mv tests/test-artifacts/DB_PASSWORD /opt/pega/secrets/DB_PASSWORD &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        mv /tests/test-artifacts/DB_PASSWORD /opt/pega/secrets/DB_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Database Password is - db_password_from_file"]
 
@@ -596,8 +596,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Cassandra Username is - cassandra_username"]
 
@@ -620,8 +620,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Cassandra Password is - cassandra_password"] 
 
@@ -642,8 +642,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Database Username is - postgres_user"]
 
@@ -664,8 +664,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&    
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&    
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Database Password is - postgres_pass"]
    
@@ -686,8 +686,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Pega Diagnostic User is - tomcat_user"]
 
@@ -708,7 +708,7 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
         bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Pega Diagnostic Password is - tomcat_pass"] 
@@ -730,9 +730,9 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
         mv /tests/test-artifacts/PEGA_DIAGNOSTIC_USER /opt/pega/secrets/PEGA_DIAGNOSTIC_USER &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Pega Diagnostic User is - tomcat_user_file"]
 
@@ -753,7 +753,7 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
         mv /tests/test-artifacts/PEGA_DIAGNOSTIC_PASSWORD /opt/pega/secrets/PEGA_DIAGNOSTIC_PASSWORD &&
         bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
@@ -780,8 +780,8 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/templates/context.xml.tmpl /opt/pega/config/context.xml.tmpl &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized"
     exitCode: 0
     excludedOutput: ["context.xml is not properly dockerized"]
 
@@ -807,8 +807,8 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/templates/context.xml.tmpl /opt/pega/config/context.xml.tmpl &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized"
     exitCode: 0
     expectedOutput: ["context.xml is not properly dockerized"]
 
@@ -834,8 +834,8 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/templates/tomcat-users.xml.tmpl /opt/pega/config/tomcat-users.xml.tmpl 
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml || echo "tomcat-users.xml is not properly dockerized"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/tomcat-users.xml /tests/test-artifacts/templates/expected_tomcat-users.xml || echo "tomcat-users.xml is not properly dockerized"
     exitCode: 0
     excludedOutput: ["tomcat-users.xml is not properly dockerized"]
 
@@ -936,8 +936,8 @@ commandTests:
     args:
     - -c
     - |
-        bash -c './scripts/docker-entrypoint.sh' &&      
-        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly" 
+        bash -c '/scripts/docker-entrypoint.sh' &&      
+        diff /usr/share/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly" 
     exitCode: 0
     excludedOutput: ["prweb.xml is not dockerized properly"]
 
@@ -1050,8 +1050,8 @@ commandTests:
     args:
       - -c
       - |
-        bash -c './scripts/docker-entrypoint.sh' &&      
-        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_hz_ssl.xml || echo "prweb.xml is not dockerized properly"
+        bash -c '/scripts/docker-entrypoint.sh' &&      
+        diff /usr/share/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_hz_ssl.xml || echo "prweb.xml is not dockerized properly"
     exitCode: 0
     excludedOutput: ["prweb.xml is not dockerized properly"]
 
@@ -1082,8 +1082,8 @@ commandTests:
     args:
     - -c
     - |
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_withDefaultStreamProvider.xml || echo "prweb.xml is not dockerized properly"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_withDefaultStreamProvider.xml || echo "prweb.xml is not dockerized properly"
     exitCode: 0
     expectedOutput: ["prweb.xml is not dockerized properly"]
 
@@ -1106,8 +1106,8 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        bash -c './scripts/docker-entrypoint.sh run' 
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        bash -c '/scripts/docker-entrypoint.sh run' 
     exitCode: 0
     expectedOutput: ["Starting -- Catalina.sh"]
 # Verify test case for mounted context.xml    
@@ -1132,7 +1132,7 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/context.xml /opt/pega/config/context.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["Loading context.xml from /opt/pega/config/context.xml"]
 # Verify test case for mounted tomcat-users.xml 
@@ -1157,7 +1157,7 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/tomcat-users.xml /opt/pega/config/tomcat-users.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["Loading tomcat-users.xml from /opt/pega/config/tomcat-users.xml"]
     # Verify test case for mounted prconfig.xml
@@ -1182,7 +1182,7 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/prconfig.xml /opt/pega/config/prconfig.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["Loading prconfig from /opt/pega/config/prconfig.xml"]
     # Verify test case for mounted prlog4j2.xml
@@ -1207,7 +1207,7 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/prlog4j2.xml /opt/pega/config/prlog4j2.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["Loading prlog4j2 from /opt/pega/config/prlog4j2.xml"]
 
@@ -1233,7 +1233,7 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/server.xml /opt/pega/config/server.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["Loading server.xml from /opt/pega/config/server.xml"]
 
@@ -1259,7 +1259,7 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/web.xml /opt/pega/config/web.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["Loading web.xml from /opt/pega/config/web.xml"]
 
@@ -1283,9 +1283,9 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/web.xml /opt/pega/config/web.xml &&
-        mkdir -p /usr/local/tomcat/webapps/prweb/WEB-INF/ &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        grep -zoc "<resource-env-ref-type>javax.jms.QueueConnectionFactory</resource-env-ref-type>[[:space:]]*</web-app>" /usr/local/tomcat/webapps/prweb/WEB-INF/web.xml || echo "WEB_XML_SNIPPET is not dockerized properly"
+        mkdir -p /usr/share/tomcat/webapps/prweb/WEB-INF/ &&
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        awk 'BEGIN { RS="^$" } /<resource-env-ref-type>javax\.jms\.QueueConnectionFactory<\/resource-env-ref-type>.*<\/web-app>.*/ { f=1; print $0 } END { if (!f) exit 1 }' /usr/share/tomcat/webapps/prweb/WEB-INF/web.xml
     exitCode: 0
     excludedOutput: ["WEB_XML_SNIPPET is not dockerized properly"]
 
@@ -1311,8 +1311,8 @@ commandTests:
     - -c
     - |
       mv /tests/test-artifacts/krb5.conf /opt/pega/kerberos/krb5.conf &&
-      rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
-      bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+      rm -f /usr/share/tomcat/conf/Catalina/localhost/prweb.xml &&
+      bash -c '/usr/share/tomcat/bin/catalina.sh run &'&&
       sleep 5s
     exitCode: 0
     expectedOutput: [ "-Djava.security.krb5.conf=/opt/pega/kerberos/krb5.conf" ]
@@ -1334,9 +1334,9 @@ commandTests:
     args:
      - -c
      - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/HZ_CS_AUTH_USERNAME /opt/pega/secrets/HZ_CS_AUTH_USERNAME &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/HZ_CS_AUTH_USERNAME /opt/pega/secrets/HZ_CS_AUTH_USERNAME &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Hazelcast Username is - hazelcast_username_from_file"]
 
@@ -1357,9 +1357,9 @@ commandTests:
     args:
     - -c
     - |
-      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-      mv tests/test-artifacts/HZ_CS_AUTH_PASSWORD /opt/pega/secrets/HZ_CS_AUTH_PASSWORD &&
-      bash -c './scripts/docker-entrypoint.sh run'
+      mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+      mv /tests/test-artifacts/HZ_CS_AUTH_PASSWORD /opt/pega/secrets/HZ_CS_AUTH_PASSWORD &&
+      bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Hazelcast Password is - hazelcast_password_from_file"]
 
@@ -1382,8 +1382,8 @@ commandTests:
     args:
     - -c
     - |
-      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-      bash -c './scripts/docker-entrypoint.sh run'
+      mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+      bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Hazelcast Username is - hz_cs_auth_username"]
 
@@ -1406,8 +1406,8 @@ commandTests:
     args:
     - -c
     - |
-      mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-      bash -c './scripts/docker-entrypoint.sh run'
+      mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+      bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Hazelcast Password is - hz_cs_auth_password"]
   # Verify empty DB_USERNAME
@@ -1423,7 +1423,7 @@ commandTests:
     args:
       - -c
       - |
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["No DB_USERNAME specified; trying alternative, passwordless authentication."]
   # Verify empty DB_PASSWORD as DB_PASSWORD is no longer mandatory with AWS Secrets
@@ -1441,7 +1441,7 @@ commandTests:
     args:
       - -c
       - |
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     expectedOutput: ["No context.xml was specified"]
   # Verify cmd line options to be passed for hazelcast starting in java 9+
   - name: "Check settings required for starting hazelcast in java modular environment "
@@ -1449,8 +1449,8 @@ commandTests:
     args:
       - -c
       - |
-        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
-        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        rm -f /usr/share/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/share/tomcat/bin/catalina.sh run &'&&
         sleep 5s
     exitCode: 0
     expectedOutput: ["--add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.ibm.lang.management.internal=ALL-UNNAMED \
@@ -1475,7 +1475,7 @@ commandTests:
     - -c
     - |
         mv /tests/test-artifacts/certs/* /opt/pega/certs/ &&
-        bash -c './scripts/docker-entrypoint.sh run &'&&
+        bash -c '/scripts/docker-entrypoint.sh run &'&&
         sleep 15s &&
         keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias badsslcert  -storepass changeit &&
         keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias goodsslcert  -storepass changeit &&
@@ -1501,8 +1501,8 @@ commandTests:
     args:
       - -c
       - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/TOMCAT_KEYSTORE_PASSWORD /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD &&
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/TOMCAT_KEYSTORE_PASSWORD /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD &&
         bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: [ "TLS certificate password is - keystore_password_from_file" ]
@@ -1529,8 +1529,8 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/templates/server.xml.tmpl /opt/pega/config/server.xml.tmpl &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/server.xml /tests/test-artifacts/templates/expected_server.xml -wB || echo "server.xml is not properly dockerized"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/server.xml /tests/test-artifacts/templates/expected_server.xml -wBb || echo "server.xml is not properly dockerized"
     exitCode: 0
     excludedOutput: ["server.xml is not properly dockerized"]
 
@@ -1551,9 +1551,9 @@ commandTests:
     args:
       - -c
       - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/STREAM_TRUSTSTORE_PASSWORD /opt/pega/secrets/STREAM_TRUSTSTORE_PASSWORD &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/STREAM_TRUSTSTORE_PASSWORD /opt/pega/secrets/STREAM_TRUSTSTORE_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Stream truststore password is - stream_truststore_password_from_file"]
 
@@ -1574,9 +1574,9 @@ commandTests:
     args:
       - -c
       - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/STREAM_KEYSTORE_PASSWORD /opt/pega/secrets/STREAM_KEYSTORE_PASSWORD &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/STREAM_KEYSTORE_PASSWORD /opt/pega/secrets/STREAM_KEYSTORE_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Stream keystore password is - stream_keystore_password_from_file"]
 
@@ -1597,9 +1597,9 @@ commandTests:
     args:
       - -c
       - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/STREAM_JAAS_CONFIG /opt/pega/secrets/STREAM_JAAS_CONFIG &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/STREAM_JAAS_CONFIG /opt/pega/secrets/STREAM_JAAS_CONFIG &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["Stream jaas config is - stream_jaas_config username password"]
 
@@ -1620,9 +1620,9 @@ commandTests:
     args:
       - -c
       - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/SRS_TRUSTSTORE_PASSWORD /opt/pega/secrets/SRS_TRUSTSTORE_PASSWORD &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/SRS_TRUSTSTORE_PASSWORD /opt/pega/secrets/SRS_TRUSTSTORE_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["SRS truststore password is - srs_truststore_password_from_file"]
 
@@ -1643,9 +1643,9 @@ commandTests:
     args:
       - -c
       - |
-        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
-        mv tests/test-artifacts/SRS_KEYSTORE_PASSWORD /opt/pega/secrets/SRS_KEYSTORE_PASSWORD &&
-        bash -c './scripts/docker-entrypoint.sh run'
+        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/SRS_KEYSTORE_PASSWORD /opt/pega/secrets/SRS_KEYSTORE_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
     exitCode: 0
     expectedOutput: ["SRS keystore password is - srs_keystore_password_from_file"]
 
@@ -1671,7 +1671,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/catalina.properties /opt/pega/config/catalina.properties &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading catalina.properties from /opt/pega/config/catalina.properties..." ]
 
@@ -1698,7 +1698,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/prbootstrap.properties /opt/pega/config/prbootstrap.properties &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading prbootstrap.properties from /opt/pega/config/prbootstrap.properties..." ]
 
@@ -1725,7 +1725,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/java.security.overwrite /opt/pega/config/java.security.overwrite &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading java.security.overwrite from /opt/pega/config/java.security.overwrite..." ]
 
@@ -1752,7 +1752,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/tomcat-web.xml /opt/pega/config/tomcat-web.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading tomcat web.xml from /opt/pega/config/tomcat-web.xml..." ]
 
@@ -1780,7 +1780,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/prlog4j2_compressed.xml /opt/pega/config/prlog4j2.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["Loading prlog4j2 from /opt/pega/decompressedconfig/prlog4j2.xml..."]
 
@@ -1808,7 +1808,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/prlog4j2_compressed.xml /opt/pega/config/prconfig.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading prconfig from /opt/pega/decompressedconfig/prconfig.xml..." ]
 
@@ -1836,7 +1836,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/prlog4j2_compressed.xml /opt/pega/config/context.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading context.xml from /opt/pega/decompressedconfig/context.xml..." ]
 
@@ -1864,8 +1864,8 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/prlog4j2_compressed.xml /opt/pega/config/context.xml &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/context.xml || echo "context.xml is not properly decompressed"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/context.xml /tests/test-artifacts/context.xml || echo "context.xml is not properly decompressed"
     exitCode: 0
     excludedOutput: [ "context.xml is not properly decompressed" ]
 
@@ -1893,7 +1893,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/server_compressed.xml /opt/pega/config/server.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading server.xml from /opt/pega/decompressedconfig/server.xml..." ]
 
@@ -1921,8 +1921,8 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/server_compressed.xml /opt/pega/config/server.xml &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/server.xml /tests/test-artifacts/server.xml || echo "server.xml is not properly decompressed"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/server.xml /tests/test-artifacts/server.xml || echo "server.xml is not properly decompressed"
     exitCode: 0
     excludedOutput: [ "server.xml is not properly decompressed" ]
 
@@ -1950,7 +1950,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/web_compressed.xml /opt/pega/config/web.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading web.xml from /opt/pega/decompressedconfig/web.xml..." ]
 
@@ -1978,7 +1978,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/tomcat-users_compressed.xml /opt/pega/config/tomcat-users.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading tomcat-users.xml from /opt/pega/decompressedconfig/tomcat-users.xml..." ]
 
@@ -2006,8 +2006,8 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/tomcat-users_compressed.xml /opt/pega/config/tomcat-users.xml &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/tomcat-users.xml /tests/test-artifacts/tomcat-users.xml || echo "tomcat-users.xml is not properly decompressed"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/tomcat-users.xml /tests/test-artifacts/tomcat-users.xml || echo "tomcat-users.xml is not properly decompressed"
     exitCode: 0
     excludedOutput: [ "tomcat-users.xml is not properly decompressed" ]
 
@@ -2035,7 +2035,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/catalina_compressed.properties /opt/pega/config/catalina.properties &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading catalina.properties from /opt/pega/decompressedconfig/catalina.properties..." ]
 
@@ -2063,7 +2063,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/prbootstrap_compressed.properties /opt/pega/config/prbootstrap.properties &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading prbootstrap.properties from /opt/pega/decompressedconfig/prbootstrap.properties..." ]
 
@@ -2091,7 +2091,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/java_compressed.security.overwrite /opt/pega/config/java.security.overwrite &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading java.security.overwrite from /opt/pega/decompressedconfig/java.security.overwrite..." ]
 
@@ -2119,7 +2119,7 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/tomcat-web_compressed.xml /opt/pega/config/tomcat-web.xml &&
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "Loading tomcat web.xml from /opt/pega/decompressedconfig/tomcat-web.xml..." ]
 
@@ -2147,8 +2147,8 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/templates/server_compressed.xml.tmpl /opt/pega/config/server.xml.tmpl &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/server.xml /tests/test-artifacts/templates/expected_server.xml -wB || echo "decompressed server.xml is not properly dockerized"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/server.xml /tests/test-artifacts/templates/expected_server.xml -wB || echo "decompressed server.xml is not properly dockerized"
     exitCode: 0
     excludedOutput: [ "decompressed server.xml is not properly dockerized" ]
 
@@ -2176,8 +2176,8 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/templates/context_compressed.xml.tmpl /opt/pega/config/context.xml.tmpl &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "decompressed context.xml is not properly dockerized"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "decompressed context.xml is not properly dockerized"
     exitCode: 0
     excludedOutput: [ "decompressed context.xml is not properly dockerized" ]
 
@@ -2205,8 +2205,8 @@ commandTests:
       - -c
       - |
         mv /tests/test-artifacts/templates/context.xml.tmpl /opt/pega/config/context.xml.tmpl &&
-        bash -c './scripts/docker-entrypoint.sh' &&
-        diff /usr/local/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized when compress is false"
+        bash -c '/scripts/docker-entrypoint.sh' &&
+        diff /usr/share/tomcat/conf/context.xml /tests/test-artifacts/templates/expected_context.xml || echo "context.xml is not properly dockerized when compress is false"
     exitCode: 0
     excludedOutput: ["context.xml is not properly dockerized when compress is false"]
 
@@ -2233,7 +2233,7 @@ commandTests:
     args:
       - -c
       - |
-        bash -c './scripts/docker-entrypoint.sh' &&
+        bash -c '/scripts/docker-entrypoint.sh' &&
         if [ "$(ls /opt/pega/config | wc -l)" -ne "$(ls /opt/pega/decompressedconfig | wc -l)" ]; then echo "missing files in file_list variable"; fi
     exitCode: 0
     excludedOutput: [ "missing files in file_list variable" ]
@@ -2261,7 +2261,7 @@ commandTests:
     args:
       - -c
       - |
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "External custom keystore name key found" ]
 
@@ -2288,7 +2288,7 @@ commandTests:
     args:
       - -c
       - |
-        bash -c './scripts/docker-entrypoint.sh'
+        bash -c '/scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: [ "External custom keystore password key found" ]
 
@@ -2302,7 +2302,7 @@ commandTests:
     args:
       - -c
       - |
-        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        bash -c '/usr/share/tomcat/bin/catalina.sh run &'&&
         sleep 5s
     exitCode: 0
     excludedOutput: [ " -javaagent:/opt/pega/rasp/pegarasp-agent.jar=action=WARN -Xbootclasspath/a:/opt/pega/rasp/pegarasp-core.jar" ]
@@ -2315,7 +2315,7 @@ commandTests:
     args:
       - -c
       - |
-        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        bash -c '/usr/share/tomcat/bin/catalina.sh run &'&&
         sleep 5s
     exitCode: 0
     excludedOutput: [ " -javaagent:/opt/pega/rasp/pegarasp-agent.jar -Xbootclasspath/a:/opt/pega/rasp/pegarasp-core.jar" ]
@@ -2330,7 +2330,7 @@ commandTests:
     args:
       - -c
       - |
-        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        bash -c '/usr/share/tomcat/bin/catalina.sh run &'&&
         sleep 5s
     exitCode: 0
     expectedOutput: [ " -javaagent:/opt/pega/rasp/pegarasp-agent.jar=action=WARN -Xbootclasspath/a:/opt/pega/rasp/pegarasp-core.jar" ]
@@ -2343,7 +2343,7 @@ commandTests:
     args:
       - -c
       - |
-        bash -c '/usr/local/tomcat/bin/catalina.sh run &'&&
+        bash -c '/usr/share/tomcat/bin/catalina.sh run &'&&
         sleep 5s
     exitCode: 0
     expectedOutput: [ " -javaagent:/opt/pega/rasp/pegarasp-agent.jar -Xbootclasspath/a:/opt/pega/rasp/pegarasp-core.jar" ]
