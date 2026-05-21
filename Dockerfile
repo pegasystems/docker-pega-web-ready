@@ -1,4 +1,4 @@
-# Dockerfile for Pega 8 Platform
+# Dockerfile for Pega Platform
 
 # Base image to extend from
 ARG BASE_TOMCAT_IMAGE
@@ -53,12 +53,8 @@ LABEL vendor="Pegasystems Inc." \
 
 USER root
 
-RUN chown -R pegauser /usr/share/tomcat && \
-    chgrp -R 0 /usr/share/tomcat
-
-
-ENV JAVA_HOME=/usr/lib/jvm/default-jvm
-ENV CATALINA_HOME=/usr/share/tomcat
+RUN chown -R pegauser $CATALINA_HOME && \
+    chgrp -R 0 $CATALINA_HOME
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 ENV DETEMPLATIZE_IMAGE_VERSION=${DETEMPLATIZE_IMAGE_VERSION}
@@ -316,8 +312,7 @@ RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
 
-# TODO: need to generalize...
-RUN chmod g+w /etc/ssl/certs/java/cacerts
+RUN chmod g+w $CACERTS_PATH
 
 #switched the user to pegauser
 USER pegauser

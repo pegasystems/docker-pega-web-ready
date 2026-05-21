@@ -2,11 +2,10 @@
 schemaVersion: "2.0.0"
 
 # Verify metadata of the docker file
-
 metadataTest:
   envVars:
    - key: CATALINA_HOME
-     value: /usr/share/tomcat
+     value: "/usr/share/tomcat"
    - key: PATH
      value: /usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
    - key: JDBC_MAX_ACTIVE
@@ -41,19 +40,19 @@ fileExistenceTests:
   isExecutableBy: 'group'
 
 - name: 'tomcat path'
-  path: '/usr/share/tomcat/'
+  path: "/usr/share/tomcat/"
   shouldExist: true
   permissions: 'drwxr-xr-x'
   uid: 9001
   gid: 0
 
 - name: 'Incorrect path'
-  path: '/usr/share/tomcat/test'
+  path: "/usr/share/tomcat/test"
   shouldExist: false
   permissions: 'dgrwxr-xr-x'
 
 - name: 'catalina file path'
-  path: '/usr/share/tomcat/bin/catalina.sh'
+  path: "/usr/share/tomcat/bin/catalina.sh"
   shouldExist: true
   permissions: '-rwxrwxr-x'
   uid: 9001
@@ -389,7 +388,7 @@ commandTests:
     args:
     - -c
     - |
-        mv /tests/test-artifacts/catalina.sh /usr/share/tomcat/bin/catalina.sh &&
+        mv /tests/test-artifacts/catalina.sh $CATALINA_HOME/bin/catalina.sh &&
         bash -c '/scripts/docker-entrypoint.sh run'
     expectedOutput: ["Index Directory Value - "]
 
