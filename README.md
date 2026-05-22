@@ -1,9 +1,21 @@
-Pega Docker Image
+Pega Docker Image - v4 Preview
 ===========
 
 Pega Platform is a distributed web application for customer engagement, customer service, and digital process automation. A Pega deployment consists of a number of containers connecting to a Database and any other required backing services.  The Pega database contains business rule logic that must be preloaded with an installer for the containers to successfully start.  For more information and instructions on how to get started with a container based deployment of Pega, see [Pega's Cloud Choice documentation](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/containerized-deployments-kubernetes.html).
 
+_This is a preview version of the v4 pega-ready image.  It is not intended for production use and should only be used for testing and adoption purposes._
+
+This version accomplishes the following:
+* Improves the process of creating custom pega-ready images by removing OS-specific utilities from the Dockerfile.
+* Notably removes curl from the Pega runtime image, which is not required for Pega to run and is a common source of vulnerabilities in container images.  If you are building your own image, you can mount JDBC driver libraries to the `/opt/pega/lib` directory of the image.
+
 [![Docker Image Build](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml/badge.svg?branch=master)](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
+
+# New pega-ready v4 base image Requirements
+In addition to the previous requirements for this image's base image (listed below), this image imposes a few additional requirements:
+* The CATALINA_HOME environment variable must be set to the real path (specifically not a path that leverages a symlink).
+* The CACERTS_PATH environment variable must be set to the real path of cacerts file (the one normally fould under $JAVA_HOME/lib/security/cacerts) (specifically not a path that leverages a symlink).
+* The container should have setup a user named "pegauser" (uid==9001) belonging to the "pegauser" group (gid:9001) and also to the "root" (gid:0) group.
 
 # Using this image
 
