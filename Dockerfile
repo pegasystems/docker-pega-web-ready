@@ -46,6 +46,8 @@ FROM $BASE_TOMCAT_IMAGE AS release
 ARG VERSION
 ARG DETEMPLATIZE_IMAGE_VERSION=latest
 ARG TOMCAT_MAJOR_VERSION=9
+ARG CATALINA_REAL_PATH
+ARG CACERTS_REAL_PATH
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
@@ -53,8 +55,8 @@ LABEL vendor="Pegasystems Inc." \
 
 USER root
 
-RUN chown -R pegauser $CATALINA_HOME && \
-    chgrp -R 0 $CATALINA_HOME
+RUN chown -R pegauser $CATALINA_REAL_PATH && \
+    chgrp -R 0 $CATALINA_REAL_PATH
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 ENV DETEMPLATIZE_IMAGE_VERSION=${DETEMPLATIZE_IMAGE_VERSION}
@@ -179,7 +181,7 @@ ENV JAVA_OPTS="" \
     NODE_TIER="" \
     NODE_SETTINGS="" \
     PEGA_APP_CONTEXT_PATH=prweb \
-    PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
+    PEGA_DEPLOYMENT_DIR=${CATALINA_REAL_PATH}/webapps/prweb
 
 # Configure Remote JMX support and bind to port 9001
 ENV JMX_PORT=9001 \
@@ -287,32 +289,32 @@ RUN chmod -R g+rw ${JAVA_HOME}/lib/security && \
     chown -R pegauser ${JAVA_HOME}/lib/security
 
 # Remove existing webapps
-RUN rm -rf ${CATALINA_HOME}/webapps/*
+RUN rm -rf ${CATALINA_REAL_PATH}/webapps/*
 
 # Copy in tomcat configuration and application files
-COPY tomcat-webapps ${CATALINA_HOME}/webapps/
-COPY tomcat-bin ${CATALINA_HOME}/bin/
-COPY tomcat-conf ${CATALINA_HOME}/conf/
+COPY tomcat-webapps ${CATALINA_REAL_PATH}/webapps/
+COPY tomcat-bin ${CATALINA_REAL_PATH}/bin/
+COPY tomcat-conf ${CATALINA_REAL_PATH}/conf/
 COPY scripts /scripts
-COPY tomcat-versioned-artifacts/${TOMCAT_MAJOR_VERSION}/root_web.xml ${CATALINA_HOME}/webapps/ROOT/WEB-INF/web.xml
+COPY tomcat-versioned-artifacts/${TOMCAT_MAJOR_VERSION}/root_web.xml ${CATALINA_REAL_PATH}/webapps/ROOT/WEB-INF/web.xml
 
 
 # Update access of required directories to allow not running in root for openshift
-RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
-    chmod -R g+rw ${CATALINA_HOME}/lib  && \
-    chmod -R g+rw ${CATALINA_HOME}/work  && \
-    chmod -R g+rw ${CATALINA_HOME}/conf  && \
-    chmod -R g+rw ${CATALINA_HOME}/bin  && \
-    chmod -R g+rw ${CATALINA_HOME}/webapps && \
+RUN chmod -R g+rw ${CATALINA_REAL_PATH}/logs  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/lib  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/work  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/conf  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/bin  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/webapps && \
     chmod -R g+x /scripts && \
     chown -R pegauser /scripts && \
-    chmod g+r ${CATALINA_HOME}/conf/web.xml && \
-    chown -R pegauser ${CATALINA_HOME}  && \
+    chmod g+r ${CATALINA_REAL_PATH}/conf/web.xml && \
+    chown -R pegauser ${CATALINA_REAL_PATH}  && \
     mkdir /search_index && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
 
-RUN chmod g+w $CACERTS_PATH
+RUN chmod 464 $CACERTS_REAL_PATH
 
 #switched the user to pegauser
 USER pegauser
