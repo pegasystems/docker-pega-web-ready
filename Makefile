@@ -19,6 +19,7 @@ JDK17_CRP := $(shell docker run --entrypoint /bin/bash ${JDK17_BASE_IMG} -c "rea
 JDK17_CCRP := $(shell docker run --entrypoint /bin/bash ${JDK17_BASE_IMG} -c "realpath \$$JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]'")
 JDK21_CRP := "$(shell docker run --entrypoint /bin/bash ${JDK21_BASE_IMG} -c "realpath \$$CATALINA_HOME | tr -d '[:cntrl:]'")"
 JDK21_CCRP := $(shell docker run --entrypoint /bin/bash ${JDK21_BASE_IMG} -c "realpath \$$JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]'")
+CATALINA_PATH_SUBSTITUTION := $(shell echo ${JDK11_CRP} | sed 's/\//\\\//g')
 
 all: image
 
@@ -34,6 +35,10 @@ image:
 test: image
 	# Build image for executing test cases against it
 	docker build --build-arg VERSION=$(VERSION) --build-arg CATALINA_REAL_PATH=${JDK11_CRP} --build-arg CACERTS_REAL_PATH=${JDK11_CCRP} --build-arg BASE_TOMCAT_IMAGE=${JDK11_BASE_IMG} -t qualitytest . --target qualitytest
+	# Setup test assets
+	$(shell sed 's/@@CATALINA_PATH@@/${CATALINA_PATH_SUBSTITUTION}/' tests/test-artifacts/expected_prweb.xml > tests/test-artifacts/expected_prweb_temp.xml)
+	$(shell sed 's/@@CATALINA_PATH@@/${CATALINA_PATH_SUBSTITUTION}/' tests/test-artifacts/expected_prweb_hz_ssl.xml > tests/test-artifacts/expected_prweb_hz_ssl_temp.xml)
+	$(shell sed 's/@@CATALINA_PATH@@/${CATALINA_PATH_SUBSTITUTION}/' tests/test-artifacts/expected_prweb_withDefaultStreamProvider.xml > tests/test-artifacts/expected_prweb_withDefaultStreamProvider_temp.xml)
 	# Execute test cases
 	container-structure-test test --image qualitytest --config tests/pega-web-ready-testcases.yaml
 	container-structure-test test --image $(IMAGE_NAME) --config tests/pega-web-ready-release-testcases.yaml
