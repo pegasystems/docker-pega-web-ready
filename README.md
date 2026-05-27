@@ -8,18 +8,14 @@ _This is a preview version of the v4 pega-ready image.  It is not intended for p
 This version accomplishes the following:
 * Improves the process of creating custom pega-ready images by removing OS-specific utilities from the Dockerfile.
 * Notably removes curl from the Pega runtime image, which is not required for Pega to run and is a common source of vulnerabilities in container images.  If you are building your own image, you can mount JDBC driver libraries to the `/opt/pega/lib` directory of the image.
+* Allows you base image to not include a package manager.
+* Introduces a builder image which can be leveraged to download any assets (libaries, jar files) needed.
 
 [![Docker Image Build](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml/badge.svg?branch=master)](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
 
-# New pega-ready v4 base image Requirements
-In addition to the previous requirements for this image's base image (listed below), this image imposes a few additional requirements:
-* The CATALINA_HOME environment variable must be set to the real path (specifically not a path that leverages a symlink).
-* The CACERTS_PATH environment variable must be set to the real path of cacerts file (the one normally fould under $JAVA_HOME/lib/security/cacerts) (specifically not a path that leverages a symlink).
-* The container should have setup a user named "pegauser" (uid==9001) belonging to the "pegauser" group (gid:9001) and also to the "root" (gid:0) group.
-
 # Using this image
 
-Pega offers a publicly available Pega runtime Docker image which includes the prweb.war file, but does not contain Pega rules - for details, see [pegasystems/pega on DockerHub][pegasystems/pega] and [Pega-provided Docker images](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/pega-docker-images-manage.html). Pega builds the `pegasystems/pega` image from a [pegasystems/pega-ready](https://hub.docker.com/r/pegasystems/pega-ready) Docker image, a base image that contains an OS (Ubuntu Linux), a Java implementation (Adoptium Temurin JDK11 or JDK17), and an application server (Apache Tomcat), and that is customized with Pega-specific configurations. You can use the `pegasystems/pega-ready` Dockerfile code to customize and build your own web-ready image and then extend it with the Pega .war file of your choice.
+Pega offers a publicly available Pega runtime Docker image which includes the prweb.war file, but does not contain Pega rules - for details, see [pegasystems/pega on DockerHub][pegasystems/pega] and [Pega-provided Docker images](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/pega-docker-images-manage.html). Pega builds the `pegasystems/pega` image from a [pegasystems/pega-ready](https://hub.docker.com/r/pegasystems/pega-ready) Docker image, a base image that contains an Linux OS, a Java implementation (JDK11, JDK17, or JDK21), and an application server (Apache Tomcat), and that is customized with Pega-specific configurations. You can use the `pegasystems/pega-ready` Dockerfile code to customize and build your own web-ready image and then extend it with the Pega .war file of your choice.
 
 Docker images provided by Pegasystems are validated and supported by [Pega Support](https://community.pega.com/support).
 
@@ -46,44 +42,6 @@ For more information, see [pegasystems/docker-pega-web-ready/Dockerfile](Dockerf
      ```
 
 The system then builds your custom pega-web-ready Docker image.
-
-### Additional Instructions for Fedora based OS.
-
-Pega builds images on Ubuntu, which is Debian-based. If you want to build the Pega web-ready image using a Fedora-based OS, such as RHEL or CentOS,
-some of the commands used in the Dockerfile will not work.
-
-Debian uses `apt-get` as package manager, whereas Fedora uses `yum` or `dnf`, therefore you need to replace the `apt-get` references in the Dockerfile with `yum` or `dnf` 
-depending on the base image selected.
-
-For example, in the following section of the Dockerfile:
-
-```bash
-# Fetches the packages and latest versions.
-RUN apt-get update && \
-    apt-get install -y gpg && \
-    rm -rf /var/lib/apt/lists/*
-```
-
-You must replace the `apt-get` package manager with `yum` or `dnf` depending on which package manager is supported in the OS of your choice.
-
-
-```bash
-# Fetches the packages and latest versions.
-RUN yum -y update && \
-    yum -y install gpg
-```
-
-Additionally, you must comment out the following line in the Dockerfile. This command is not intended for Fedora-based OS, and it might impact the OS functionality if used.
-```bash
-RUN apt-get autoremove --purge -y gpg
-```
-Important additional notes when building your Pega web-ready image with a Fedora-based OS
-1. The `yum/dnf` update command contacts enabled mirror repositories to fetch the packages and their latest versions. 
-   For `yum`, you can configure the repositories in the /etc/yum.repos.d directory. Ensure that these repositories are reachable within the Docker host network.
-2. If you build an image using `RHEL`, the `yum/dnf` update command attempts to contact Red Hat repositories, so you must confirm your Red Hat identity using subscription-manager to connect to the Red Hat repositories.
-   For more details, see https://access.redhat.com/solutions/253273.
-3. `Curl` is required for downloading several jars in the Dockerfile at the build time. As a best practice, download curl lib or any other similar utility if it is not part of your base image.
-    If you use some alternate tool for curl, change the curl reference accordingly. Alternatively, you can also include the required jars in the base image.
 
 
 ## User access and control considerations for this image
