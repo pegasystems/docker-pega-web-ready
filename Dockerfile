@@ -6,7 +6,7 @@ ARG DETEMPLATIZE_IMAGE_VERSION=latest
 
 FROM pegasystems/detemplatize:$DETEMPLATIZE_IMAGE_VERSION AS detemplatize
 
-FROM alpine:3.22 AS builder
+FROM alpine:3.23 AS builder
 
 RUN apk add --update --no-cache curl gpg gpg-agent
 
@@ -314,7 +314,7 @@ RUN chmod -R g+rw ${CATALINA_REAL_PATH}/logs  && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
 
-RUN chmod 464 $CACERTS_REAL_PATH
+RUN chmod g+w $CACERTS_REAL_PATH
 
 #switched the user to pegauser
 USER pegauser

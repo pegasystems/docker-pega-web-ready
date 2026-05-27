@@ -4,10 +4,6 @@ schemaVersion: "2.0.0"
 # Verify metadata of the docker file
 metadataTest:
   envVars:
-   - key: CATALINA_HOME
-     value: "/usr/share/tomcat"
-   - key: PATH
-     value: /usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
    - key: JDBC_MAX_ACTIVE
      value: 75
    - key: JDBC_MIN_IDLE
@@ -72,7 +68,7 @@ fileExistenceTests:
   uid: 9001
   gid: 0
 
-- name: 'opt/pega File Path'
+- name: '/opt/pega File Path'
   path: '/opt/pega'
   shouldExist: true
   permissions: 'drwxrwxr-x'
@@ -252,12 +248,32 @@ commandTests:
     command: "echo"
     args: ["$BCFIPS_PATH"]
     expectedOutput: ["/opt/pega/bcfips"]
-# Verify Cataline_home variable       
-  - name: "Catalina Home check"
+  # Verify that base64 is on the PATH
+  - name: "check for base64 on the path"
     command: "which"
-    args: ["$CATALINA_HOME/bin/catalina.sh"]
-    expectedOutput: [".+/bin/catalina.sh"]
-# Verify Nodetype initialization    
+    args: ["base64"]
+    expectedOutput: [".+base64"]
+  # Verify that gzip is on the PATH
+  - name: "check for gzip on the path"
+    command: "which"
+    args: ["gzip"]
+    expectedOutput: [".+gzip"]
+  # Verify that basename is on the PATH
+  - name: "check for basename on the path"
+    command: "which"
+    args: ["basename"]
+    expectedOutput: [".+basename"]
+  # Verify that awk is on the PATH
+  - name: "check for awk on the path"
+    command: "which"
+    args: ["awk"]
+    expectedOutput: [".+awk"]
+  # Verify that keytool the PATH
+  - name: "check for keytool on the path"
+    command: "which"
+    args: ["keytool"]
+    expectedOutput: [".+keytool"]
+  # Verify Nodetype initialization
   - name: "NodeType initialization check"
     envVars:
     - key: "JDBC_URL"
