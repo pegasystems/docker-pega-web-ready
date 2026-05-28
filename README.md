@@ -36,11 +36,13 @@ For more information, see [pegasystems/docker-pega-web-ready/Dockerfile](Dockerf
 **Note:** You can add any extra environment variables needed in the Dockerfile as per your use-case.
 
 3. Use the following command to build the custom pega-web-ready image using the base image as an argument.
-
      ```bash
-        $ docker build --build-arg BASE_TOMCAT_IMAGE=<BASE_IMAGE> -t <IMAGE_NAME> .
+        $ docker build --build-arg BASE_TOMCAT_IMAGE=<BASE_IMAGE> --build-arg CATALINA_REAL_PATH=<real path to CATALINA_HOME> --build-arg CACERTS_REAL_PATH <real path to cacerts file used by java> -t <IMAGE_NAME> .
      ```
-
+2 of the arguments above require some additional explanation:
+* `CATALINA_REAL_PATH` is the path to the CATALINA_HOME directory in your base image.  This path should not include symlinks.  Inside of the base image container this can be determined by `ls -l $CATALINA_HOME`.
+* `CACERTS_REAL_PATH` is the path to the cacerts file used by java in your base image.  This can be determined by running the folowing command inside the base image container: `ls -l $JAVA_HOME/lib/security/cacerts`.
+  
 The system then builds your custom pega-web-ready Docker image.
 
 
