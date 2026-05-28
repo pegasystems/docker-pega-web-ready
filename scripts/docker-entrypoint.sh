@@ -65,7 +65,7 @@ java_security_overwrite="${final_config_root}/java.security.overwrite"
 tomcat_web_xml="${final_config_root}/tomcat-web.xml"
 
 declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "HZ_SSL_KEYSTORE_PASSWORD" "HZ_SSL_TRUSTSTORE_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG" "SRS_KEYSTORE_PASSWORD" "SRS_TRUSTSTORE_PASSWORD")
-for secret in $(ls ${secret_root});
+for secret in "${secret_root}"/*;
 do
   basename=$(basename "$secret")
   temp_file="${secret_root}/${basename}"
