@@ -200,7 +200,9 @@ commandTests:
         rm -f $CATALINA_HOME/conf/Catalina/localhost/prweb.xml &&
         bash -c '$CATALINA_HOME/bin/catalina.sh run &'&&
         sleep 15s &&
-        jrunscript -f /tests/test-artifacts/getresponsecode.js "http://localhost:8080"
+        pushd /tests/test-artifacts/ &&
+        java GetResponseCode.java "http://localhost:8080" &&
+        popd
     exitCode: 0
     expectedOutput: ["302"]
   - name: "catalina check -- return 404 for non-existent resource"
@@ -211,7 +213,9 @@ commandTests:
         rm -f $CATALINA_HOME/conf/Catalina/localhost/prweb.xml &&
         bash -c '$CATALINA_HOME/bin/catalina.sh run &'&&
         sleep 15s &&
-        jrunscript -f /tests/test-artifacts/getresponsecode.js "http://localhost:8080/favicon.ico"
+        pushd /tests/test-artifacts/ &&
+        java GetResponseCode.java "http://localhost:8080/favicon.ico" &&
+        popd
     exitCode: 0
     expectedOutput: ["404"]
   - name: "catalina check -- return 200 for static resource"
@@ -222,7 +226,9 @@ commandTests:
         rm -f $CATALINA_HOME/conf/Catalina/localhost/prweb.xml &&
         bash -c '$CATALINA_HOME/bin/catalina.sh run &'&&
         sleep 15s &&
-        jrunscript -f /tests/test-artifacts/getresponsecode.js "http://localhost:8080/healthz.html"
+        pushd /tests/test-artifacts/ &&
+        java GetResponseCode.java "http://localhost:8080/healthz.html" &&
+        popd
     exitCode: 0
     expectedOutput: ["200"]
 # Verify Java install    
