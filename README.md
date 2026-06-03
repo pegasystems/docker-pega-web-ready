@@ -8,7 +8,7 @@ _This is a preview version of the v4 pega-ready image.  It is not intended for p
 This version accomplishes the following:
 * Improves the process of creating custom pega-ready images by removing OS-specific utilities from the Dockerfile.
 * Notably removes curl from the Pega runtime image, which is not required for Pega to run and is a common source of vulnerabilities in container images.  If you are building your own image, you can mount JDBC driver libraries to the `/opt/pega/lib` directory of the image.
-* Allows you base image to not include a package manager.
+* Allows your base image to not include a package manager.
 * Introduces a builder image which can be leveraged to download any assets (libaries, jar files) needed.
 
 [![Docker Image Build](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml/badge.svg?branch=master)](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
