@@ -47,7 +47,7 @@ if [ "$IS_PEGA_CONFIG_COMPRESSED" == true ]; then
     for filename in "${file_list[@]}"; do
       if [ -e "${config_root}/${filename}" ]; then
         echo "decompressing ${filename} in ${config_root}/${filename}"
-        cat "${config_root}/${filename}" | base64 --decode | gzip -d > "${final_config_root}/${filename}"
+        cat "${config_root}/${filename}" | base64 -d | gzip -d > "${final_config_root}/${filename}"
       fi
     done
 fi
@@ -64,7 +64,7 @@ prbootstrap_properties="${final_config_root}/prbootstrap.properties"
 java_security_overwrite="${final_config_root}/java.security.overwrite"
 tomcat_web_xml="${final_config_root}/tomcat-web.xml"
 
-declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CUSTOM_ARTIFACTORY_USERNAME" "CUSTOM_ARTIFACTORY_PASSWORD" "CUSTOM_ARTIFACTORY_APIKEY_HEADER" "CUSTOM_ARTIFACTORY_APIKEY" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "HZ_SSL_KEYSTORE_PASSWORD" "HZ_SSL_TRUSTSTORE_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG" "SRS_KEYSTORE_PASSWORD" "SRS_TRUSTSTORE_PASSWORD")
+declare -a secrets_list=("DB_USERNAME" "DB_PASSWORD" "CASSANDRA_USERNAME" "CASSANDRA_PASSWORD" "CASSANDRA_TRUSTSTORE_PASSWORD" "CASSANDRA_KEYSTORE_PASSWORD"  "HZ_CS_AUTH_USERNAME" "HZ_CS_AUTH_PASSWORD" "HZ_SSL_KEYSTORE_PASSWORD" "HZ_SSL_TRUSTSTORE_PASSWORD" "PEGA_DIAGNOSTIC_USER" "PEGA_DIAGNOSTIC_PASSWORD" "STREAM_TRUSTSTORE_PASSWORD" "STREAM_KEYSTORE_PASSWORD" "STREAM_JAAS_CONFIG" "SRS_KEYSTORE_PASSWORD" "SRS_TRUSTSTORE_PASSWORD")
 for secret in "${secret_root}"/*
 do
   basename=$(basename "$secret")
@@ -113,80 +113,6 @@ fi
 if [ "$JDBC_CLASS" == "" ]; then
   echo "JDBC_CLASS must be specified.";
   exit 1
-fi
-
-
-custom_artifactory_auth=""
-if [ "$SECRET_CUSTOM_ARTIFACTORY_USERNAME" != "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_PASSWORD" != "" ]; then
-    if [ "$SECRET_CUSTOM_ARTIFACTORY_USERNAME" == "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_PASSWORD" == "" ]; then
-        echo "SECRET_CUSTOM_ARTIFACTORY_USERNAME & SECRET_CUSTOM_ARTIFACTORY_PASSWORD must be specified for basic authentication for custom artifactory."
-        exit 1
-    else
-        echo "Using basic authentication for custom artifactory to download JDBC driver."
-        custom_artifactory_auth="-u "$SECRET_CUSTOM_ARTIFACTORY_USERNAME":"$SECRET_CUSTOM_ARTIFACTORY_PASSWORD
-    fi
-fi
-
-if [[ "$custom_artifactory_auth" == "" && ( "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER" != "" || "$SECRET_CUSTOM_ARTIFACTORY_APIKEY" != "" ) ]]; then
-    if [ "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER" == "" ] || [ "$SECRET_CUSTOM_ARTIFACTORY_APIKEY" == "" ]; then
-        echo "SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER & SECRET_CUSTOM_ARTIFACTORY_APIKEY must be specified for authentication using api key for custom artifactory."
-        exit 1
-    else
-        echo "Using API key for authentication of custom artifactory to download JDBC driver."
-        custom_artifactory_auth="-H "$SECRET_CUSTOM_ARTIFACTORY_APIKEY_HEADER":"$SECRET_CUSTOM_ARTIFACTORY_APIKEY
-    fi
-fi
-
-custom_artifactory_certificate=''
-if [ "$(ls -A "${pega_root}/artifactory/cert"/*)" ]; then
-     if [ "$(ls "${pega_root}/artifactory/cert"/* | wc -l)" == 1 ]; then
-       echo "Certificate is provided for custom artifactory's domain ssl verification."
-       # get certificate name
-       for certfile in "${pega_root}/artifactory/cert"/*
-        do
-           echo "folder name: ${pega_root}/artifactory/cert"
-           filename=$(basename "$certfile")
-           ext="${filename##*.}"
-           echo "$filename"
-           if [[ "$ext" =~ ^(cer|pem|crt|der|cert|jks|p7b|p7c|key)$ ]]; then
-              echo "$certfile"
-              custom_artifactory_certificate="--cacert "$certfile
-           else
-              echo "curl needs valid format certificate file for ssl verification."
-              exit 1
-           fi
-        done
-     else
-       echo "Provide one certificate file. The file may contain multiple CA certificates."
-       exit 1
-     fi
-fi
-
-if [ "$JDBC_DRIVER_URI" != "" ]; then
-  curl_cmd_options=''
-  if [ "$ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION" == true ]; then
-    echo "Establishing a secure connection to download driver."
-    curl_cmd_options="-sSL $custom_artifactory_auth $custom_artifactory_certificate"
-  else
-    echo "Establishing an insecure connection to download driver."
-    curl_cmd_options="-ksSL $custom_artifactory_auth"
-  fi
-
-  urls=$(echo "$JDBC_DRIVER_URI" | tr "," "\n")
-  for url in $urls
-    do
-     echo "Downloading database driver: ${url}";
-     jarabsurl="$(cut -d'?' -f1 <<<"$url")"
-     echo "$jarabsurl"
-     filename=$(basename "$jarabsurl")
-     if curl $curl_cmd_options --output /dev/null --silent --fail -r 0-0 "$url"
-     then
-       curl $curl_cmd_options -o ${lib_root}/$filename "${url}"
-     else
-       echo "Could not download jar from ${url}"
-       exit 1
-     fi
-    done
 fi
 
 # copy jars mounted in the /opt/pega/lib directory of container to ${CATALINA_HOME}/lib

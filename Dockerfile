@@ -1,35 +1,68 @@
-# Dockerfile for Pega 8 Platform
+# Dockerfile for Pega Platform
 
 # Base image to extend from
 ARG BASE_TOMCAT_IMAGE
 ARG DETEMPLATIZE_IMAGE_VERSION=latest
 
-FROM pegasystems/detemplatize:$DETEMPLATIZE_IMAGE_VERSION as detemplatize
+FROM pegasystems/detemplatize:$DETEMPLATIZE_IMAGE_VERSION AS detemplatize
 
-FROM $BASE_TOMCAT_IMAGE as release
+FROM alpine:3.23 AS builder
+
+RUN apk add --update --no-cache curl gpg gpg-agent
+
+COPY keys/ /keys/
+
+RUN mkdir -p /opt/pega/prometheus && \
+    mkdir -p /opt/pega/bcfips && \
+    curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
+    curl -sL -o /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar.asc && \
+    gpg --import /keys/prometheus.asc && \
+    gpg --verify /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc /opt/pega/prometheus/jmx_prometheus_javaagent.jar && \
+    rm /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc && \
+    # Updating Bouncy Castle jars versions below?  As these are used for FIPS 140-3 support, the versions below should
+    # only be replaced with FIPS certified library versions.  See https://www.bouncycastle.org/download/bouncy-castle-java-fips/#latest --
+    # paying particular attention to the "Distribution Files (JAR Format)".  The jars below correspond to BC-FJA 2.0.0.
+    curl -sL -o /opt/pega/bcfips/bc-fips-2.0.0.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.0.0/bc-fips-2.0.0.jar && \
+    curl -sL -o /tmp/bc-fips-2.0.0.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.0.0/bc-fips-2.0.0.jar.asc && \
+    curl -sL -o /opt/pega/bcfips/bctls-fips-2.0.19.jar https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.0.19/bctls-fips-2.0.19.jar && \
+    curl -sL -o /tmp/bctls-fips-2.0.19.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.0.19/bctls-fips-2.0.19.jar.asc && \
+    curl -sL -o /opt/pega/bcfips/bcutil-fips-2.0.3.jar https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.0.3/bcutil-fips-2.0.3.jar && \
+    curl -sL -o /tmp/bcutil-fips-2.0.3.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.0.3/bcutil-fips-2.0.3.jar.asc && \
+    curl -sL -o /opt/pega/bcfips/bc-rng-jent-1.3.6.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-rng-jent/1.3.6/bc-rng-jent-1.3.6.jar && \
+    curl -sL -o /tmp/bc-rng-jent-fips-1.3.6.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-rng-jent/1.3.6/bc-rng-jent-1.3.6.jar.asc && \
+    gpg --import /keys/bc_maven_public_key.asc && \
+    gpg --verify /tmp/bc-fips-2.0.0.jar.asc /opt/pega/bcfips/bc-fips-2.0.0.jar && \
+    rm /tmp/bc-fips-2.0.0.jar.asc && \
+    gpg --verify /tmp/bctls-fips-2.0.19.jar.asc /opt/pega/bcfips/bctls-fips-2.0.19.jar && \
+    rm /tmp/bctls-fips-2.0.19.jar.asc && \
+    gpg --verify /tmp/bcutil-fips-2.0.3.jar.asc /opt/pega/bcfips/bcutil-fips-2.0.3.jar && \
+    rm /tmp/bcutil-fips-2.0.3.jar.asc && \
+    gpg --verify /tmp/bc-rng-jent-fips-1.3.6.jar.asc /opt/pega/bcfips/bc-rng-jent-1.3.6.jar && \
+    rm /tmp/bc-rng-jent-fips-1.3.6.jar.asc
+
+
+FROM $BASE_TOMCAT_IMAGE AS release
 
 ARG VERSION
 ARG DETEMPLATIZE_IMAGE_VERSION=latest
 ARG TOMCAT_MAJOR_VERSION=9
+ARG CATALINA_REAL_PATH
+ARG CACERTS_REAL_PATH
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
       version=${VERSION:-CUSTOM_BUILD}
 
-# Creating new user and group
+USER root
 
-RUN groupadd -g 9001 pegauser && \
-    useradd -r -u 9001 -g pegauser pegauser
-
+RUN chown -R pegauser $CATALINA_REAL_PATH && \
+    chgrp -R 0 $CATALINA_REAL_PATH
 
 ENV PEGA_DOCKER_VERSION=${VERSION:-CUSTOM_BUILD}
 ENV DETEMPLATIZE_IMAGE_VERSION=${DETEMPLATIZE_IMAGE_VERSION}
 # Copy detemplatize to base image bin directory
 COPY --from=detemplatize /bin/detemplatize /bin/detemplatize
 COPY --from=detemplatize /opt/pega/rasp /opt/pega/rasp/
-
-COPY hashes/ /hashes/
-COPY keys/ /keys/
 
 # Create directory for storing heapdump
 RUN mkdir -p /heapdumps  && \
@@ -148,7 +181,7 @@ ENV JAVA_OPTS="" \
     NODE_TIER="" \
     NODE_SETTINGS="" \
     PEGA_APP_CONTEXT_PATH=prweb \
-    PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
+    PEGA_DEPLOYMENT_DIR=${CATALINA_REAL_PATH}/webapps/prweb
 
 # Configure Remote JMX support and bind to port 9001
 ENV JMX_PORT=9001 \
@@ -220,46 +253,18 @@ RUN  mkdir -p /opt/pega/kafkadata && \
      chmod -R g+rw /opt/pega/kafkadata && \
      chown -R pegauser /opt/pega/kafkadata
 
-# Fetches the packages and latest versions.
-RUN apt-get update && \
-    apt-get install -y gpg && \
-    rm -rf /var/lib/apt/lists/*
-
 # download necessary jars
 RUN mkdir -p /opt/pega/prometheus && \
-    mkdir -p /opt/pega/bcfips && \
-    curl -sL -o /opt/pega/prometheus/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar && \
-    curl -sL -o /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar.asc && \
-    gpg --import /keys/prometheus.asc && \
-    gpg --verify /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc /opt/pega/prometheus/jmx_prometheus_javaagent.jar && \
-    rm /tmp/jmx_prometheus_javaagent-0.18.0.jar.asc && \
-    # Updating Bouncy Castle jars versions below?  As these are used for FIPS 140-3 support, the versions below should
-    # only be replaced with FIPS certified library versions.  See https://www.bouncycastle.org/download/bouncy-castle-java-fips/#latest --
-    # paying particular attention to the "Distribution Files (JAR Format)".  The jars below correspond to BC-FJA 2.0.0.
-    curl -sL -o /opt/pega/bcfips/bc-fips-2.0.0.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.0.0/bc-fips-2.0.0.jar && \
-    curl -sL -o /tmp/bc-fips-2.0.0.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.0.0/bc-fips-2.0.0.jar.asc && \
-    curl -sL -o /opt/pega/bcfips/bctls-fips-2.0.19.jar https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.0.19/bctls-fips-2.0.19.jar && \
-    curl -sL -o /tmp/bctls-fips-2.0.19.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.0.19/bctls-fips-2.0.19.jar.asc && \
-    curl -sL -o /opt/pega/bcfips/bcutil-fips-2.0.3.jar https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.0.3/bcutil-fips-2.0.3.jar && \
-    curl -sL -o /tmp/bcutil-fips-2.0.3.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.0.3/bcutil-fips-2.0.3.jar.asc && \
-    curl -sL -o /opt/pega/bcfips/bc-rng-jent-1.3.6.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-rng-jent/1.3.6/bc-rng-jent-1.3.6.jar && \
-    curl -sL -o /tmp/bc-rng-jent-fips-1.3.6.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-rng-jent/1.3.6/bc-rng-jent-1.3.6.jar.asc && \
-    gpg --import /keys/bc_maven_public_key.asc && \
-    gpg --verify /tmp/bc-fips-2.0.0.jar.asc /opt/pega/bcfips/bc-fips-2.0.0.jar && \
-    rm /tmp/bc-fips-2.0.0.jar.asc && \
-    gpg --verify /tmp/bctls-fips-2.0.19.jar.asc /opt/pega/bcfips/bctls-fips-2.0.19.jar && \
-    rm /tmp/bctls-fips-2.0.19.jar.asc && \
-    gpg --verify /tmp/bcutil-fips-2.0.3.jar.asc /opt/pega/bcfips/bcutil-fips-2.0.3.jar && \
-    rm /tmp/bcutil-fips-2.0.3.jar.asc && \
-    gpg --verify /tmp/bc-rng-jent-fips-1.3.6.jar.asc /opt/pega/bcfips/bc-rng-jent-1.3.6.jar && \
-    rm /tmp/bc-rng-jent-fips-1.3.6.jar.asc && \
-    chgrp -R 0 /opt/pega/prometheus && \
+    mkdir -p /opt/pega/bcfips
+
+COPY --from=builder /opt/pega/prometheus /opt/pega/prometheus
+COPY --from=builder /opt/pega/bcfips /opt/pega/bcfips
+
+RUN chgrp -R 0 /opt/pega/prometheus && \
     chmod -R g+rw /opt/pega/prometheus && \
     chown -R pegauser /opt/pega/prometheus && \
     chmod 440 /opt/pega/prometheus/jmx_prometheus_javaagent.jar
 
-# Should not be called when building image on Fedora based OS. Safe call with Debian based OS like Ubuntu.
-RUN apt-get autoremove --purge -y gpg
 
 # Setup dir for cert files
 RUN  mkdir -p /opt/pega/certs  && \
@@ -284,30 +289,32 @@ RUN chmod -R g+rw ${JAVA_HOME}/lib/security && \
     chown -R pegauser ${JAVA_HOME}/lib/security
 
 # Remove existing webapps
-RUN rm -rf ${CATALINA_HOME}/webapps/*
+RUN rm -rf ${CATALINA_REAL_PATH}/webapps/*
 
 # Copy in tomcat configuration and application files
-COPY tomcat-webapps ${CATALINA_HOME}/webapps/
-COPY tomcat-bin ${CATALINA_HOME}/bin/
-COPY tomcat-conf ${CATALINA_HOME}/conf/
+COPY tomcat-webapps ${CATALINA_REAL_PATH}/webapps/
+COPY tomcat-bin ${CATALINA_REAL_PATH}/bin/
+COPY tomcat-conf ${CATALINA_REAL_PATH}/conf/
 COPY scripts /scripts
-COPY tomcat-versioned-artifacts/${TOMCAT_MAJOR_VERSION}/root_web.xml ${CATALINA_HOME}/webapps/ROOT/WEB-INF/web.xml
+COPY tomcat-versioned-artifacts/${TOMCAT_MAJOR_VERSION}/root_web.xml ${CATALINA_REAL_PATH}/webapps/ROOT/WEB-INF/web.xml
 
 
 # Update access of required directories to allow not running in root for openshift
-RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
-    chmod -R g+rw ${CATALINA_HOME}/lib  && \
-    chmod -R g+rw ${CATALINA_HOME}/work  && \
-    chmod -R g+rw ${CATALINA_HOME}/conf  && \
-    chmod -R g+rw ${CATALINA_HOME}/bin  && \
-    chmod -R g+rw ${CATALINA_HOME}/webapps && \
+RUN chmod -R g+rw ${CATALINA_REAL_PATH}/logs  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/lib  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/work  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/conf  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/bin  && \
+    chmod -R g+rw ${CATALINA_REAL_PATH}/webapps && \
     chmod -R g+x /scripts && \
     chown -R pegauser /scripts && \
-    chmod g+r ${CATALINA_HOME}/conf/web.xml && \
-    chown -R pegauser ${CATALINA_HOME}  && \
+    chmod g+r ${CATALINA_REAL_PATH}/conf/web.xml && \
+    chown -R pegauser ${CATALINA_REAL_PATH}  && \
     mkdir /search_index && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
+
+RUN chmod g+w $CACERTS_REAL_PATH
 
 #switched the user to pegauser
 USER pegauser
@@ -329,7 +336,7 @@ HEALTHCHECK --interval=5m --timeout=3s CMD jcmd 0 VM.uptime || exit 1
 
 # *****Target for test environment*****
 
-FROM release as qualitytest
+FROM release AS qualitytest
 USER root
 RUN mkdir /tests && \
     chown -R pegauser /tests

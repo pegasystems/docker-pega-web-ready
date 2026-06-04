@@ -6,12 +6,12 @@ commandTests:
     args:
     - -c
     - |
-        java -version  2>&1 | grep "OpenJDK 64-Bit Server VM Temurin"
-    expectedOutput: [".*OpenJDK 64-Bit Server VM Temurin-11.*"]
+        java -version  2>&1 | grep "OpenJDK 64-Bit Server VM openjdk"
+    expectedOutput: [".*OpenJDK 64-Bit Server VM openjdk-11.*"]
   - name: "TOMCAT VERSION check"
     command: "bash"
     args:
     - -c
     - |
-        env  2>&1 | grep "TOMCAT_VERSION"
-    expectedOutput: ["TOMCAT_VERSION=9.*"]
+      catalina.sh version 2>/dev/null | grep -F "Server version: "
+    expectedOutput: ["Server version: Apache Tomcat/9.*"]
