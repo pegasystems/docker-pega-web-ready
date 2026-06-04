@@ -27,6 +27,8 @@ metadataTest:
      value: 60000
    - key: ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION
      value: false
+   - key: PEGA_LOG_TRACE_ID_ENABLED
+     value: false
   exposedPorts: ["8080", "9001", "47100", "7003"]
   # Add 5701-5710 ports                      
   entrypoint: [/scripts/docker-entrypoint.sh]
