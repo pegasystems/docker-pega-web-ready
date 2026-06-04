@@ -6,8 +6,30 @@ group = "com.pega.cmc"
 version = "1.0"
 
 val testOutputFile = "${layout.buildDirectory.get().asFile.getAbsolutePath()}/platform_version.txt"
+val customMavenUrl: String? by project
+val customMavenUser: String? by project
+val customMavenPassword: String? by project
+
 repositories {
-    mavenCentral()
+    if(customMavenUrl != null){
+        maven {
+            setUrl(customMavenUrl!!)
+            credentials {
+                customMavenUser?.let{
+                    username = it
+                }
+                customMavenPassword?.let{
+                    password = it
+                }
+            }
+            metadataSources {
+                mavenPom()
+                gradleMetadata()
+            }
+        }
+    } else {
+        mavenCentral()
+    }
 }
 
 dependencies {
