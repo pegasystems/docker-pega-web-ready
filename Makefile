@@ -15,10 +15,16 @@ DETEMPLATIZE_IMAGE_VERSION:= $(if $(DETEMPLATIZE_IMAGE_VERSION),$(DETEMPLATIZE_I
 
 JDK11_CRP := "$(shell docker run --entrypoint /bin/bash ${JDK11_BASE_IMG} -c "realpath \$$CATALINA_HOME | tr -d '[:cntrl:]'")"
 JDK11_CCRP := $(shell docker run --entrypoint /bin/bash ${JDK11_BASE_IMG} -c "realpath \$$JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]'")
+JDK11_JV := $(shell docker run --entrypoint /bin/bash ${JDK11_BASE_IMG} -c "\$$JAVA_HOME/bin/java --full-version | awk '{print \$$NF}'")
+JDK11_TV := $(shell docker run --entrypoint /bin/bash ${JDK11_BASE_IMG} -c "\$$CATALINA_HOME/bin/version.sh | grep 'Server number:' | awk '{print \$$NF}'")
 JDK17_CRP := $(shell docker run --entrypoint /bin/bash ${JDK17_BASE_IMG} -c "realpath \$$CATALINA_HOME | tr -d '[:cntrl:]'")
 JDK17_CCRP := $(shell docker run --entrypoint /bin/bash ${JDK17_BASE_IMG} -c "realpath \$$JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]'")
+JDK17_JV := $(shell docker run --entrypoint /bin/bash ${JDK17_BASE_IMG} -c "\$$JAVA_HOME/bin/java --full-version | awk '{print \$$NF}'")
+JDK17_TV := $(shell docker run --entrypoint /bin/bash ${JDK17_BASE_IMG} -c  "\$$CATALINA_HOME/bin/version.sh | grep 'Server number:' | awk '{print \$$NF}'")
 JDK21_CRP := "$(shell docker run --entrypoint /bin/bash ${JDK21_BASE_IMG} -c "realpath \$$CATALINA_HOME | tr -d '[:cntrl:]'")"
 JDK21_CCRP := $(shell docker run --entrypoint /bin/bash ${JDK21_BASE_IMG} -c "realpath \$$JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]'")
+JDK21_JV := $(shell docker run --entrypoint /bin/bash ${JDK21_BASE_IMG} -c "\$$JAVA_HOME/bin/java --full-version | awk '{print \$$NF}'")
+JDK21_TV := $(shell docker run --entrypoint /bin/bash ${JDK21_BASE_IMG} -c  "\$$CATALINA_HOME/bin/version.sh | grep 'Server number:' | awk '{print \$$NF}'")
 CATALINA_PATH_SUBSTITUTION := $(shell echo ${JDK11_CRP} | sed 's/\//\\\//g')
 
 all: image
@@ -27,10 +33,10 @@ container: image
 
 image:
 	(cd versionchecker && ./gradlew build)
-	docker build --build-arg VERSION=$(VERSION) --build-arg CATALINA_REAL_PATH=$(JDK17_CRP) --build-arg CACERTS_REAL_PATH=$(JDK17_CCRP) --build-arg BASE_TOMCAT_IMAGE=${JDK17_BASE_IMG} --build-arg DETEMPLATIZE_IMAGE_VERSION=$(DETEMPLATIZE_IMAGE_VERSION) --build-arg TOMCAT_MAJOR_VERSION=9 -t $(IMAGE_NAME) . # Build image and automatically tag it as latest on jdk17
-	docker build --build-arg VERSION=$(VERSION) --build-arg CATALINA_REAL_PATH=${JDK11_CRP} --build-arg CACERTS_REAL_PATH=${JDK11_CCRP} --build-arg BASE_TOMCAT_IMAGE=${JDK11_BASE_IMG} --build-arg DETEMPLATIZE_IMAGE_VERSION=$(DETEMPLATIZE_IMAGE_VERSION) --build-arg TOMCAT_MAJOR_VERSION=9 -t $(IMAGE_NAME)\:4-jdk11 . # Build image using tomcat 9 , jdk 11
-	docker build --build-arg VERSION=$(VERSION) --build-arg CATALINA_REAL_PATH=${JDK17_CRP} --build-arg CACERTS_REAL_PATH=${JDK17_CCRP} --build-arg BASE_TOMCAT_IMAGE=${JDK17_BASE_IMG} --build-arg DETEMPLATIZE_IMAGE_VERSION=$(DETEMPLATIZE_IMAGE_VERSION) --build-arg TOMCAT_MAJOR_VERSION=9 -t $(IMAGE_NAME)\:4-jdk17 . # Build image using tomcat 9 , jdk 17
-	docker build --build-arg VERSION=$(VERSION) --build-arg CATALINA_REAL_PATH=${JDK21_CRP} --build-arg CACERTS_REAL_PATH=${JDK21_CCRP} --build-arg BASE_TOMCAT_IMAGE=${JDK21_BASE_IMG} --build-arg DETEMPLATIZE_IMAGE_VERSION=$(DETEMPLATIZE_IMAGE_VERSION) --build-arg TOMCAT_MAJOR_VERSION=10 -t $(IMAGE_NAME)\:4-jdk21 . # Build image using tomcat 10 , jdk 21
+	docker build --build-arg VERSION=$(VERSION) --build-arg CATALINA_REAL_PATH=$(JDK17_CRP) --build-arg CACERTS_REAL_PATH=$(JDK17_CCRP) --build-arg BASE_TOMCAT_IMAGE=${JDK17_BASE_IMG} --build-arg DETEMPLATIZE_IMAGE_VERSION=$(DETEMPLATIZE_IMAGE_VERSION) --build-arg JAVA_VERSION=${JDK17_JV} --build-arg TOMCAT_VERSION=${JDK17_TV} --build-arg TOMCAT_MAJOR_VERSION=9 -t $(IMAGE_NAME) . # Build image and automatically tag it as latest on jdk17
+	docker build --build-arg VERSION=$(VERSION) --build-arg CATALINA_REAL_PATH=${JDK11_CRP} --build-arg CACERTS_REAL_PATH=${JDK11_CCRP} --build-arg BASE_TOMCAT_IMAGE=${JDK11_BASE_IMG} --build-arg DETEMPLATIZE_IMAGE_VERSION=$(DETEMPLATIZE_IMAGE_VERSION) --build-arg JAVA_VERSION=${JDK11_JV} --build-arg TOMCAT_VERSION=${JDK11_TV} --build-arg TOMCAT_MAJOR_VERSION=9 -t $(IMAGE_NAME)\:4-jdk11 . # Build image using tomcat 9 , jdk 11
+	docker build --build-arg VERSION=$(VERSION) --build-arg CATALINA_REAL_PATH=${JDK17_CRP} --build-arg CACERTS_REAL_PATH=${JDK17_CCRP} --build-arg BASE_TOMCAT_IMAGE=${JDK17_BASE_IMG} --build-arg DETEMPLATIZE_IMAGE_VERSION=$(DETEMPLATIZE_IMAGE_VERSION) --build-arg JAVA_VERSION=${JDK17_JV} --build-arg TOMCAT_VERSION=${JDK17_TV} --build-arg TOMCAT_MAJOR_VERSION=9 -t $(IMAGE_NAME)\:4-jdk17 . # Build image using tomcat 9 , jdk 17
+	docker build --build-arg VERSION=$(VERSION) --build-arg CATALINA_REAL_PATH=${JDK21_CRP} --build-arg CACERTS_REAL_PATH=${JDK21_CCRP} --build-arg BASE_TOMCAT_IMAGE=${JDK21_BASE_IMG} --build-arg DETEMPLATIZE_IMAGE_VERSION=$(DETEMPLATIZE_IMAGE_VERSION) --build-arg JAVA_VERSION=${JDK21_JV} --build-arg TOMCAT_VERSION=${JDK21_TV} --build-arg TOMCAT_MAJOR_VERSION=10 -t $(IMAGE_NAME)\:4-jdk21 . # Build image using tomcat 10 , jdk 21
 
 test: image
 	# Build image for executing test cases against it

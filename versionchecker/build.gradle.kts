@@ -6,14 +6,37 @@ group = "com.pega.cmc"
 version = "1.0"
 
 val testOutputFile = "${layout.buildDirectory.get().asFile.getAbsolutePath()}/platform_version.txt"
+val customMavenUrl: String? by project
+val customMavenUser: String? by project
+val customMavenPassword: String? by project
+
 repositories {
-    mavenCentral()
+    if(customMavenUrl != null){
+        maven {
+            setUrl(customMavenUrl!!)
+            credentials {
+                customMavenUser?.let{
+                    username = it
+                }
+                customMavenPassword?.let{
+                    password = it
+                }
+            }
+            metadataSources {
+                mavenPom()
+                gradleMetadata()
+            }
+        }
+    } else {
+        mavenCentral()
+    }
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation(platform("org.junit:junit-bom:5.14.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("com.h2database:h2:2.3.232")
+    testImplementation("com.h2database:h2:2.4.240")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 java {
