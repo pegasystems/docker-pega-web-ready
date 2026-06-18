@@ -126,6 +126,7 @@ fun createBaseImageIntrospectionTasks(
         follow = true
         tailAll = true
 
+        stdErr = false
         sink = layout.buildDirectory.file("introspect/$uniqueName.txt")
 
         doFirst {
