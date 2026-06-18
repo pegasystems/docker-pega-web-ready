@@ -1,11 +1,9 @@
 package com.pega.cmc;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.util.Optional;
 import java.util.Properties;
 
 public class VersionChecker {

@@ -3,8 +3,6 @@ package com.pega.cmc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,7 +23,7 @@ public class TestVersionChecker {
     @BeforeAll
     public static void setUp() throws SQLException {
         Connection c = DriverManager.getConnection("jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS rules", TEST_DB_USERNAME, TEST_DB_PASSWORD);
-        try ( Statement s = c.createStatement(); ){
+        try ( Statement s = c.createStatement() ){
             s.execute("create schema if not exists rules");
             s.execute("create table rules.pr4_rule_ruleset(pyrulesetversionid varchar(32), pxObjClass varchar(32), pyrulesetname varchar(32))");
         }
@@ -34,7 +32,7 @@ public class TestVersionChecker {
 
     private static void addRSData() throws SQLException {
         Connection c = DriverManager.getConnection("jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS rules", TEST_DB_USERNAME, TEST_DB_PASSWORD);
-        try ( Statement s = c.createStatement(); ) {
+        try ( Statement s = c.createStatement() ) {
             s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('" + MAX_VERSION + "', 'Rule-RuleSet-Version', 'Pega-RULES')");
             s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('08-24-02', 'Rule-RuleSet-Version', 'Pega-RULES')");
             s.execute("insert into rules.pr4_rule_ruleset (pyrulesetversionid, pxObjClass, pyrulesetname) values ('07-30-10', 'Rule-RuleSet-Version', 'Pega-RULES')");
@@ -77,7 +75,7 @@ public class TestVersionChecker {
         try {
             //Remove existing entries
             Connection c = DriverManager.getConnection("jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS rules", TEST_DB_USERNAME, TEST_DB_PASSWORD);
-            try (Statement s = c.createStatement();) {
+            try (Statement s = c.createStatement()) {
                 s.execute("delete from rules.pr4_rule_ruleset");
             }
 

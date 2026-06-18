@@ -31,7 +31,7 @@ To build a custom pega-web-ready image using your preferred OS and JDK, perform 
    
 2. Create a Dockerfile for your custom pega-web-ready image using your base image and the open-source pega-web-ready Dockerfile code.
 
-For more information, see [pegasystems/docker-pega-web-ready/Dockerfile](Dockerfile).
+For more information, see [pegasystems/docker-pega-web-ready/Dockerfile](src/Dockerfile).
 
 **Note:** You can add any extra environment variables needed in the Dockerfile as per your use-case.
 
