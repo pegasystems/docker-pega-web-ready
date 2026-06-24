@@ -19,7 +19,11 @@ If you do not want to use the Pega-provided Docker image because, for example, y
 
 To build a custom pega-web-ready image using your preferred OS and JDK, perform the following actions:
 
-1. Ensure that the base image you selected has $CATALINA_HOME set to the correct Tomcat location.
+1. Ensure that the base image you selected meets the following requirements:
+   - `$CATALINA_HOME` is set to the correct Tomcat installation directory.
+   - `$JAVA_HOME` is set to the correct JDK installation directory.
+   - The `pegauser` user and group (UID/GID 9001) are present. The build will fail with a clear error if either is missing.
+   - `bash` is available (used by the entrypoint script).
    
 2. Create a Dockerfile for your custom pega-web-ready image using your base image and the open-source pega-web-ready Dockerfile code.
 
@@ -33,50 +37,30 @@ For more information, see [pegasystems/docker-pega-web-ready/Dockerfile](Dockerf
         $ docker build --build-arg BASE_TOMCAT_IMAGE=<BASE_IMAGE> -t <IMAGE_NAME> .
      ```
 
+   Additional build arguments are available to route image pulls through internal mirrors:
+
+   Argument | Purpose | Default
+   --- | --- | ---
+   `DETEMPLATIZE_IMAGE` | Registry path for the Pega detemplatize utility image. | `pegasystems/detemplatize`
+   `DETEMPLATIZE_IMAGE_VERSION` | Tag for the detemplatize image. | `latest`
+   `DOWNLOADER_BASE_IMAGE` | Base image for the isolated jar-download build stage. Must support `apt-get`. | `debian:12-slim`
+
 The system then builds your custom pega-web-ready Docker image.
 
-### Additional Instructions for Fedora based OS.
+### Using a Fedora-based or other non-Debian OS
 
-Pega builds images on Ubuntu, which is Debian-based. If you want to build the Pega web-ready image using a Fedora-based OS, such as RHEL or CentOS,
-some of the commands used in the Dockerfile will not work.
+The `BASE_TOMCAT_IMAGE` can be any Linux distribution, including RHEL or CentOS, with no Dockerfile modifications required. All package manager operations (`apt-get`, `curl`, `gpg`) are isolated to the `jardownloader` builder stage, which is separate from your base image and does not appear in the final image.
 
-Debian uses `apt-get` as package manager, whereas Fedora uses `yum` or `dnf`, therefore you need to replace the `apt-get` references in the Dockerfile with `yum` or `dnf` 
-depending on the base image selected.
+If your environment requires a non-Debian `DOWNLOADER_BASE_IMAGE` (for example, a UBI-based internal mirror), update the `apt-get install` commands in the `jardownloader` stage to use the appropriate package manager (`yum`, `dnf`, etc.) and ensure `curl` and `gpg` are installed.
 
-For example, in the following section of the Dockerfile:
-
-```bash
-# Fetches the packages and latest versions.
-RUN apt-get update && \
-    apt-get install -y gpg && \
-    rm -rf /var/lib/apt/lists/*
-```
-
-You must replace the `apt-get` package manager with `yum` or `dnf` depending on which package manager is supported in the OS of your choice.
-
-
-```bash
-# Fetches the packages and latest versions.
-RUN yum -y update && \
-    yum -y install gpg
-```
-
-Additionally, you must comment out the following line in the Dockerfile. This command is not intended for Fedora-based OS, and it might impact the OS functionality if used.
-```bash
-RUN apt-get autoremove --purge -y gpg
-```
-Important additional notes when building your Pega web-ready image with a Fedora-based OS
-1. The `yum/dnf` update command contacts enabled mirror repositories to fetch the packages and their latest versions. 
-   For `yum`, you can configure the repositories in the /etc/yum.repos.d directory. Ensure that these repositories are reachable within the Docker host network.
-2. If you build an image using `RHEL`, the `yum/dnf` update command attempts to contact Red Hat repositories, so you must confirm your Red Hat identity using subscription-manager to connect to the Red Hat repositories.
-   For more details, see https://access.redhat.com/solutions/253273.
-3. `Curl` is required for downloading several jars in the Dockerfile at the build time. As a best practice, download curl lib or any other similar utility if it is not part of your base image.
-    If you use some alternate tool for curl, change the curl reference accordingly. Alternatively, you can also include the required jars in the base image.
+If you build using `RHEL`, note that `yum`/`dnf` will attempt to contact Red Hat repositories, so you must confirm your Red Hat identity using subscription-manager. For more details, see https://access.redhat.com/solutions/253273.
 
 
 ## User access and control considerations for this image
 
-Pega provides this *web-ready* Docker image with built-in user privileges - pegauser:pegauser (9001:9001) which allows you to set default, limited user access policies, so file system access can be controlled by non-root users who deploy the image. The image only provides required file access to pegauser:pegauser. When you build your pega deployment Docker image from this *web-ready*, you should consider adding any user access and control restrictions within the image such as required roles ot priveleges for file or directory access and ownership. 
+This *web-ready* image runs as `pegauser:pegauser` (9001:9001), which allows default, limited user access policies so file system access is controlled by a non-root user. The image only provides required file access to `pegauser:pegauser`. When you build your Pega deployment Docker image from this *web-ready*, you should consider adding any additional user access and control restrictions, such as required roles or privileges for file or directory access and ownership. 
+
+Note: The `pegauser` user and group must be present in the `BASE_TOMCAT_IMAGE` before this image is built.
 
 ## Building a deployable Docker image using this *web-ready* image
 
@@ -145,7 +129,7 @@ Specify your required settings for your connection to the database where Pega wi
 
 Name 				| Purpose 	| Default
 --- 				| --- 		| ---
-JDBC_DRIVER_URI 	| Download (curl) the specified database driver.  If you do not specify a driver to download, you must embed the driver into your Docker image.  See *Constructing Your Image* for more information on baking a driver in. |
+JDBC_DRIVER_URI 	| Deprecated. Runtime download of JDBC drivers is no longer supported. Mount the JDBC driver JAR into `/opt/pega/lib/` instead. |
 JDBC_URL 			| Specify the JDBC url to connect to your database. |
 JDBC_CLASS 			| Specify the JDBC driver class to use for your database. | `org.postgresql.Driver`
 DB_USERNAME 		| Specify the username to connect to your database. |
