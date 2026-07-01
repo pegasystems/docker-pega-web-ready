@@ -27,6 +27,8 @@ metadataTest:
      value: 60000
    - key: ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION
      value: false
+   - key: PEGA_LOG_TRACE_ID_ENABLED
+     value: false
   exposedPorts: ["8080", "9001", "47100", "7003"]
   # Add 5701-5710 ports                      
   entrypoint: [/scripts/docker-entrypoint.sh]
@@ -1628,6 +1630,35 @@ commandTests:
         bash -c './scripts/docker-entrypoint.sh'
     exitCode: 0
     expectedOutput: ["Loading prlog4j2 from /opt/pega/config/prlog4j2.xml"]
+
+    # Verify template precedence when both prlog4j2 files exist
+  - name: "Mounted prlog4j2.xml.tmpl with legacy xml"
+    envVars:
+    - key: "JDBC_URL"
+      value: "jdbc:postgresql://localhost:5432/pegadb"
+    - key: "JDBC_CLASS"
+      value: "org.postgresql.Driver"
+    - key: "DB_USERNAME"
+      value: "postgres"
+    - key: "DB_PASSWORD"
+      value: "postgres"
+    - key: "RULES_SCHEMA"
+      value: "rules"
+    - key: "DATA_SCHEMA"
+      value: "data"
+    - key: "IS_PEGA_25_OR_LATER"
+      value: "false"
+    command: "bash"
+    args:
+    - -c
+    - |
+        cp /tests/test-artifacts/prlog4j2.xml /opt/pega/config/prlog4j2.xml &&
+        cp /tests/test-artifacts/templates/prlog4j2.xml.tmpl /opt/pega/config/prlog4j2.xml.tmpl &&
+        bash -c './scripts/docker-entrypoint.sh' &&
+        diff /usr/local/tomcat/webapps/prweb/WEB-INF/classes/prlog4j2.xml /tests/test-artifacts/templates/expected_prlog4j2.xml || echo "prlog4j2.xml.tmpl is not properly taking precedence"
+    exitCode: 0
+    expectedOutput: ["Loading prlog4j2 template from /opt/pega/config/prlog4j2.xml.tmpl..."]
+    excludedOutput: ["prlog4j2.xml.tmpl is not properly taking precedence"]
 
     # Verify test case for mounted server.xml
   - name: "Mounted server.xml"

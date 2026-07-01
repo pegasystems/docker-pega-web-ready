@@ -147,6 +147,7 @@ ENV JAVA_OPTS="" \
     NODE_TYPE="" \
     NODE_TIER="" \
     NODE_SETTINGS="" \
+    PEGA_LOG_TRACE_ID_ENABLED="false" \
     PEGA_APP_CONTEXT_PATH=prweb \
     PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
 
