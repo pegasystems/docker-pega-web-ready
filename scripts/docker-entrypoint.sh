@@ -274,15 +274,15 @@ fi
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
 #
-if [ -e "$prlog4j2" ]; then
-  echo "Loading prlog4j2 from ${prlog4j2}...";
-  cp "$prlog4j2" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
-elif [ -e "${final_config_root}/prlog4j2.xml.tmpl" ]; then
-  echo "No prlog4j2 was specified in ${prlog4j2}. Generating from mounted template."
+if [ -e "${final_config_root}/prlog4j2.xml.tmpl" ]; then
+  echo "Loading prlog4j2 template from ${final_config_root}/prlog4j2.xml.tmpl...";
   if ! /bin/detemplatize -template "${final_config_root}/prlog4j2.xml.tmpl:${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/prlog4j2.xml"; then
     echo "ERROR: Failed to render prlog4j2.xml.tmpl template. Exiting."
     exit 1
   fi
+elif [ -e "$prlog4j2" ]; then
+  echo "Loading prlog4j2 from ${prlog4j2}";
+  cp "$prlog4j2" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prlog4j2 was specified in ${prlog4j2}.  Using defaults."
 fi
