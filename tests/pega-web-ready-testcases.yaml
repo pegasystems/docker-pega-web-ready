@@ -1653,8 +1653,10 @@ commandTests:
     - -c
     - |
         cp /tests/test-artifacts/prlog4j2.xml /opt/pega/config/prlog4j2.xml &&
+        # Template input under test.
         cp /tests/test-artifacts/templates/prlog4j2.xml.tmpl /opt/pega/config/prlog4j2.xml.tmpl &&
         bash -c './scripts/docker-entrypoint.sh' &&
+        # Golden output expected after rendering prlog4j2.xml.tmpl.
         diff /usr/local/tomcat/webapps/prweb/WEB-INF/classes/prlog4j2.xml /tests/test-artifacts/templates/expected_prlog4j2.xml || echo "prlog4j2.xml.tmpl is not properly taking precedence"
     exitCode: 0
     expectedOutput: ["Loading prlog4j2 template from /opt/pega/config/prlog4j2.xml.tmpl..."]
