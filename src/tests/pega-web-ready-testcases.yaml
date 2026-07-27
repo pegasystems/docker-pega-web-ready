@@ -958,7 +958,7 @@ commandTests:
     - -c
     - |
         bash -c '/scripts/docker-entrypoint.sh' &&      
-        diff $CATALINA_HOME/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_temp.xml || echo "prweb.xml is not dockerized properly"
+        diff $CATALINA_HOME/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb.xml || echo "prweb.xml is not dockerized properly"
     exitCode: 0
     excludedOutput: ["prweb.xml is not dockerized properly"]
 
@@ -1072,7 +1072,7 @@ commandTests:
       - -c
       - |
         bash -c '/scripts/docker-entrypoint.sh' &&      
-        diff $CATALINA_HOME/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_hz_ssl_temp.xml || echo "prweb.xml is not dockerized properly"
+        diff $CATALINA_HOME/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_hz_ssl.xml || echo "prweb.xml is not dockerized properly"
     exitCode: 0
     excludedOutput: ["prweb.xml is not dockerized properly"]
 
@@ -1104,7 +1104,7 @@ commandTests:
     - -c
     - |
         bash -c '/scripts/docker-entrypoint.sh' &&
-        diff $CATALINA_HOME/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_withDefaultStreamProvider_temp.xml || echo "prweb.xml is not dockerized properly"
+        diff $CATALINA_HOME/conf/Catalina/localhost/prweb.xml /tests/test-artifacts/expected_prweb_withDefaultStreamProvider.xml || echo "prweb.xml is not dockerized properly"
     exitCode: 0
     expectedOutput: ["prweb.xml is not dockerized properly"]
 
