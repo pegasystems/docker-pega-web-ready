@@ -237,7 +237,7 @@ RUN mkdir -p /opt/pega/prometheus && \
     # only be replaced with FIPS certified library versions.  See https://www.bouncycastle.org/download/bouncy-castle-java-fips/#latest --
     # paying particular attention to the "Distribution Files (JAR Format)".  The jars below correspond to BC-FJA 2.1.3.
     curl -sL -o /opt/pega/bcfips/bc-fips-2.1.3.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.1.3/bc-fips-2.1.3.jar && \
-    curl -sL -o /tmp/bc-fips-2.1.3.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.0.0/bc-fips-2.1.3.jar.asc && \
+    curl -sL -o /tmp/bc-fips-2.1.3.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.1.3/bc-fips-2.1.3.jar.asc && \
     curl -sL -o /opt/pega/bcfips/bctls-fips-2.1.24.jar https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.1.24/bctls-fips-2.1.24.jar && \
     curl -sL -o /tmp/bctls-fips-2.1.24.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.1.24/bctls-fips-2.1.24.jar.asc && \
     curl -sL -o /opt/pega/bcfips/bcutil-fips-2.1.7.jar https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.1.7/bcutil-fips-2.1.7.jar && \
