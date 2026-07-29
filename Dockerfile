@@ -320,8 +320,8 @@ CMD ["run"]
 
 # Expose required ports
 
-# HTTP is 8080, JMX is 9001, prometheus is 9090, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
-EXPOSE 8080 9001 9090 5701-5710 47100 7003
+# HTTP is 8080, health probes are 8081, JMX is 9001, prometheus is 9090, Hazelcast is 5701-5710, Ignite is 47100, REST for Kafka is 7003
+EXPOSE 8080 8081 9001 9090 5701-5710 47100 7003
 
 # Used by Docker if this image is used outside of a Kubernetes context.
 # Kubernetes ignores this check and uses the liveness/readiness probes instead.
