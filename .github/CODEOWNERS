@@ -6,4 +6,5 @@
 *       @dcasavant @pegasystems/deployment
 
 # Documentation
-*.md        @kingakowalska1
+*.md        @pegasystems/technical-documentation
+docs/*      @pegasystems/technical-documentation
