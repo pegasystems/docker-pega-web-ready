@@ -65,10 +65,10 @@ dependencies{
 
     // Updating Bouncy Castle jars versions below?  As these are used for FIPS 140-3 support, the versions below should
     // only be replaced with FIPS certified library versions.  See https://www.bouncycastle.org/download/bouncy-castle-java-fips/#latest --
-    // paying particular attention to the "Distribution Files (JAR Format)".  The jars below correspond to BC-FJA 2.0.0.
-    bcfips("org.bouncycastle:bc-fips:2.0.0")
-    bcfips("org.bouncycastle:bctls-fips:2.0.19")
-    bcfips("org.bouncycastle:bcutil-fips:2.0.3")
+    // paying particular attention to the "Distribution Files (JAR Format)".  The jars below correspond to BC-FJA 2.1.3.
+    bcfips("org.bouncycastle:bc-fips:2.1.3")
+    bcfips("org.bouncycastle:bctls-fips:2.1.24")
+    bcfips("org.bouncycastle:bcutil-fips:2.1.7")
     bcfips("org.bouncycastle:bc-rng-jent:1.3.6")
 }
 
