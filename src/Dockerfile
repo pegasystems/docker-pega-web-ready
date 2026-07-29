@@ -286,7 +286,8 @@ RUN chmod -R g+rw ${CATALINA_REAL_PATH}/logs  && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
 
-RUN chmod g+w $CACERTS_REAL_PATH
+RUN chown -R pegauser $CACERTS_REAL_PATH && \
+    chmod 664 $CACERTS_REAL_PATH
 
 #switched the user to pegauser
 USER pegauser
