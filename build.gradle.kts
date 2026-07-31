@@ -193,7 +193,7 @@ val imageDefs = imageProps.getProperty("tags").splitToSequence(",").map{ tag ->
             ?: throw RuntimeException("Couldn't find jdk for $tag"),
         tomcat = TomcatVersion.values().find{ it.versionString == imageProps.getProperty("$tag.tomcat")}
             ?: throw RuntimeException("Couldn't find tomcat for $tag"),
-        registryUrl = imageProps.getProperty("$tag.registryUrl"),
+        registryUrl = imageProps.getProperty("$tag.registryUrl").takeIf { !it.isNullOrBlank() },
     )
 }.toList()
 
