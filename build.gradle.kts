@@ -196,9 +196,9 @@ val imageDefs = imageProps.getProperty("tags").splitToSequence(",").map{ tag ->
     ImageDef(
         tag = tag,
         baseImage = imageProps.getProperty("$tag.baseImage"),
-        jdk = JdkVersion.values().find{ it.jdkString == imageProps.getProperty("$tag.jdk")}
+        jdk = JdkVersion.entries.find{ it.jdkString == imageProps.getProperty("$tag.jdk")}
             ?: throw RuntimeException("Couldn't find jdk for $tag"),
-        tomcat = TomcatVersion.values().find{ it.versionString == imageProps.getProperty("$tag.tomcat")}
+        tomcat = TomcatVersion.entries.find{ it.versionString == imageProps.getProperty("$tag.tomcat")}
             ?: throw RuntimeException("Couldn't find tomcat for $tag"),
         registryUrl = imageProps.getProperty("$tag.registryUrl").takeIf { !it.isNullOrBlank() },
     )
@@ -277,16 +277,20 @@ imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl) ->
 
     val catalinaHomeTask = createBaseImageIntrospectionTasks(
         "catalina_$tag", baseImage, pullTask,
-        "/bin/bash", "-c",  "realpath \$CATALINA_HOME | tr -d '[:cntrl:]'")
+        "/bin/bash", "-c", $$"realpath $CATALINA_HOME | tr -d '[:cntrl:]'"
+    )
     val caCertsTask = createBaseImageIntrospectionTasks(
         "cacerts_$tag", baseImage, pullTask,
-        "/bin/bash", "-c",  "realpath \$JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]'")
+        "/bin/bash", "-c", $$"realpath $JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]'"
+    )
     val javaVersionTask = createBaseImageIntrospectionTasks(
         "javaVersion_$tag", baseImage, pullTask,
-        "/bin/bash", "-c",  "\$JAVA_HOME/bin/java --full-version | awk '{print \$NF}'")
+        "/bin/bash", "-c", $$"$JAVA_HOME/bin/java --full-version | awk '{print $NF}'"
+    )
     val tomcatVersionTask = createBaseImageIntrospectionTasks(
         "tomcatVersion_$tag", baseImage, pullTask,
-        "/bin/bash", "-c",  "\$CATALINA_HOME/bin/version.sh | grep 'Server number:' | awk '{print \$NF}'")
+        "/bin/bash", "-c", $$"$CATALINA_HOME/bin/version.sh | grep 'Server number:' | awk '{print $NF}'"
+    )
 
     val buildArgProvider = provider {
         mutableMapOf(
