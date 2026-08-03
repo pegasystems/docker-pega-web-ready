@@ -24,19 +24,26 @@ interface ExecOperationsProvider {
 }
 
 allprojects{
+    val artifactoryUrl: String? by project
+    val artifactoryUser: String? by project
+    val artifactoryPassword: String? by project
     val customMavenUrl: String? by project
     val customMavenUser: String? by project
     val customMavenPassword: String? by project
 
+    val effectiveMavenUrl = artifactoryUrl ?: customMavenUrl
+    val effectiveMavenUser = artifactoryUser ?: customMavenUser
+    val effectiveMavenPassword = artifactoryPassword ?: customMavenPassword
+
     repositories {
-        if(customMavenUrl != null){
+        if(effectiveMavenUrl != null){
             maven {
-                setUrl(customMavenUrl!!)
+                setUrl(effectiveMavenUrl)
                 credentials {
-                    customMavenUser?.let{
+                    effectiveMavenUser?.let{
                         username = it
                     }
-                    customMavenPassword?.let{
+                    effectiveMavenPassword?.let{
                         password = it
                     }
                 }
