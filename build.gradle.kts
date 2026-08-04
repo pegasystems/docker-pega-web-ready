@@ -4,6 +4,7 @@ import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
+import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
 import java.net.URI
 import java.nio.file.attribute.PosixFilePermission
 import java.util.Properties
@@ -291,6 +292,14 @@ imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl) ->
         "tomcatVersion_$tag", baseImage, pullTask,
         "/bin/bash", "-c", $$"$CATALINA_HOME/bin/version.sh | grep 'Server number:' | awk '{print $NF}'"
     )
+
+    val cleanTask = tasks.register<DockerRemoveImage>("cleanImage_$tag"){
+        targetImageId("$imageName:4-$tag")
+    }
+
+    tasks.clean{
+        dependsOn(cleanTask)
+    }
 
     val buildArgProvider = provider {
         mutableMapOf(
