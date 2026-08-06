@@ -15,6 +15,7 @@ ARG CATALINA_REAL_PATH
 ARG CACERTS_REAL_PATH
 ARG TOMCAT_VERSION
 ARG JAVA_VERSION
+ARG CREATE_USER=false
 
 LABEL vendor="Pegasystems Inc." \
       name="Pega Tomcat Node" \
@@ -26,6 +27,11 @@ ENV TOMCAT_VERSION=${TOMCAT_VERSION} \
     JAVA_VERSION=${JAVA_VERSION}
 
 USER root
+
+RUN if [ "${CREATE_USER}" = "true" ]; then \
+      groupadd -g 9001 pegauser && \
+      useradd -r -u 9001 -g pegauser pegauser \
+    fi
 
 RUN chown -R pegauser $CATALINA_REAL_PATH && \
     chgrp -R 0 $CATALINA_REAL_PATH

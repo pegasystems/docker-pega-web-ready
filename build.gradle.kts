@@ -178,7 +178,8 @@ data class ImageDef(
     val baseImage: String,
     val jdk: JdkVersion,
     val tomcat: TomcatVersion,
-    val registryUrl: String?
+    val registryUrl: String?,
+    val createUser: Boolean,
 )
 
 val imageConfigFile = if(gradle.parent == null){
@@ -202,6 +203,7 @@ val imageDefs = imageProps.getProperty("tags").splitToSequence(",").map{ tag ->
         tomcat = TomcatVersion.entries.find{ it.versionString == imageProps.getProperty("$tag.tomcat")}
             ?: throw RuntimeException("Couldn't find tomcat for $tag"),
         registryUrl = imageProps.getProperty("$tag.registryUrl").takeIf { !it.isNullOrBlank() },
+        createUser = imageProps.getProperty("$tag.createUser").toBoolean(),
     )
 }.toList()
 
@@ -262,7 +264,7 @@ val copyVersionCheckerJar by tasks.registering(Copy::class){
     }
 }
 
-imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl) ->
+imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl, createUser) ->
 
     val pullTask = tasks.register<DockerPullImage>("pullImage_$tag"){
         image = baseImage
@@ -311,6 +313,7 @@ imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl) ->
             "TOMCAT_VERSION" to extractLogContent(tomcatVersionTask),
             "TOMCAT_MAJOR_VERSION" to tomcat.versionString,
             "CATALINA_PATH_SUBSTITUTION" to extractLogContent(catalinaHomeTask).replace("/", "\\/"),
+            "CREATE_USER" to createUser.toString(),
         )
     }
 
