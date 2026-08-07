@@ -326,6 +326,7 @@ imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl, createUser) ->
     }
 
     val buildTask = tasks.register<DockerBuildImage>("buildImage_$tag"){
+        mustRunAfter(cleanTask)
         dependsOn(pullTask, catalinaHomeTask, caCertsTask, javaVersionTask, tomcatVersionTask,
             copyDockerSources, copyPrometheusJar, copyBcFipsJars, copyVersionCheckerJar)
         images = setOf("$imageName:4-$tag")
