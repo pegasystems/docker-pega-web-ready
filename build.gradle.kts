@@ -5,6 +5,7 @@ import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
 import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
+import com.github.dockerjava.api.exception.NotFoundException
 import java.net.URI
 import java.nio.file.attribute.PosixFilePermission
 import java.util.Properties
@@ -297,6 +298,13 @@ imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl, createUser) ->
 
     val cleanTask = tasks.register<DockerRemoveImage>("cleanImage_$tag"){
         targetImageId("$imageName:4-$tag")
+
+        onError{
+            //Don't fail if image isn't present
+            if (this !is NotFoundException){
+                throw this
+            }
+        }
     }
 
     tasks.clean{
