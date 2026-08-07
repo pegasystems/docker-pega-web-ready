@@ -30,7 +30,7 @@ USER root
 
 RUN if [ "${CREATE_USER}" = "true" ]; then \
       groupadd -g 9001 pegauser && \
-      useradd -r -u 9001 -g pegauser pegauser \
+      useradd -r -u 9001 -g pegauser pegauser; \
     fi
 
 RUN chown -R pegauser $CATALINA_REAL_PATH && \
