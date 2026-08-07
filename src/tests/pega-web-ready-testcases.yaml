@@ -247,8 +247,8 @@ commandTests:
     args:
     - -c
     - |
-        java -version  2>&1 | grep -E "OpenJDK 64-Bit Server VM openjdk"
-    expectedOutput: [".*OpenJDK 64-Bit Server VM openjdk.*"]
+        java -version  2>&1 | grep -E "openjdk version"
+    expectedOutput: [".*openjdk version \"11.*"]
 # Check bc-fips path
   - name: "BCFIPS_PATH check"
     command: "echo"
