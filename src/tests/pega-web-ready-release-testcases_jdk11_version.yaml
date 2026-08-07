@@ -7,7 +7,7 @@ commandTests:
     - -c
     - |
         java -version  2>&1 | grep "openjdk version"
-    expectedOutput: [".*.*openjdk version \"11.*"]
+    expectedOutput: [".*openjdk version \"11.*"]
   - name: "TOMCAT VERSION check"
     command: "bash"
     args:
