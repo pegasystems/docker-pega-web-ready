@@ -6,8 +6,8 @@ commandTests:
     args:
     - -c
     - |
-        java -version  2>&1 | grep "OpenJDK 64-Bit Server VM openjdk"
-    expectedOutput: [".*OpenJDK 64-Bit Server VM openjdk-21.*"]
+        java -version  2>&1 | grep "openjdk version"
+    expectedOutput: [".*openjdk version \"21.*"]
   - name: "TOMCAT VERSION check"
     command: "bash"
     args:
