@@ -4,8 +4,11 @@ import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
+import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
+import com.github.dockerjava.api.exception.NotFoundException
 import java.net.URI
 import java.nio.file.attribute.PosixFilePermission
+import java.util.Properties
 import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.outputStream
@@ -23,19 +26,26 @@ interface ExecOperationsProvider {
 }
 
 allprojects{
+    val artifactoryUrl: String? by project
+    val artifactoryUser: String? by project
+    val artifactoryPassword: String? by project
     val customMavenUrl: String? by project
     val customMavenUser: String? by project
     val customMavenPassword: String? by project
 
+    val effectiveMavenUrl = artifactoryUrl ?: customMavenUrl
+    val effectiveMavenUser = artifactoryUser ?: customMavenUser
+    val effectiveMavenPassword = artifactoryPassword ?: customMavenPassword
+
     repositories {
-        if(customMavenUrl != null){
+        if(effectiveMavenUrl != null){
             maven {
-                setUrl(customMavenUrl!!)
+                setUrl(effectiveMavenUrl)
                 credentials {
-                    customMavenUser?.let{
+                    effectiveMavenUser?.let{
                         username = it
                     }
-                    customMavenPassword?.let{
+                    effectiveMavenPassword?.let{
                         password = it
                     }
                 }
@@ -53,6 +63,10 @@ allprojects{
 version = "4.0.0" //TODO determine versioning strategy
 
 evaluationDependsOnChildren()
+
+val dockerRegistryUser: String by project
+val dockerRegistryPassword: String by project
+
 val prometheus: Configuration by configurations.creating{
     isTransitive = false
 }
@@ -152,16 +166,50 @@ fun extractLogContent(task: TaskProvider<DockerLogsContainer>): String{
 }
 
 //createBaseImageIntrospectionTasks("test", "ubuntu:26.04", listOf("bash", "-c", "echo 'test'"))
+enum class JdkVersion(val jdkString: String){
+    JDK11("jdk11"), JDK17("jdk17"), JDK21("jdk21")
+}
 
-val jdk11BaseImage: String by project
-val jdk17BaseImage: String by project
-val jdk21BaseImage: String by project
+enum class TomcatVersion(val versionString: String){
+    TOMCAT_9("9"), TOMCAT_10("10")
+}
 
-val images = mapOf(
-    jdk11BaseImage to "jdk11",
-    jdk17BaseImage to "jdk17",
-    jdk21BaseImage to "jdk21",
+data class ImageDef(
+    val tag: String,
+    val baseImage: String,
+    val jdk: JdkVersion,
+    val tomcat: TomcatVersion,
+    val registryUrl: String?,
+    val createUser: Boolean,
 )
+
+val imageConfigFile = if(gradle.parent == null){
+    file("docker-pega-web-ready.properties")
+} else {
+    gradle.parent!!.rootProject.file("docker-pega-web-ready.properties")
+}
+
+val imageProps = Properties()
+imageConfigFile.inputStream().use {
+    imageProps.load(it)
+}
+
+
+val imageDefs = imageProps.getProperty("tags").splitToSequence(",").map{ tag ->
+    ImageDef(
+        tag = tag,
+        baseImage = imageProps.getProperty("$tag.baseImage"),
+        jdk = JdkVersion.entries.find{ it.jdkString == imageProps.getProperty("$tag.jdk")}
+            ?: throw RuntimeException("Couldn't find jdk for $tag"),
+        tomcat = TomcatVersion.entries.find{ it.versionString == imageProps.getProperty("$tag.tomcat")}
+            ?: throw RuntimeException("Couldn't find tomcat for $tag"),
+        registryUrl = imageProps.getProperty("$tag.registryUrl").takeIf { !it.isNullOrBlank() },
+        createUser = imageProps.getProperty("$tag.createUser").toBoolean(),
+    )
+}.toList()
+
+val latestTag: String = imageProps.getProperty("latestTag")
+val qualityCheckTag: String = imageProps.getProperty("qualityCheckTag")
 
 val copyDockerSources by tasks.registering(Copy::class){
     from(file("src"))
@@ -217,24 +265,51 @@ val copyVersionCheckerJar by tasks.registering(Copy::class){
     }
 }
 
-images.forEach { (baseImage, tag) ->
+imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl, createUser) ->
 
     val pullTask = tasks.register<DockerPullImage>("pullImage_$tag"){
         image = baseImage
+
+        if(registryUrl != null){
+            registryCredentials {
+                url.set(registryUrl)
+                username.set(dockerRegistryUser)
+                password.set(dockerRegistryPassword)
+            }
+        }
     }
 
     val catalinaHomeTask = createBaseImageIntrospectionTasks(
         "catalina_$tag", baseImage, pullTask,
-        "/bin/bash", "-c",  "realpath \$CATALINA_HOME | tr -d '[:cntrl:]'")
+        "/bin/bash", "-c", $$"realpath $CATALINA_HOME | tr -d '[:cntrl:]'"
+    )
     val caCertsTask = createBaseImageIntrospectionTasks(
         "cacerts_$tag", baseImage, pullTask,
-        "/bin/bash", "-c",  "realpath \$JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]'")
+        "/bin/bash", "-c", $$"realpath $JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]'"
+    )
     val javaVersionTask = createBaseImageIntrospectionTasks(
         "javaVersion_$tag", baseImage, pullTask,
-        "/bin/bash", "-c",  "\$JAVA_HOME/bin/java --full-version | awk '{print \$NF}'")
+        "/bin/bash", "-c", $$"$JAVA_HOME/bin/java --full-version | awk '{print $NF}'"
+    )
     val tomcatVersionTask = createBaseImageIntrospectionTasks(
         "tomcatVersion_$tag", baseImage, pullTask,
-        "/bin/bash", "-c",  "\$CATALINA_HOME/bin/version.sh | grep 'Server number:' | awk '{print \$NF}'")
+        "/bin/bash", "-c", $$"$CATALINA_HOME/bin/version.sh | grep 'Server number:' | awk '{print $NF}'"
+    )
+
+    val cleanTask = tasks.register<DockerRemoveImage>("cleanImage_$tag"){
+        targetImageId("$imageName:4-$tag")
+
+        onError{
+            //Don't fail if image isn't present
+            if (this !is NotFoundException){
+                throw this
+            }
+        }
+    }
+
+    tasks.clean{
+        dependsOn(cleanTask)
+    }
 
     val buildArgProvider = provider {
         mutableMapOf(
@@ -244,20 +319,18 @@ images.forEach { (baseImage, tag) ->
             "DETEMPLATIZE_IMAGE_VERSION" to detemplatizeImageVersion,
             "JAVA_VERSION" to extractLogContent(javaVersionTask),
             "TOMCAT_VERSION" to extractLogContent(tomcatVersionTask),
-            "TOMCAT_MAJOR_VERSION" to if(tag == "jdk21"){
-                "10"
-            } else {
-                "9"
-            },
+            "TOMCAT_MAJOR_VERSION" to tomcat.versionString,
             "CATALINA_PATH_SUBSTITUTION" to extractLogContent(catalinaHomeTask).replace("/", "\\/"),
+            "CREATE_USER" to createUser.toString(),
         )
     }
 
     val buildTask = tasks.register<DockerBuildImage>("buildImage_$tag"){
+        mustRunAfter(cleanTask)
         dependsOn(pullTask, catalinaHomeTask, caCertsTask, javaVersionTask, tomcatVersionTask,
             copyDockerSources, copyPrometheusJar, copyBcFipsJars, copyVersionCheckerJar)
         images = setOf("$imageName:4-$tag")
-        if(tag == "jdk17"){
+        if(tag == latestTag){
             images.add("$imageName:latest")
         }
 
@@ -296,7 +369,7 @@ images.forEach { (baseImage, tag) ->
                 commandLine(
                     testBinary.absolutePath, "test", "--image",
                     image, "--config",
-                    "src/tests/pega-web-ready-release-testcases_${tag}_version.yaml"
+                    "src/tests/pega-web-ready-release-testcases_${jdk.jdkString}_version.yaml"
                 )
             }
         }
@@ -305,7 +378,7 @@ images.forEach { (baseImage, tag) ->
         dependsOn(testTask)
     }
 
-    if(tag == "jdk11"){
+    if(tag == qualityCheckTag){
         val buildQualityTask = tasks.register<DockerBuildImage>("buildQualityTestImage_$tag"){
             dependsOn(pullTask, catalinaHomeTask, caCertsTask, javaVersionTask, tomcatVersionTask,
                 copyDockerSources, copyPrometheusJar, copyBcFipsJars, copyVersionCheckerJar)
@@ -343,22 +416,6 @@ images.forEach { (baseImage, tag) ->
         }
         tasks.check{
             dependsOn(testQualityTask)
-        }
-    }
-
-}
-
-val sourceRegistryUrl: String by project
-val sourceRegistryUser: String by project
-val sourceRegistryPassword: String by project
-
-
-docker{
-    if(sourceRegistryUser.isNotEmpty()){
-        registryCredentials {
-            url = sourceRegistryUrl
-            username = sourceRegistryUser
-            password = sourceRegistryPassword
         }
     }
 
