@@ -15,3 +15,13 @@ commandTests:
     - |
         env  2>&1 | grep "TOMCAT_VERSION"
     expectedOutput: ["TOMCAT_VERSION=10.*"]
+  - name: "GC Reserved-Heap check"
+    command: "bash"
+    args:
+      - -c
+      - |
+        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &' &&
+        sleep 5s
+    exitCode: 0
+    expectedOutput: [".*-XX:G1ReservePercent=15.*"]

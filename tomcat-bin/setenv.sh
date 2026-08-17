@@ -69,6 +69,10 @@ if [ "${HIGHLY_SECURE_CRYPTO_MODE_ENABLED}" == "true" ]; then
   JAVA_OPTS="${JAVA_OPTS} -DHighSecureCryptoModeEnabled=true "
 fi
 
+if java -version 2>&1 | grep -q "Temurin-21"; then
+  JAVA_OPTS="${JAVA_OPTS} -XX:G1ReservePercent=15 "
+fi
+
 echo "JAVA_OPTS: \"${JAVA_OPTS}\""
 export  JAVA_OPTS
 
