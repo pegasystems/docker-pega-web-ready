@@ -26,14 +26,14 @@ interface ExecOperationsProvider {
 }
 
 allprojects{
-    val artifactoryUrl: String? by project
+    val artifactoryURL: String? by project
     val artifactoryUser: String? by project
     val artifactoryPassword: String? by project
     val customMavenUrl: String? by project
     val customMavenUser: String? by project
     val customMavenPassword: String? by project
 
-    val effectiveMavenUrl = artifactoryUrl ?: customMavenUrl
+    val effectiveMavenUrl = artifactoryURL ?: customMavenUrl
     val effectiveMavenUser = artifactoryUser ?: customMavenUser
     val effectiveMavenPassword = artifactoryPassword ?: customMavenPassword
 
