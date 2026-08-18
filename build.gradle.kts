@@ -33,19 +33,27 @@ allprojects{
     val customMavenUser: String? by project
     val customMavenPassword: String? by project
 
-    val effectiveMavenUrl = artifactoryURL ?: customMavenUrl
-    val effectiveMavenUser = artifactoryUser ?: customMavenUser
-    val effectiveMavenPassword = artifactoryPassword ?: customMavenPassword
-
     repositories {
-        if(effectiveMavenUrl != null){
+        if(artifactoryURL != null) {
             maven {
-                setUrl(effectiveMavenUrl)
+                setUrl("${artifactoryURL}/repo2")
                 credentials {
-                    effectiveMavenUser?.let{
+                    username = artifactoryUser
+                    password = artifactoryPassword
+                }
+                metadataSources {
+                    mavenPom()
+                    gradleMetadata()
+                }
+            }
+        } else if(customMavenUrl != null){
+            maven {
+                setUrl(customMavenUrl!!)
+                credentials {
+                    customMavenUser?.let{
                         username = it
                     }
-                    effectiveMavenPassword?.let{
+                    customMavenPassword?.let{
                         password = it
                     }
                 }
