@@ -9,19 +9,40 @@ pluginManagement{
     val customMavenUser: String? by settings
     val customMavenPassword: String? by settings
 
-    val effectiveMavenUrl = artifactoryURL ?: customMavenUrl
-    val effectiveMavenUser = artifactoryUser ?: customMavenUser
-    val effectiveMavenPassword = artifactoryPassword ?: customMavenPassword
-
-    if(effectiveMavenUrl != null){
+    if(artifactoryURL != null) {
+        repositories {
+            maven {
+                setUrl("${artifactoryURL}/gradle-plugins")
+                credentials {
+                    username = artifactoryUser
+                    password = artifactoryPassword
+                }
+                metadataSources {
+                    mavenPom()
+                    gradleMetadata()
+                }
+            }
+            maven {
+                setUrl("${artifactoryURL}/repo2")
+                credentials {
+                    username = artifactoryUser
+                    password = artifactoryPassword
+                }
+                metadataSources {
+                    mavenPom()
+                    gradleMetadata()
+                }
+            }
+        }
+    } else if(customMavenUrl != null){
         repositories{
             maven {
-                setUrl(effectiveMavenUrl)
+                setUrl(customMavenUrl!!)
                 credentials {
-                    effectiveMavenUser?.let{
+                    customMavenUser?.let{
                         username = it
                     }
-                    effectiveMavenPassword?.let{
+                    customMavenPassword?.let{
                         password = it
                     }
                 }
