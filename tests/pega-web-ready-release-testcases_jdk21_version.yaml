@@ -37,5 +37,5 @@ commandTests:
         bash -c '/usr/local/tomcat/bin/catalina.sh run &' &&
         sleep 5s
     exitCode: 0
-    expectedOutput: [".*-XX:G1ReservePercent=25.*-XX:G1ReservePercent=15.*"]
-    excludedOutput: [".*-XX:G1ReservePercent=15.*-XX:G1ReservePercent=25.*"]
+    expectedOutput: [".*-XX:G1ReservePercent=15.*-XX:G1ReservePercent=25.*"]
+    excludedOutput: [".*-XX:G1ReservePercent=25.*-XX:G1ReservePercent=15.*"]
