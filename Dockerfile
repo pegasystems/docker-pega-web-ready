@@ -309,6 +309,11 @@ RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
 
+# Make sure cacerts has the correct permissions in case it's a symlink
+RUN CACERTS_REAL_PATH=$(realpath $JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]') && \
+    chown -R pegauser $CACERTS_REAL_PATH && \
+    chmod 664 $CACERTS_REAL_PATH
+
 #switched the user to pegauser
 USER pegauser
 
