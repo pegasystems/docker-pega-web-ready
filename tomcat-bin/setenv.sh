@@ -69,6 +69,11 @@ if [ "${HIGHLY_SECURE_CRYPTO_MODE_ENABLED}" == "true" ]; then
   JAVA_OPTS="${JAVA_OPTS} -DHighSecureCryptoModeEnabled=true "
 fi
 
+jdk_major_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1)
+if [ "${jdk_major_version}" -ge 21 ] 2>/dev/null; then
+  JAVA_OPTS="-XX:G1ReservePercent=15 ${JAVA_OPTS}"
+fi
+
 echo "JAVA_OPTS: \"${JAVA_OPTS}\""
 export  JAVA_OPTS
 
