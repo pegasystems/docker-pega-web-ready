@@ -42,7 +42,7 @@ final_config_root=$config_root
 
 if [ "$IS_PEGA_CONFIG_COMPRESSED" == true ]; then
     final_config_root=$decompressed_root
-    file_list=("prlog4j2.xml" "prconfig.xml" "context.xml" "server.xml" "web.xml" "tomcat-users.xml" "catalina.properties" "prbootstrap.properties" "java.security.overwrite" "tomcat-web.xml" "server.xml.tmpl" "context.xml.tmpl" "java.security.overwrite.tmpl")
+    file_list=("prlog4j2.xml" "prlog4j2.xml.tmpl" "prconfig.xml" "context.xml" "server.xml" "web.xml" "tomcat-users.xml" "catalina.properties" "prbootstrap.properties" "java.security.overwrite" "tomcat-web.xml" "server.xml.tmpl" "context.xml.tmpl" "java.security.overwrite.tmpl")
     # decompressing the files if exists
     for filename in "${file_list[@]}"; do
       if [ -e "${config_root}/${filename}" ]; then
@@ -274,8 +274,14 @@ fi
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
 #
-if [ -e "$prlog4j2" ]; then
-  echo "Loading prlog4j2 from ${prlog4j2}...";
+if [ -e "${final_config_root}/prlog4j2.xml.tmpl" ]; then
+  echo "Loading prlog4j2 template from ${final_config_root}/prlog4j2.xml.tmpl...";
+  if ! /bin/detemplatize -template "${final_config_root}/prlog4j2.xml.tmpl:${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/prlog4j2.xml"; then
+    echo "ERROR: Failed to render prlog4j2.xml.tmpl template. Exiting."
+    exit 1
+  fi
+elif [ -e "$prlog4j2" ]; then
+  echo "Loading prlog4j2 from ${prlog4j2}";
   cp "$prlog4j2" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
   echo "No prlog4j2 was specified in ${prlog4j2}.  Using defaults."
@@ -396,6 +402,7 @@ fi
 rm "${CATALINA_HOME}"/conf/context.xml.tmpl
 rm "${CATALINA_HOME}"/conf/tomcat-users.xml.tmpl
 rm "${CATALINA_HOME}"/conf/server.xml.tmpl
+
 
 #
 # Determine whether we are running against a 25.1 + environment as it is necessary to add bc-fips libraries
