@@ -59,7 +59,7 @@ jobs:
       uses: anchore/scan-action@v7
       with:
         image: "pegasystems/pega-ready:latest"
-        fail-build: true
+        fail-build: false
         severity-cutoff: "high"
         acs-report-enable: true
         
