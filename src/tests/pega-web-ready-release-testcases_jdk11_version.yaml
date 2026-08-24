@@ -15,3 +15,13 @@ commandTests:
     - |
       catalina.sh version 2>/dev/null | grep -F "Server version: "
     expectedOutput: ["Server version: Apache Tomcat/9.*"]
+  - name: "GC Reserved-Heap check"
+    command: "bash"
+    args:
+      - -c
+      - |
+        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &' &&
+        sleep 5s
+    exitCode: 0
+    excludedOutput: [".*-XX:G1ReservePercent=15.*"]
