@@ -7,8 +7,6 @@ metadataTest:
   envVars:
    - key: CATALINA_HOME
      value: /usr/local/tomcat
-   - key: PATH
-     value: /usr/local/tomcat/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
    - key: JDBC_MAX_ACTIVE
      value: 75
    - key: JDBC_MIN_IDLE
@@ -236,12 +234,16 @@ commandTests:
   - name: "Java version check"
     command: "which"
     args: ["java"]
-    expectedOutput: ["/opt/java/openjdk/bin/java"]
+    expectedOutput: ["/usr/lib/jvm/temurin-\\d\\d-jdk-amd64/bin/java"]
 #Verify JAVA_HOME environment variable    
   - name: "JAVA_HOME check"
     command: "echo"
     args: ["$JAVA_HOME"]
-    expectedOutput: ["/opt/java/openjdk"]
+    expectedOutput: ["/usr/lib/jvm/temurin-\\d\\d-jdk-amd64"]
+  - name: "PATH check"
+    command: "echo"
+    args: [ "$PATH" ]
+    expectedOutput: [ "/usr/local/tomcat/bin:/usr/lib/jvm/temurin-\\d\\d-jdk-amd64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" ]
 # Verify Java Version    
   - name: "JAVA VERSION check"
     command: "bash"
