@@ -1,23 +1,25 @@
-Pega Docker Image - v4 Preview
+Pega Docker Image
 ===========
 
 Pega Platform is a distributed web application for customer engagement, customer service, and digital process automation. A Pega deployment consists of a number of containers connecting to a Database and any other required backing services.  The Pega database contains business rule logic that must be preloaded with an installer for the containers to successfully start.  For more information and instructions on how to get started with a container based deployment of Pega, see [Pega's Cloud Choice documentation](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/containerized-deployments-kubernetes.html).
 
-_This is a preview version of the v4 pega-ready image.  It is not intended for production use and should only be used for testing and adoption purposes._
+[![Docker Image Build](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml/badge.svg?branch=master)](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
 
-This version accomplishes the following:
+# Changes from previous version (migrating from v3 to v4)
+This repository contains the 4th major version of the `platform/pega-ready` image.  The main changes introduced in the transition from v3 to v4 are:
 * Improves the process of creating custom pega-ready images by removing OS-specific utilities from the Dockerfile.
 * Notably removes curl from the Pega runtime image, which is not required for Pega to run and is a common source of vulnerabilities in container images.  If you are building your own image, you can mount JDBC driver libraries to the `/opt/pega/lib` directory of the image.
 * Allows your base image to not include a package manager.
 * Introduces a builder image which can be leveraged to download any assets (libaries, jar files) needed.
 
-[![Docker Image Build](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml/badge.svg?branch=master)](https://github.com/pegasystems/docker-pega-web-ready/actions/workflows/docker-build.yml) [![Docker Image](https://img.shields.io/docker/pulls/pegasystems/pega)][pegasystems/pega]
 
 # Using this image
 
-Pega offers a publicly available Pega runtime Docker image which includes the prweb.war file, but does not contain Pega rules - for details, see [pegasystems/pega on DockerHub][pegasystems/pega] and [Pega-provided Docker images](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/pega-docker-images-manage.html). Pega builds the `pegasystems/pega` image from a [pegasystems/pega-ready](https://hub.docker.com/r/pegasystems/pega-ready) Docker image, a base image that contains an Linux OS, a Java implementation (JDK11, JDK17, or JDK21), and an application server (Apache Tomcat), and that is customized with Pega-specific configurations. You can use the `pegasystems/pega-ready` Dockerfile code to customize and build your own web-ready image and then extend it with the Pega .war file of your choice.
+Pega offers a Pega runtime Docker image which includes the prweb.war file, but does not contain Pega rules - for details, see [Understanding the Pega-provided Docker images](https://docs.pega.com/bundle/platform/page/platform/deployment/client-managed-cloud/pega-docker-images-manage.html). Pega builds this runtime image from a `platform/pega-ready` Docker image that is contained in this repository. The `platform/pega-ready` image contains an Linux OS, a Java implementation (JDK11, JDK17, or JDK21), and an application server (Apache Tomcat), and that is customized with Pega-specific configurations.
 
 Docker images provided by Pegasystems are validated and supported by [Pega Support](https://community.pega.com/support).
+
+Builds of this image are no longer published.  This repository is provided for the benefit of customers who need to may have requirements to use organizationally mandated software (Java-implementation, OS, etc.) or to customize the image for their own use.  If you need to build your own image, please see the instructions below. _(It should be noted that if you only need to apply additive changes, it may be easier to add additional files to a new image that uses `platform\pega` as a base image.)_
 
 ## Image customizations
 
@@ -117,7 +119,6 @@ Specify your required settings for your connection to the database where Pega wi
 
 Name 				| Purpose 	| Default
 --- 				| --- 		| ---
-JDBC_DRIVER_URI 	| Download (curl) the specified database driver.  If you do not specify a driver to download, you must embed the driver into your Docker image.  See *Constructing Your Image* for more information on baking a driver in. |
 JDBC_URL 			| Specify the JDBC url to connect to your database. |
 JDBC_CLASS 			| Specify the JDBC driver class to use for your database. | `org.postgresql.Driver`
 DB_USERNAME 		| Specify the username to connect to your database. |
@@ -126,17 +127,9 @@ RULES_SCHEMA 		| Specify the rules schema for your database. | `rules`
 DATA_SCHEMA 		| Specify the data schema for your database. | `data`
 CUSTOMERDATA_SCHEMA | If configured in your database, set the customer data schema for your database. If you do not provide a value, this setting defaults to `dataSchema`. |
 
-### Secured Custom artifactory settings used for downloading JDBC driver
+### Supplying the database driver
 
-If you use a secured custom artifactory to manager your JDBC driver, provide the basic authentication credentials or the API key authentication details to satisfy your custom artifactory authentication mechanism.
-
-Name 						                | Purpose 	                                                                             | Default
---- 						                | --- 		                                                                             | ---
-CUSTOM_ARTIFACTORY_USERNAME                 | Custom artifactory basic authentication username.                                      |
-CUSTOM_ARTIFACTORY_PASSWORD                 | Custom artifactory basic authentication password.                                      |
-CUSTOM_ARTIFACTORY_APIKEY_HEADER            | Custom artifactory dedicated APIKey authentication header name.                        |
-CUSTOM_ARTIFACTORY_APIKEY                   | Custom artifactory APIKey value for APIKey authentication.                             |
-ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION  | Sets ssl verification when downloading JDBC driver using curl from custom artifactory. | `false`
+In order to connect to your database, you must supply the appropriate JDBC driver for your database.  You can either bake the driver into your image or mount it into the container at runtime.  Either way, the driver must be available in the `/opt/pega/lib` directory of the container. 
 
 ### JDBC connection examples
 See the following examples for specifying the database and type of driver used for your connection.
