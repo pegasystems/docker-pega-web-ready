@@ -42,7 +42,7 @@ final_config_root=$config_root
 
 if [ "$IS_PEGA_CONFIG_COMPRESSED" == true ]; then
     final_config_root=$decompressed_root
-    file_list=("prlog4j2.xml" "prconfig.xml" "context.xml" "server.xml" "web.xml" "tomcat-users.xml" "catalina.properties" "prbootstrap.properties" "java.security.overwrite" "tomcat-web.xml" "server.xml.tmpl" "context.xml.tmpl" "java.security.overwrite.tmpl")
+    file_list=("prlog4j2.xml" "prlog4j2.xml.tmpl" "prconfig.xml" "context.xml" "server.xml" "web.xml" "tomcat-users.xml" "catalina.properties" "prbootstrap.properties" "java.security.overwrite" "tomcat-web.xml" "server.xml.tmpl" "context.xml.tmpl" "java.security.overwrite.tmpl")
     # decompressing the files if exists
     for filename in "${file_list[@]}"; do
       if [ -e "${config_root}/${filename}" ]; then
@@ -54,6 +54,7 @@ fi
 
 
 prlog4j2="${final_config_root}/prlog4j2.xml"
+prlog4j2_tmpl="${final_config_root}/prlog4j2.xml.tmpl"
 prconfig="${final_config_root}/prconfig.xml"
 context_xml="${final_config_root}/context.xml"
 server_xml="${final_config_root}/server.xml"
@@ -200,7 +201,10 @@ fi
 #
 # Copying mounted prlog4j2 file to webapps/prweb/WEB-INF/classes
 #
-if [ -e "$prlog4j2" ]; then
+if [ -e "${prlog4j2_tmpl}" ]; then
+  echo "Loading prlog4j2 from ${prlog4j2_tmpl}...";
+  /bin/detemplatize -template "${prlog4j2_tmpl}:${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/prlog4j2.xml"
+elif [ -e "$prlog4j2" ]; then
   echo "Loading prlog4j2 from ${prlog4j2}...";
   cp "$prlog4j2" ${PEGA_DEPLOYMENT_DIR}/WEB-INF/classes/
 else
