@@ -8,7 +8,6 @@ Pega Platform is a distributed web application for customer engagement, customer
 # Changes from previous version (migrating from v3 to v4)
 This repository contains the 4th major version of the `platform/pega-ready` image.  The main changes introduced in the transition from v3 to v4 are:
 * Improves the process of creating custom pega-ready images by removing OS-specific utilities from the Dockerfile.
-* Notably removes curl from the Pega runtime image, which is not required for Pega to run and is a common source of vulnerabilities in container images.  If you are building your own image, you can mount JDBC driver libraries to the `/opt/pega/lib` directory of the image.
 * Allows your base image to not include a package manager.
 * Introduces a builder image which can be leveraged to download any assets (libaries, jar files) needed.
 
@@ -119,6 +118,7 @@ Specify your required settings for your connection to the database where Pega wi
 
 Name 				| Purpose 	| Default
 --- 				| --- 		| ---
+JDBC_DRIVER_URI 	| Download (curl) the specified database driver.  If you do not specify a driver to download, you must embed the driver into your Docker image.  See *Constructing Your Image* for more information on baking a driver in. |
 JDBC_URL 			| Specify the JDBC url to connect to your database. |
 JDBC_CLASS 			| Specify the JDBC driver class to use for your database. | `org.postgresql.Driver`
 DB_USERNAME 		| Specify the username to connect to your database. |
@@ -126,6 +126,20 @@ DB_PASSWORD 		| Specify the password to connect to your database. |
 RULES_SCHEMA 		| Specify the rules schema for your database. | `rules`
 DATA_SCHEMA 		| Specify the data schema for your database. | `data`
 CUSTOMERDATA_SCHEMA | If configured in your database, set the customer data schema for your database. If you do not provide a value, this setting defaults to `dataSchema`. |
+
+
+### Secured Custom artifactory settings used for downloading JDBC driver
+
+If you use a secured custom artifactory to manager your JDBC driver, provide the basic authentication credentials or the API key authentication details to satisfy your custom artifactory authentication mechanism.
+
+
+Name 						                | Purpose 	                                                                             | Default
+--- 						                | --- 		                                                                             | ---
+CUSTOM_ARTIFACTORY_USERNAME                 | Custom artifactory basic authentication username.                                      |
+CUSTOM_ARTIFACTORY_PASSWORD                 | Custom artifactory basic authentication password.                                      |
+CUSTOM_ARTIFACTORY_APIKEY_HEADER            | Custom artifactory dedicated APIKey authentication header name.                        |
+CUSTOM_ARTIFACTORY_APIKEY                   | Custom artifactory APIKey value for APIKey authentication.                             |
+ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION  | Sets ssl verification when downloading JDBC driver using curl from custom artifactory. | `false`
 
 ### Supplying the database driver
 
