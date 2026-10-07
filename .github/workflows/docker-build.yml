@@ -9,4 +9,4 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - name: Checkout repository
-        run: echo "docker-pega-web-ready is no longer used to produce images.  It is now primary provided for the benefit of users who are trying to build custom images with their prefered OS and other customizations."
+        run: echo "docker-pega-web-ready is no longer used to produce images.  It is now primarily provided for the benefit of users who are trying to build custom images with their preferred OS and other customizations."

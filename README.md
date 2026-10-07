@@ -8,7 +8,7 @@ Pega Platform is a distributed web application for customer engagement, customer
 # Changes from previous version (migrating from v3 to v4)
 This repository contains the 4th major version of the `platform/pega-ready` image.  The main changes introduced in the transition from v3 to v4 are:
 * Improves the process of creating custom pega-ready images by removing OS-specific utilities from the Dockerfile.
-* Allows your base image to not include a package manager.
+* Allows you to use a base image that does not include a package manager.
 * Introduces a builder image which can be leveraged to download any assets (libaries, jar files) needed.
 
 
@@ -130,7 +130,7 @@ CUSTOMERDATA_SCHEMA | If configured in your database, set the customer data sche
 
 ### Secured Custom artifactory settings used for downloading JDBC driver
 
-If you use a secured custom artifactory to manager your JDBC driver, provide the basic authentication credentials or the API key authentication details to satisfy your custom artifactory authentication mechanism.
+If you use a secured custom artifactory to manage your JDBC driver, provide the basic authentication credentials or the API key authentication details to satisfy your custom artifactory authentication mechanism.
 
 
 Name 						                | Purpose 	                                                                             | Default
@@ -139,7 +139,7 @@ CUSTOM_ARTIFACTORY_USERNAME                 | Custom artifactory basic authentic
 CUSTOM_ARTIFACTORY_PASSWORD                 | Custom artifactory basic authentication password.                                      |
 CUSTOM_ARTIFACTORY_APIKEY_HEADER            | Custom artifactory dedicated APIKey authentication header name.                        |
 CUSTOM_ARTIFACTORY_APIKEY                   | Custom artifactory APIKey value for APIKey authentication.                             |
-ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION  | Sets ssl verification when downloading JDBC driver using curl from custom artifactory. | `false`
+ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION  | Enables SSL verification for downloading a JDBC driver that uses curl from your custom artifactory. | `false`
 
 ### Supplying the database driver
 
