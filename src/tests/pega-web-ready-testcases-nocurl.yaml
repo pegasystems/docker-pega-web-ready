@@ -1,0 +1,58 @@
+schemaVersion: "2.0.0"
+
+commandTests:
+  # Verify the run argument for catalina.sh
+  - name: "Verify run argument for catalina.sh"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh $CATALINA_HOME/bin/catalina.sh &&
+        cp /tests/test-artifacts/curl $CATALINA_HOME/bin/ &&
+        chmod +x $CATALINA_HOME/bin/curl &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Starting -- Catalina.sh"]
+
+  # Verify certificate in keystore
+  - name: "Certificate added in keystore check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/certs/* /opt/pega/certs/ &&
+        cp /tests/test-artifacts/curl $CATALINA_HOME/bin/ &&
+        chmod +x $CATALINA_HOME/bin/curl &&
+        bash -c '/scripts/docker-entrypoint.sh run &'&&
+        sleep 15s &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias badsslcert  -storepass changeit &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias goodsslcert  -storepass changeit &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias testcert  -storepass changeit
+    exitCode: 0
+    expectedOutput: ["badsslcert(.*)trustedCertEntry,","goodsslcert(.*)trustedCertEntry,","testcert(.*)trustedCertEntry,"]

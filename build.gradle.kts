@@ -189,6 +189,7 @@ data class ImageDef(
     val tomcat: TomcatVersion,
     val registryUrl: String?,
     val createUser: Boolean,
+    val hasCurl: Boolean = false
 )
 
 val imageConfigFile = if(gradle.parent == null){
@@ -213,11 +214,13 @@ val imageDefs = imageProps.getProperty("tags").splitToSequence(",").map{ tag ->
             ?: throw RuntimeException("Couldn't find tomcat for $tag"),
         registryUrl = imageProps.getProperty("$tag.registryUrl").takeIf { !it.isNullOrBlank() },
         createUser = imageProps.getProperty("$tag.createUser").toBoolean(),
+        hasCurl = imageProps.getProperty("$tag.hasCurl").toBoolean()
     )
 }.toList()
 
 val latestTag: String = imageProps.getProperty("latestTag")
 val qualityCheckTag: String = imageProps.getProperty("qualityCheckTag")
+val qualityCheckTags = qualityCheckTag.splitToSequence(",").toList()
 
 val copyDockerSources by tasks.registering(Copy::class){
     from(file("src"))
@@ -273,7 +276,7 @@ val copyVersionCheckerJar by tasks.registering(Copy::class){
     }
 }
 
-imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl, createUser) ->
+imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl, createUser, hasCurl) ->
 
     val pullTask = tasks.register<DockerPullImage>("pullImage_$tag"){
         image = baseImage
@@ -386,11 +389,11 @@ imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl, createUser) ->
         dependsOn(testTask)
     }
 
-    if(tag == qualityCheckTag){
+    if(qualityCheckTags.contains(tag)){
         val buildQualityTask = tasks.register<DockerBuildImage>("buildQualityTestImage_$tag"){
             dependsOn(pullTask, catalinaHomeTask, caCertsTask, javaVersionTask, tomcatVersionTask,
                 copyDockerSources, copyPrometheusJar, copyBcFipsJars, copyVersionCheckerJar)
-            images = setOf("qualitytest")
+            images = setOf("qualitytest:${tag}")
 
             // There's a separate pull task so the pre-build introspection has access to the image
             pull = false
@@ -422,8 +425,32 @@ imageDefs.forEach { (tag, baseImage, jdk, tomcat, registryUrl, createUser) ->
                 }
             }
         }
+
+        val testQualityTaskCurlOrNoCurl = tasks.register("testQualityImageCurlOrNoCurl_$tag") {
+            dependsOn(buildQualityTask, downloadContainerStructureTestBinary)
+
+            doLast {
+                val testPath = if (hasCurl) {
+                    "src/tests/pega-web-ready-testcases-curl.yaml"
+                } else {
+                    "src/tests/pega-web-ready-testcases-nocurl.yaml"
+                }
+                val execOperations = objects.newInstance<ExecOperationsProvider>().getExecOperations()
+
+                val image = buildQualityTask.get().imageId
+                val testBinary = downloadContainerStructureTestBinary.get().outputs.files.singleFile
+                execOperations.exec {
+                    commandLine(
+                        testBinary.absolutePath, "test", "--image",
+                        image.get(), "--config",
+                        testPath
+                    )
+                }
+            }
+        }
+
         tasks.check{
-            dependsOn(testQualityTask)
+            dependsOn(testQualityTask, testQualityTaskCurlOrNoCurl)
         }
     }
 
