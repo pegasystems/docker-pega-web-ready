@@ -1108,29 +1108,6 @@ commandTests:
     exitCode: 0
     expectedOutput: ["prweb.xml is not dockerized properly"]
 
-# Verify the run argument for catalina.sh   
-  - name: "Verify run argument for catalina.sh"
-    envVars:
-    - key: "JDBC_DRIVER_URI"
-      value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
-    - key: "JDBC_URL"
-      value: "jdbc:postgresql://localhost:5432/pegadb"
-    - key: "JDBC_CLASS"
-      value: "org.postgresql.Driver"
-    - key: "DB_USERNAME"
-      value: "postgres"
-    - key: "DB_PASSWORD"
-      value: "postgres"
-    - key: "IS_PEGA_25_OR_LATER"
-      value: "false"
-    command: "bash"
-    args:
-    - -c
-    - |
-        mv /tests/test-artifacts/catalina.sh $CATALINA_HOME/bin/catalina.sh &&
-        bash -c '/scripts/docker-entrypoint.sh run' 
-    exitCode: 0
-    expectedOutput: ["Starting -- Catalina.sh"]
 # Verify test case for mounted context.xml    
   - name: "Mounted context.xml"
     envVars:
@@ -1535,34 +1512,6 @@ commandTests:
     exitCode: 0
     expectedOutput: ["--add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.ibm.lang.management.internal=ALL-UNNAMED \
                       --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"]
-  # Verify certificate in keystore      
-  - name: "Certificate added in keystore check"
-    envVars:
-    - key: "JDBC_DRIVER_URI"
-      value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
-    - key: "JDBC_URL"
-      value: "jdbc:postgresql://localhost:5432/pegadb"
-    - key: "JDBC_CLASS"
-      value: "org.postgresql.Driver"
-    - key: "DB_USERNAME"
-      value: "postgres"
-    - key: "DB_PASSWORD"
-      value: "postgres"
-    - key: "IS_PEGA_25_OR_LATER"
-      value: "false"
-    command: "bash"
-    args:
-    - -c
-    - |
-        mv /tests/test-artifacts/certs/* /opt/pega/certs/ &&
-        bash -c '/scripts/docker-entrypoint.sh run &'&&
-        sleep 15s &&
-        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias badsslcert  -storepass changeit &&
-        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias goodsslcert  -storepass changeit &&
-        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias testcert  -storepass changeit
-    exitCode: 0
-    expectedOutput: ["badsslcert(.*)trustedCertEntry,","goodsslcert(.*)trustedCertEntry,","testcert(.*)trustedCertEntry,"]
-
 
   # Tls certificate password as Environment variable
   - name: "Tls certificate Password as Environment variable"

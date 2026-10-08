@@ -1,0 +1,284 @@
+schemaVersion: "2.0.0"
+
+commandTests:
+  # Verify custom artifactory invalid certificate
+  - name: "Custom artifactory invalid certificate check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/web.xml /opt/pega/artifactory/cert/ &&
+        bash -c './scripts/docker-entrypoint.sh run &'&&
+        sleep 15s
+    exitCode: 0
+    expectedOutput: ["curl needs valid format certificate file for ssl verification."]
+
+  # Verify custom artifactory invalid number of certificates
+  - name: "Custom artifactory invalid number of certificates check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/certs/* /opt/pega/artifactory/cert/ &&
+        bash -c './scripts/docker-entrypoint.sh run &'&&
+        sleep 15s
+    exitCode: 0
+    expectedOutput: ["Provide one certificate file. The file may contain multiple CA certificates."]
+
+  # Verify custom artifactory certificate
+  - name: "Custom artifactory certificate check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/certs/goodssl.cer /opt/pega/artifactory/cert/ &&
+        bash -c './scripts/docker-entrypoint.sh run &'&&
+        sleep 15s
+    exitCode: 0
+    expectedOutput: ["Certificate is provided for custom artifactory's domain ssl verification."]
+
+  # Tls certificate password as Environment variable
+  - name: "Tls certificate Password as Environment variable"
+    envVars:
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh /usr/local/tomcat/bin/catalina.sh &&
+        mv tests/test-artifacts/TOMCAT_KEYSTORE_PASSWORD /opt/pega/tomcatcertsmount/TOMCAT_KEYSTORE_PASSWORD &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: [ "TLS certificate password is - keystore_password_from_file" ]
+  # Verify JDBC_DRIVER_URI download with secure connection
+  - name: "JDBC_DRIVER_URI Download check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION"
+        value: "true"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    expectedOutput: ["Establishing a secure connection to download driver."]
+  # Verify JDBC_DRIVER_URI download with an insecure connection
+  - name: "JDBC_DRIVER_URI Download check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    expectedOutput: ["Establishing an insecure connection to download driver."]
+  # Verify JDBC_DRIVER_URI download
+  - name: "JDBC_DRIVER_URI Download check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    expectedOutput: ["Downloading database driver:"]
+  # Verify JDBC_DRIVER_URI download for failure case
+  - name: "JDBC_DRIVER_URI Download Failure check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/downloadd/postgressql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh'
+    exitCode: 1
+    expectedOutput: ["Could not download jar from "]
+  # Verify Downloaded jar in opt/pega/lib
+  - name: "JDBC_DRIVER jar check in opt/pega/lib"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh' &&
+        [ -f /opt/pega/lib/postgresql-42.2.0.jar ]
+    exitCode: 0
+  # Verify Downloaded jar in tomcat lib
+  - name: "JDBC_DRIVER jar check in Tomcat lib"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        bash -c './scripts/docker-entrypoint.sh' &&
+        [ -f /usr/local/tomcat/lib/postgresql-42.2.0.jar ]
+    exitCode: 0
+
+
+  # Verify the run argument for catalina.sh
+  - name: "Verify run argument for catalina.sh"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/catalina.sh $CATALINA_HOME/bin/catalina.sh &&
+        bash -c '/scripts/docker-entrypoint.sh run'
+    exitCode: 0
+    expectedOutput: ["Starting -- Catalina.sh"]
+
+  # Verify certificate in keystore
+  - name: "Certificate added in keystore check"
+    envVars:
+      - key: "JDBC_DRIVER_URI"
+        value: "https://jdbc.postgresql.org/download/postgresql-42.2.0.jar"
+      - key: "JDBC_URL"
+        value: "jdbc:postgresql://localhost:5432/pegadb"
+      - key: "JDBC_CLASS"
+        value: "org.postgresql.Driver"
+      - key: "DB_USERNAME"
+        value: "postgres"
+      - key: "DB_PASSWORD"
+        value: "postgres"
+      - key: "IS_PEGA_25_OR_LATER"
+        value: "false"
+    command: "bash"
+    args:
+      - -c
+      - |
+        mv /tests/test-artifacts/certs/* /opt/pega/certs/ &&
+        bash -c '/scripts/docker-entrypoint.sh run &'&&
+        sleep 15s &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias badsslcert  -storepass changeit &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias goodsslcert  -storepass changeit &&
+        keytool -list -keystore $JAVA_HOME/lib/security/cacerts	-alias testcert  -storepass changeit
+    exitCode: 0
+    expectedOutput: ["badsslcert(.*)trustedCertEntry,","goodsslcert(.*)trustedCertEntry,","testcert(.*)trustedCertEntry,"]
