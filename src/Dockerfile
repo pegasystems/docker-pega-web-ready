@@ -4,7 +4,7 @@
 ARG BASE_TOMCAT_IMAGE
 ARG DETEMPLATIZE_IMAGE_VERSION=latest
 
-FROM pegasystems/detemplatize:$DETEMPLATIZE_IMAGE_VERSION AS detemplatize
+FROM docker-dev.bin.pega.io/pegasystems/detemplatize:$DETEMPLATIZE_IMAGE_VERSION AS detemplatize
 
 FROM $BASE_TOMCAT_IMAGE AS release
 
