@@ -59,6 +59,14 @@ jobs:
     steps:
     - name: Check out working repository
       uses: actions/checkout@v2
+
+    - name: Set up JDKs
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: |
+          11
+          17
       
     - name: Build Image
       run: make image
@@ -108,5 +116,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Check out working repository
         uses: actions/checkout@v2
+      - name: Set up JDKs
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            11
+            17
       - name: Push image to dockerhub 
         run: make push
