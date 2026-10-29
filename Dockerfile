@@ -147,6 +147,7 @@ ENV JAVA_OPTS="" \
     NODE_TYPE="" \
     NODE_TIER="" \
     NODE_SETTINGS="" \
+    PEGA_LOG_CORRELATION_ID_ENABLED="false" \
     PEGA_APP_CONTEXT_PATH=prweb \
     PEGA_DEPLOYMENT_DIR=${CATALINA_HOME}/webapps/prweb
 
@@ -308,6 +309,11 @@ RUN chmod -R g+rw ${CATALINA_HOME}/logs  && \
     mkdir /search_index && \
     chmod -R g+w /search_index && \
     chown -R pegauser /search_index
+
+# Make sure cacerts has the correct permissions in case it's a symlink
+RUN CACERTS_REAL_PATH=$(realpath $JAVA_HOME/lib/security/cacerts | tr -d '[:cntrl:]') && \
+    chown -R pegauser $CACERTS_REAL_PATH && \
+    chmod 664 $CACERTS_REAL_PATH
 
 #switched the user to pegauser
 USER pegauser
