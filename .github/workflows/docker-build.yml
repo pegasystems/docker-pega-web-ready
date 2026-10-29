@@ -35,6 +35,15 @@ jobs:
     - name: Check out working repository
       uses: actions/checkout@v2
 
+    # Gradle 8.10 cannot run on the runner's default JDK 25; JAVA_HOME ends up as the last version listed.
+    - name: Set up JDKs
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: |
+          11
+          17
+
     - name: Run Container Tests
       run: |
         curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
@@ -50,6 +59,14 @@ jobs:
     steps:
     - name: Check out working repository
       uses: actions/checkout@v2
+
+    - name: Set up JDKs
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: |
+          11
+          17
       
     - name: Build Image
       run: make image
@@ -99,5 +116,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Check out working repository
         uses: actions/checkout@v2
+      - name: Set up JDKs
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            11
+            17
       - name: Push image to dockerhub 
         run: make push
