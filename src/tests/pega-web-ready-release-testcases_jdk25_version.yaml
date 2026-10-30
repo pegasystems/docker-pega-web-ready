@@ -1,0 +1,41 @@
+schemaVersion: "2.0.0"
+
+commandTests:
+  - name: "JAVA VERSION check"
+    command: "bash"
+    args:
+      - -c
+      - |
+        java -version  2>&1 | grep "openjdk version"
+    expectedOutput: [".*openjdk version \"25.*"]
+  - name: "TOMCAT VERSION check"
+    command: "bash"
+    args:
+      - -c
+      - |
+        catalina.sh version 2>/dev/null | grep -F "Server version: "
+    expectedOutput: ["Server version: Apache Tomcat/11.*"]
+  - name: "GC Reserved-Heap check"
+    command: "bash"
+    args:
+      - -c
+      - |
+        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &' &&
+        sleep 5s
+    exitCode: 0
+    expectedOutput: [".*-XX:G1ReservePercent=15.*"]
+  - name: "GC Reserved-Heap check is overridable via custom JAVA_OPTS"
+    envVars:
+      - key: "JAVA_OPTS"
+        value: "-XX:G1ReservePercent=25"
+    command: "bash"
+    args:
+      - -c
+      - |
+        rm -f /usr/local/tomcat/conf/Catalina/localhost/prweb.xml &&
+        bash -c '/usr/local/tomcat/bin/catalina.sh run &' &&
+        sleep 5s
+    exitCode: 0
+    expectedOutput: [".*-XX:G1ReservePercent=15.*-XX:G1ReservePercent=25.*"]
+    excludedOutput: [".*-XX:G1ReservePercent=25.*-XX:G1ReservePercent=15.*"]
