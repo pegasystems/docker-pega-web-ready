@@ -175,11 +175,11 @@ fun extractLogContent(task: TaskProvider<DockerLogsContainer>): String{
 
 //createBaseImageIntrospectionTasks("test", "ubuntu:26.04", listOf("bash", "-c", "echo 'test'"))
 enum class JdkVersion(val jdkString: String){
-    JDK11("jdk11"), JDK17("jdk17"), JDK21("jdk21")
+    JDK11("jdk11"), JDK17("jdk17"), JDK21("jdk21"), JDK25("jdk25")
 }
 
 enum class TomcatVersion(val versionString: String){
-    TOMCAT_9("9"), TOMCAT_10("10")
+    TOMCAT_9("9"), TOMCAT_10("10"), TOMCAT_11("11")
 }
 
 data class ImageDef(
