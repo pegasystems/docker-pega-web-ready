@@ -68,6 +68,11 @@
     -->
     <Connector port="8080" protocol="HTTP/1.1"
                connectionTimeout="20000" />
+
+    <!-- facilitates liveness, readiness, and startup checks via a separate port -->
+    <Connector port="8081" protocol="org.apache.coyote.http11.Http11Nio2Protocol"
+               connectionTimeout="20000"
+               maxThreads="2" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
