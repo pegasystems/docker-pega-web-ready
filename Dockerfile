@@ -239,19 +239,19 @@ RUN mkdir -p /opt/pega/prometheus && \
     # paying particular attention to the "Distribution Files (JAR Format)".  The jars below correspond to BC-FJA 2.1.3.
     curl -sL -o /opt/pega/bcfips/bc-fips-2.1.3.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.1.3/bc-fips-2.1.3.jar && \
     curl -sL -o /tmp/bc-fips-2.1.3.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-fips/2.1.3/bc-fips-2.1.3.jar.asc && \
-    curl -sL -o /opt/pega/bcfips/bctls-fips-2.1.24.jar https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.1.24/bctls-fips-2.1.24.jar && \
-    curl -sL -o /tmp/bctls-fips-2.1.24.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.1.24/bctls-fips-2.1.24.jar.asc && \
-    curl -sL -o /opt/pega/bcfips/bcutil-fips-2.1.7.jar https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.1.7/bcutil-fips-2.1.7.jar && \
-    curl -sL -o /tmp/bcutil-fips-2.1.7.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.1.7/bcutil-fips-2.1.7.jar.asc && \
+    curl -sL -o /opt/pega/bcfips/bctls-fips-2.1.25.jar https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.1.25/bctls-fips-2.1.25.jar && \
+    curl -sL -o /tmp/bctls-fips-2.1.25.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bctls-fips/2.1.25/bctls-fips-2.1.25.jar.asc && \
+    curl -sL -o /opt/pega/bcfips/bcutil-fips-2.1.8.jar https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.1.8/bcutil-fips-2.1.8.jar && \
+    curl -sL -o /tmp/bcutil-fips-2.1.8.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bcutil-fips/2.1.8/bcutil-fips-2.1.8.jar.asc && \
     curl -sL -o /opt/pega/bcfips/bc-rng-jent-1.3.6.jar https://repo1.maven.org/maven2/org/bouncycastle/bc-rng-jent/1.3.6/bc-rng-jent-1.3.6.jar && \
     curl -sL -o /tmp/bc-rng-jent-fips-1.3.6.jar.asc https://repo1.maven.org/maven2/org/bouncycastle/bc-rng-jent/1.3.6/bc-rng-jent-1.3.6.jar.asc && \
     gpg --import /keys/bc_maven_public_key.asc && \
     gpg --verify /tmp/bc-fips-2.1.3.jar.asc /opt/pega/bcfips/bc-fips-2.1.3.jar && \
     rm /tmp/bc-fips-2.1.3.jar.asc && \
-    gpg --verify /tmp/bctls-fips-2.1.24.jar.asc /opt/pega/bcfips/bctls-fips-2.1.24.jar && \
-    rm /tmp/bctls-fips-2.1.24.jar.asc && \
-    gpg --verify /tmp/bcutil-fips-2.1.7.jar.asc /opt/pega/bcfips/bcutil-fips-2.1.7.jar && \
-    rm /tmp/bcutil-fips-2.1.7.jar.asc && \
+    gpg --verify /tmp/bctls-fips-2.1.25.jar.asc /opt/pega/bcfips/bctls-fips-2.1.25.jar && \
+    rm /tmp/bctls-fips-2.1.25.jar.asc && \
+    gpg --verify /tmp/bcutil-fips-2.1.8.jar.asc /opt/pega/bcfips/bcutil-fips-2.1.8.jar && \
+    rm /tmp/bcutil-fips-2.1.8.jar.asc && \
     gpg --verify /tmp/bc-rng-jent-fips-1.3.6.jar.asc /opt/pega/bcfips/bc-rng-jent-1.3.6.jar && \
     rm /tmp/bc-rng-jent-fips-1.3.6.jar.asc && \
     chgrp -R 0 /opt/pega/prometheus && \
