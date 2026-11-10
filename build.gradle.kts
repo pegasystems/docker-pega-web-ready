@@ -89,8 +89,8 @@ dependencies{
     // only be replaced with FIPS certified library versions.  See https://www.bouncycastle.org/download/bouncy-castle-java-fips/#latest --
     // paying particular attention to the "Distribution Files (JAR Format)".  The jars below correspond to BC-FJA 2.1.3.
     bcfips("org.bouncycastle:bc-fips:2.1.3")
-    bcfips("org.bouncycastle:bctls-fips:2.1.24")
-    bcfips("org.bouncycastle:bcutil-fips:2.1.7")
+    bcfips("org.bouncycastle:bctls-fips:2.1.25")
+    bcfips("org.bouncycastle:bcutil-fips:2.1.8")
     bcfips("org.bouncycastle:bc-rng-jent:1.3.6")
 }
 
